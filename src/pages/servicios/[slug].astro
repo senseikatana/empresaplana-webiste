@@ -67,7 +67,7 @@ export function getStaticPaths() {
 const slug = Astro.params.slug ?? "";
 const stored = SERVICES.find((service) => service.slug === slug)?.locales.es;
 const content = stored ?? fallback[slug as keyof typeof fallback];
-if (!content) return Astro.redirect("/empresaplana-website/servicios-discrecionales");
+if (!content) return Astro.redirect("/servicios-discrecionales");
 ---
 
 <ServiceDetail {...content} canonicalUrl={`https://empresaplana.cat/servicios/${slug}`} />

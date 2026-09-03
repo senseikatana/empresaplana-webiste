@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 // https://astro.build/config
 export default defineConfig({
 	output: "static",
-	base: "/empresaplana-website",
+	base: "/",
 	vite: {
 		plugins: [tailwindcss()],
 		resolve: {
