@@ -9,7 +9,6 @@ import { searchRoutes } from "@/lib/search";
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
 import { getLocale, getDictionary } from "@/config/i18n";
 
-export const prerender = false;
 
 const locale = getLocale(Astro.url.searchParams.get("lang"));
 const dict = getDictionary(locale);
