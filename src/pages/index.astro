@@ -3,7 +3,6 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
 import { getLocale, getDictionary, LOCALES } from "@/config/i18n";
 
-export const prerender = false;
 
 const locale = getLocale(Astro.url.searchParams.get("lang"));
 const dict = getDictionary(locale);
@@ -66,15 +65,15 @@ const routes = [
 	<header class="bg-surface sticky top-0 z-50 shadow-[0px_4px_20px_rgba(1,57,144,0.08)]">
 		<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto h-20">
 			<!-- Logo -->
-			<a href="/" class="font-headline-md text-headline-md font-bold text-primary-container flex items-center">
+			<a href="/empresaplana-website/" class="font-headline-md text-headline-md font-bold text-primary-container flex items-center">
 				{c.brand}
 			</a>
 			<!-- Navigation Links -->
 			<div class="hidden md:flex items-center gap-gutter font-button text-button">
-				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="/servicios-discrecionales">{c.nav.services}</a>
-				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="/rutas-horarios">{f.routesSchedules}</a>
-				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="/donde-estamos">{c.nav.locations}</a>
-				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="/rastreig">{dict.home.screens.tracking.label}</a>
+				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="/empresaplana-website/servicios-discrecionales">{c.nav.services}</a>
+				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="/empresaplana-website/rutas-horarios">{f.routesSchedules}</a>
+				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="/empresaplana-website/donde-estamos">{c.nav.locations}</a>
+				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="/empresaplana-website/rastreig">{dict.home.screens.tracking.label}</a>
 				<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#contacto">{c.nav.contact}</a>
 			</div>
 			<!-- Mobile Menu Toggle -->
@@ -170,9 +169,9 @@ const routes = [
 				<div>
 					<h4 class="font-label-md text-label-md font-bold mb-4 opacity-80">{f.services}</h4>
 					<ul class="flex flex-col gap-2 font-body-md text-body-md">
-						<li><a class="hover:text-secondary-fixed transition-colors" href="/rutas-horarios">{f.routesSchedules}</a></li>
-						<li><a class="hover:text-secondary-fixed transition-colors" href="/servicios-discrecionales">{f.privateServices}</a></li>
-						<li><a class="hover:text-secondary-fixed transition-colors" href="/rastreig">{dict.home.screens.tracking.label}</a></li>
+						<li><a class="hover:text-secondary-fixed transition-colors" href="/empresaplana-website/rutas-horarios">{f.routesSchedules}</a></li>
+						<li><a class="hover:text-secondary-fixed transition-colors" href="/empresaplana-website/servicios-discrecionales">{f.privateServices}</a></li>
+						<li><a class="hover:text-secondary-fixed transition-colors" href="/empresaplana-website/rastreig">{dict.home.screens.tracking.label}</a></li>
 					</ul>
 				</div>
 				<!-- Contact Info -->
@@ -211,7 +210,7 @@ const routes = [
 					<a class="hover:text-secondary-fixed transition-colors" href="#">{c.footer.cookies}</a>
 					<a class="hover:text-secondary-fixed transition-colors" href="#">{c.footer.contact}</a>
 					<a class="hover:text-secondary-fixed transition-colors" href="#">{c.footer.fleet}</a>
-					<a class="hover:text-secondary-fixed transition-colors" href="/screens">{dict.home.title}</a>
+					<a class="hover:text-secondary-fixed transition-colors" href="/empresaplana-website/screens">{dict.home.title}</a>
 				</div>
 			</div>
 		</div>
