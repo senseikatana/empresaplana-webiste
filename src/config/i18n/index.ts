@@ -10,7 +10,7 @@ export type {
 	LocalizedPageProps,
 } from "@/interfaces";
 
-export const DEFAULT_LOCALE: Locale = "ca";
+export const DEFAULT_LOCALE: Locale = "es";
 
 export const LOCALES: readonly Locale[] = ["ca", "es", "en"] as const;
 
