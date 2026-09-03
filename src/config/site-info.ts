@@ -4,21 +4,21 @@ const SITE_BASE_URL = "https://empresaplana.cat";
 
 export const SITE_INFO = {
 	brand: "Empresa Plana",
-	title: "Empresa Plana - Autocars i mobilitat per la Costa Daurada",
+	title: "Empresa Plana - Autocares y movilidad para la Costa Dorada",
 	description:
-		"Empresa Plana: horaris d'autobús, rutes, trasllats a l'aeroport i serveis discrecionals a la Costa Daurada, Camp de Tarragona i Barcelona.",
+		"Empresa Plana: horarios de autobús, rutas, traslados al aeropuerto y servicios discrecionales en la Costa Dorada, Camp de Tarragona y Barcelona.",
 	baseUrl: SITE_BASE_URL,
-	defaultLang: "ca",
+	defaultLang: "es",
 	author: "Empresa Plana",
 	themeColor: "#013990",
 	keywords: [
 		"Empresa Plana",
-		"autocars",
-		"autobusos",
-		"horaris",
+		"autocares",
+		"autobuses",
+		"horarios",
 		"Tarragona",
-		"Costa Daurada",
-		"trasllats aeroport",
+		"Costa Dorada",
+		"traslados aeropuerto",
 	],
 } as const;
 
