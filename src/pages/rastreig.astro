@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import BusTrackingPanel from "@/components/BusTrackingPanel";
+import BusTrackingPanel from "@/components/BusTrackingPanel.astro";
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
 import { getLocale, getDictionary } from "@/config/i18n";
 
@@ -36,7 +36,7 @@ const stops = [
 		</div>
 	</header>
 	<main class="flex-grow max-w-2xl mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
-		<BusTrackingPanel client:load lineId={lineId} lineLabel={lineLabel} stops={stops} t={dict.busTracking} />
+			<BusTrackingPanel lineId={lineId} lineLabel={lineLabel} stops={stops} t={dict.busTracking} />
 	</main>
 	<footer class="bg-deep-navy text-on-primary/80 py-stack-md px-margin-mobile md:px-margin-desktop">
 		<div class="max-w-2xl mx-auto font-body-md text-body-md">

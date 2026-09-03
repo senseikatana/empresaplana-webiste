@@ -1,0 +1,62 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title: string;
+	description?: string;
+	lang?: string;
+	canonicalUrl?: string;
+	ogTitle?: string;
+	ogDescription?: string;
+	ogImage?: string;
+	ogType?: string;
+	author?: string;
+	themeColor?: string;
+	keywords?: string[];
+	bodyClass?: string;
+}
+
+const {
+	title,
+	description = "",
+	lang = "ca",
+	canonicalUrl,
+	ogTitle,
+	ogDescription,
+	ogImage,
+	ogType,
+	author,
+	themeColor,
+	keywords,
+	bodyClass = "",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		{author && <meta name="author" content={author} />}
+		{themeColor && <meta name="theme-color" content={themeColor} />}
+		{keywords && keywords.length > 0 && (
+			<meta name="keywords" content={keywords.join(", ")} />
+		)}
+		{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+		<meta property="og:title" content={ogTitle ?? title} />
+		<meta property="og:description" content={ogDescription ?? description} />
+		<meta property="og:type" content={ogType ?? "website"} />
+		{ogImage && <meta property="og:image" content={ogImage} />}
+		{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+		/>
+	</head>
+	<body class={bodyClass}>
+		<slot />
+	</body>
+</html>

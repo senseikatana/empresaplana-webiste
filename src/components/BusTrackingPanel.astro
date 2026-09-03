@@ -1,0 +1,316 @@
+---
+import type { BusTracking } from "@/interfaces";
+import type { ReportAction } from "@/interfaces/tracking-store";
+
+interface StopInfo {
+	id: string;
+	name: string;
+	time: string;
+}
+
+interface Props {
+	lineId: string;
+	lineLabel: string;
+	stops: StopInfo[];
+	t: BusTracking;
+}
+
+const { lineId, lineLabel, stops, t } = Astro.props;
+
+const ACTIONS: { value: ReportAction; icon: string }[] = [
+	{ value: "passed", icon: "check_circle" },
+	{ value: "onTime", icon: "schedule" },
+	{ value: "late", icon: "schedule" },
+	{ value: "early", icon: "schedule" },
+	{ value: "notPassed", icon: "cancel" },
+	{ value: "cancelled", icon: "block" },
+];
+
+const ACTION_STYLES: Record<ReportAction, string> = {
+	passed:
+		"border-deep-navy/30 text-deep-navy hover:bg-deep-navy hover:text-on-primary",
+	onTime:
+		"border-coastal-teal/40 text-on-secondary-container hover:bg-secondary-container",
+	late: "border-error/30 text-error hover:bg-error hover:text-on-error",
+	early:
+		"border-on-tertiary-container/40 text-on-tertiary-container hover:bg-tertiary-container",
+	notPassed: "border-error/30 text-error hover:bg-error hover:text-on-error",
+	cancelled:
+		"border-outline text-on-surface-variant hover:bg-surface-container-high",
+};
+---
+
+<div class="max-w-2xl mx-auto space-y-stack-lg" data-bus-tracking>
+	<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 ambient-shadow p-6">
+		<div class="flex items-center gap-3 mb-2">
+			<span class="material-symbols-outlined text-deep-navy">directions_bus</span>
+			<h2 class="font-headline-md text-headline-md text-deep-navy">{t.title}</h2>
+		</div>
+		<p class="font-body-md text-body-md text-on-surface-variant mb-6">{t.subtitle}</p>
+
+		<div class="flex flex-col md:flex-row gap-stack-md mb-6">
+			<div class="flex-1">
+				<span class="font-label-md text-label-md text-on-surface-variant uppercase">{t.line}</span>
+				<p class="font-headline-md text-headline-md text-on-surface">{lineLabel}</p>
+			</div>
+			<div class="flex-1">
+				<span class="font-label-md text-label-md text-on-surface-variant uppercase">{t.stop}</span>
+				<select data-stop-select class="w-full mt-1 px-3 py-2 rounded border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal">
+					{stops.map((stop) => (
+						<option value={stop.id}>
+							{stop.name} — {t.scheduled} {stop.time}
+						</option>
+					))}
+				</select>
+			</div>
+		</div>
+
+		<p class="font-label-md text-label-md text-on-surface-variant mb-3">{t.feedback.selectIssue}</p>
+		<div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+			{ACTIONS.map(({ value, icon }) => (
+				<button type="button" data-action={value} class={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border text-sm font-label-md transition-colors ${ACTION_STYLES[value]}`}>
+					<span class="material-symbols-outlined text-[18px]">{icon}</span>
+					{t.actions[value]}
+				</button>
+			))}
+		</div>
+
+		<div data-minutes-field class="mt-4 hidden">
+			<label class="font-label-md text-label-md text-on-surface-variant" for="minutes-late">
+				{t.feedback.minutesLate}
+			</label>
+			<input id="minutes-late" data-minutes-input type="number" min="0" class="mt-1 w-full md:w-40 px-3 py-2 rounded border border-outline-variant bg-surface-container-lowest focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal" />
+		</div>
+
+		<div class="mt-4">
+			<label class="font-label-md text-label-md text-on-surface-variant" for="report-comment">
+				{t.feedback.comment}
+			</label>
+			<textarea id="report-comment" data-comment-input rows="2" placeholder={t.feedback.commentPlaceholder} class="mt-1 w-full px-3 py-2 rounded border border-outline-variant bg-surface-container-lowest focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal"></textarea>
+		</div>
+
+		<p data-error class="mt-3 text-error font-body-md text-body-md hidden"></p>
+
+		<button type="button" data-submit class="mt-4 w-full md:w-auto bg-energetic-orange text-white font-button text-button px-8 py-3 rounded hover:opacity-90 transition-opacity disabled:opacity-50 min-h-[48px]">
+			{t.feedback.send}
+		</button>
+
+		<div data-result class="mt-4 p-4 rounded-lg bg-secondary-container/30 border border-coastal-teal/30 hidden">
+			<p class="font-headline-md text-headline-md text-on-secondary-container">{t.feedback.thanks}</p>
+			<p class="font-body-md text-body-md text-on-surface-variant">{t.feedback.thanksDesc}</p>
+		</div>
+
+		<div data-stats class="mt-6 border-t border-outline-variant/30 pt-4 hidden">
+			<div class="flex items-center justify-between mb-2">
+				<span class="font-label-md text-label-md text-on-surface-variant" data-stats-line></span>
+				<span class="font-label-md text-label-md text-deep-navy" data-stats-count></span>
+			</div>
+			<div class="h-2 rounded-full bg-surface-container overflow-hidden">
+				<div data-stats-bar class="h-full rounded-full transition-all" style="width: 0%"></div>
+			</div>
+			<p class="mt-2 font-body-md text-body-md text-on-surface-variant" data-stats-text></p>
+			<div data-escalation class="mt-3 p-4 rounded-lg bg-error-container/60 border border-error/30 hidden">
+				<p class="font-headline-md text-headline-md text-on-error-container">{t.alerts.notifiedTitle}</p>
+				<ul class="mt-2 space-y-1 font-body-md text-body-md text-on-error-container">
+					<li>· {t.alerts.coordinatorNotified}</li>
+					<li>· {t.alerts.companyNotified}</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/20 ambient-shadow p-6">
+		<div class="flex items-center gap-3 mb-2">
+			<span class="material-symbols-outlined text-deep-navy">star</span>
+			<h2 class="font-headline-md text-headline-md text-deep-navy">{t.review.title}</h2>
+		</div>
+		<p class="font-body-md text-body-md text-on-surface-variant mb-6">{t.review.subtitle}</p>
+
+		<div class="flex items-center gap-1 mb-4">
+			{[1, 2, 3, 4, 5].map((value) => (
+				<button type="button" data-star={value} aria-label={`${value} ${t.review.stars}`} class="p-1 text-energetic-orange hover:scale-110 transition-transform">
+					<span class="material-symbols-outlined text-[28px]" data-star-icon={value}>star_outline</span>
+				</button>
+			))}
+		</div>
+
+		<textarea rows="2" data-review-comment placeholder={t.feedback.commentPlaceholder} class="w-full px-3 py-2 rounded border border-outline-variant bg-surface-container-lowest focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal"></textarea>
+
+		<button type="button" data-review-submit disabled class="mt-4 w-full md:w-auto bg-deep-navy text-white font-button text-button px-8 py-3 rounded hover:opacity-90 transition-opacity disabled:opacity-50 min-h-[48px]">
+			{t.review.submit}
+		</button>
+
+		<p data-review-thanks class="mt-4 font-body-md text-body-md text-on-secondary-container bg-secondary-container/30 border border-coastal-teal/30 rounded-lg p-4 hidden">
+			{t.review.thanks}
+		</p>
+	</section>
+</div>
+
+<script define:vars={{ lineId, t }}>
+	const root = document.querySelector("[data-bus-tracking]");
+	const stopSelect = root.querySelector("[data-stop-select]");
+	const actionButtons = Array.from(root.querySelectorAll("[data-action]"));
+	const minutesField = root.querySelector("[data-minutes-field]");
+	const minutesInput = root.querySelector("[data-minutes-input]");
+	const commentInput = root.querySelector("[data-comment-input]");
+	const errorEl = root.querySelector("[data-error]");
+	const submitBtn = root.querySelector("[data-submit]");
+	const resultEl = root.querySelector("[data-result]");
+	const statsEl = root.querySelector("[data-stats]");
+	const statsLineEl = root.querySelector("[data-stats-line]");
+	const statsCountEl = root.querySelector("[data-stats-count]");
+	const statsBarEl = root.querySelector("[data-stats-bar]");
+	const statsTextEl = root.querySelector("[data-stats-text]");
+	const escalationEl = root.querySelector("[data-escalation]");
+	const starButtons = Array.from(root.querySelectorAll("[data-star]"));
+	const reviewComment = root.querySelector("[data-review-comment]");
+	const reviewSubmit = root.querySelector("[data-review-submit]");
+	const reviewThanks = root.querySelector("[data-review-thanks]");
+
+	const BASE_BTN =
+		"flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg border text-sm font-label-md transition-colors";
+	const ACTIVE_BTN = "bg-deep-navy text-on-primary border-deep-navy";
+	const STYLES = {
+		passed: "border-deep-navy/30 text-deep-navy hover:bg-deep-navy hover:text-on-primary",
+		onTime: "border-coastal-teal/40 text-on-secondary-container hover:bg-secondary-container",
+		late: "border-error/30 text-error hover:bg-error hover:text-on-error",
+		early: "border-on-tertiary-container/40 text-on-tertiary-container hover:bg-tertiary-container",
+		notPassed: "border-error/30 text-error hover:bg-error hover:text-on-error",
+		cancelled: "border-outline text-on-surface-variant hover:bg-surface-container-high",
+	};
+
+	let selectedAction = null;
+	let stars = 0;
+	let stats = null;
+
+	function setError(message) {
+		if (message) {
+			errorEl.textContent = message;
+			errorEl.classList.remove("hidden");
+		} else {
+			errorEl.classList.add("hidden");
+		}
+	}
+
+	function renderActions() {
+		actionButtons.forEach((btn) => {
+			const value = btn.dataset.action;
+			btn.className = `${BASE_BTN} ${selectedAction === value ? ACTIVE_BTN : STYLES[value]}`;
+		});
+		const showMinutes = selectedAction === "late" || selectedAction === "early";
+		minutesField.classList.toggle("hidden", !showMinutes);
+	}
+
+	function renderStats(next) {
+		stats = next;
+		if (!stats) {
+			statsEl.classList.add("hidden");
+			return;
+		}
+		statsEl.classList.remove("hidden");
+		const negative = stats.negative ?? 0;
+		const threshold = stats.threshold ?? 3;
+		const escalated = Boolean(stats.escalated);
+		statsLineEl.textContent = `${t.stats.punctuality} · ${t.stats.onTimeRate}: ${stats.onTimeRate}%`;
+		statsCountEl.textContent = `${negative}/${threshold}`;
+		statsBarEl.style.width = `${Math.min(100, (negative / threshold) * 100)}%`;
+		statsBarEl.classList.toggle("bg-error", escalated);
+		statsBarEl.classList.toggle("bg-energetic-orange", !escalated);
+		statsTextEl.textContent = escalated
+			? t.alerts.notifiedBody
+			: `${t.alerts.strikesLeft}: ${Math.max(0, threshold - negative)}`;
+		escalationEl.classList.toggle("hidden", !escalated);
+	}
+
+	async function loadStats() {
+		try {
+			const res = await fetch(`/api/bus-tracking/reports?lineId=${encodeURIComponent(lineId)}`);
+			const data = await res.json();
+			if (data.stats) renderStats(data.stats);
+		} catch {
+			// ignore load failures
+		}
+	}
+
+	actionButtons.forEach((btn) => {
+		btn.addEventListener("click", () => {
+			const value = btn.dataset.action;
+			selectedAction = selectedAction === value ? null : value;
+			renderActions();
+		});
+	});
+
+	submitBtn.addEventListener("click", async () => {
+		if (!selectedAction) {
+			setError(t.feedback.selectIssue);
+			return;
+		}
+		submitBtn.disabled = true;
+		setError(null);
+		try {
+			const res = await fetch("/api/bus-tracking/reports", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					lineId,
+					stopId: stopSelect.value,
+					action: selectedAction,
+					minutesLate: minutesInput.value ? Number(minutesInput.value) : undefined,
+					comment: commentInput.value || undefined,
+				}),
+			});
+			if (!res.ok) {
+				setError("error");
+				return;
+			}
+			const data = await res.json();
+			resultEl.classList.remove("hidden");
+			if (data.stats) renderStats(data.stats);
+			if (data.escalation) escalationEl.classList.remove("hidden");
+			selectedAction = null;
+			renderActions();
+			minutesInput.value = "";
+			commentInput.value = "";
+		} catch {
+			setError("error");
+		} finally {
+			submitBtn.disabled = false;
+		}
+	});
+
+	function renderStars() {
+		starButtons.forEach((btn) => {
+			const value = Number(btn.dataset.star);
+			const icon = btn.querySelector("[data-star-icon]");
+			icon.textContent = value <= stars ? "star" : "star_outline";
+		});
+		reviewSubmit.disabled = stars < 1;
+	}
+
+	starButtons.forEach((btn) => {
+		btn.addEventListener("click", () => {
+			stars = Number(btn.dataset.star);
+			renderStars();
+		});
+	});
+
+	reviewSubmit.addEventListener("click", async () => {
+		if (stars < 1) return;
+		reviewSubmit.disabled = true;
+		try {
+			await fetch("/api/bus-tracking/reviews", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ lineId, stars, comment: reviewComment.value || undefined }),
+			});
+			reviewThanks.classList.remove("hidden");
+			stars = 0;
+			renderStars();
+			reviewComment.value = "";
+		} finally {
+			reviewSubmit.disabled = stars < 1;
+		}
+	});
+
+	loadStats();
+</script>

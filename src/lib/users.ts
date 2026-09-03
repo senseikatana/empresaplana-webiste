@@ -1,4 +1,4 @@
-import type { usuarios } from "@/db/schema";
+import { usuarios } from "@/db/schema";
 import type { PublicUser } from "@/interfaces/users";
 
 export function publicUser(row: typeof usuarios.$inferSelect): PublicUser {

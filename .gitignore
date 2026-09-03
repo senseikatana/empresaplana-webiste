@@ -33,3 +33,7 @@ pnpm-debug.log*
 RELEASES/
 RELEASES/*
 src/Releases/
+
+# local runtime data (bus tracking store) and agent tooling
+.data/
+.zcode/

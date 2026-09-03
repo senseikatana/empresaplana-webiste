@@ -6,10 +6,11 @@
 		"node": ">=22.12.0"
 	},
 	"scripts": {
-		"dev": "vite run dev --port=3000",
-		"build": "vite run build",
+		"dev": "astro dev",
+		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
+		"version:bump": "bun scripts/bump-version.mjs",
 		"format": "biome format --write .",
 		"format:check": "biome format .",
 		"lint": "biome lint .",
@@ -19,6 +20,7 @@
 		"@astrojs/node": "^11.1.5",
 		"@tailwindcss/vite": "^4.3.3",
 		"astro": "^7.2.10",
+		"jose": "^6.2.10",
 		"tailwindcss": "^4.3.3",
 		"zod": "^4.5.4"
 	},
@@ -27,6 +29,7 @@
 		"@biomejs/biome": "^2.5.11",
 		"@js-temporal/polyfill": "^0.5.1",
 		"@types/node": "^26.4.1",
+		"docx": "^9.7.1",
 		"typescript": "^6.0.3"
 	},
 	"author": "Sergio Jurado - @senseikatana",
