@@ -1,0 +1,9 @@
+{
+  "id": "10",
+  "routeId": "tgn-vss",
+  "departure": "07:20",
+  "arrival": "07:45",
+  "frequency": "45 min",
+  "days": "Lun–Sáb",
+  "status": "inactive"
+}

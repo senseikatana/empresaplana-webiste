@@ -1,0 +1,27 @@
+{
+  "code": "L68",
+  "name": "Vilanova i la Geltrú – Vilafranca",
+  "origin": "Vilanova i la Geltrú",
+  "destination": "Vilafranca del Penedès",
+  "color": "#EB8E02",
+  "status": "delayed",
+  "path": [
+    {
+      "lat": 41.224,
+      "lng": 1.725
+    },
+    {
+      "lat": 41.208,
+      "lng": 1.672
+    },
+    {
+      "lat": 41.346,
+      "lng": 1.699
+    }
+  ],
+  "pdfUrl": {
+    "es": "https://empresaplana.cat/uploads/boxes-lineas-configuration/l68-vilanova-i-la-geltru-vilafranca-del-penedes-2.pdf",
+    "ca": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/L68%20Vilanova%20i%20la%20Geltr%C3%BA%20-%20Vilafranca%20del%20Pened%C3%A9s.pdf",
+    "en": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/l68-vilanova-i-la-geltru-vilafranca-del-penedes-3.pdf"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Vila-seca",
+  "address": "C/ Major",
+  "lat": 41.1108,
+  "lng": 1.1447,
+  "routes": [
+    "costa",
+    "tgn-vss"
+  ]
+}

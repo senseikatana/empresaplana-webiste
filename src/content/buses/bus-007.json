@@ -1,0 +1,8 @@
+{
+  "number": "BUS-007",
+  "plate": "3344 STU",
+  "company": "Empresa Plana",
+  "capacity": 40,
+  "routeId": "tgn-camp",
+  "status": "active"
+}

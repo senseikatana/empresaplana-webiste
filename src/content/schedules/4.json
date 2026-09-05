@@ -1,0 +1,9 @@
+{
+  "id": "4",
+  "routeId": "costa",
+  "departure": "07:15",
+  "arrival": "07:50",
+  "frequency": "30 min",
+  "days": "Lun–Dom",
+  "status": "active"
+}

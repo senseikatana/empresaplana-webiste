@@ -1,0 +1,9 @@
+{
+  "name": "Vilafranca del Penedès",
+  "address": "Estació d'autobusos",
+  "lat": 41.346,
+  "lng": 1.699,
+  "routes": [
+    "l68"
+  ]
+}

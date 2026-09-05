@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "username": "cliente",
+      "passkey": "12345678",
+      "name": "Marc",
+      "fullName": "Marc Vidal Roca",
+      "email": "marc.vidal@example.cat",
+      "phone": "+34 600 111 222",
+      "role": "client",
+      "driverId": 0
+    },
+    {
+      "username": "trabajador",
+      "passkey": "12345678",
+      "name": "Laura",
+      "fullName": "Laura Ferrer Solé",
+      "email": "laura.ferrer@empresaplana.cat",
+      "phone": "+34 600 333 444",
+      "role": "worker",
+      "driverId": 2
+    },
+    {
+      "username": "admin",
+      "passkey": "12345678",
+      "name": "Sergi",
+      "fullName": "Sergi Plana",
+      "email": "sergi.plana@empresaplana.cat",
+      "phone": "+34 600 555 666",
+      "role": "admin",
+      "driverId": 0
+    }
+  ]
+}

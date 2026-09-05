@@ -1,0 +1,10 @@
+{
+  "name": "Barcelona · Estació Nord",
+  "address": "C/ d'Ali Bei, 80",
+  "lat": 41.3915,
+  "lng": 2.181,
+  "routes": [
+    "bcn-aer",
+    "tgn-bcn"
+  ]
+}

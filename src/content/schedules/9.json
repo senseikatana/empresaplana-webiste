@@ -1,0 +1,9 @@
+{
+  "id": "9",
+  "routeId": "e5",
+  "departure": "08:00",
+  "arrival": "08:25",
+  "frequency": "30 min",
+  "days": "Lun–Dom",
+  "status": "active"
+}

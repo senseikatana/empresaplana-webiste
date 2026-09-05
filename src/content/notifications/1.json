@@ -1,0 +1,9 @@
+{
+  "id": "1",
+  "type": "delay",
+  "title": "Retraso en la L68",
+  "desc": "La línea L68 circula con +5 min por retención en la C-15 a la altura de Vilafranca.",
+  "createdAt": "2026-09-05T15:06:49.108Z",
+  "read": false,
+  "routeId": "l68"
+}

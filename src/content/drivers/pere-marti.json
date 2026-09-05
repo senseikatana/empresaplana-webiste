@@ -1,0 +1,10 @@
+{
+  "name": "Pere Martí",
+  "phone": "+34 634 567 890",
+  "license": "D34567890",
+  "busNumber": "bus-003",
+  "routeId": "costa",
+  "shiftDays": "Lun–Sáb",
+  "shiftHours": "06:30–14:30",
+  "status": "active"
+}

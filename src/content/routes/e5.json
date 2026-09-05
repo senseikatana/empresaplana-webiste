@@ -1,0 +1,31 @@
+{
+  "code": "e5",
+  "name": "Reus – Salou",
+  "origin": "Reus",
+  "destination": "Salou",
+  "color": "#C2410C",
+  "status": "active",
+  "path": [
+    {
+      "lat": 41.1557,
+      "lng": 1.107
+    },
+    {
+      "lat": 41.1474,
+      "lng": 1.1672
+    },
+    {
+      "lat": 41.0876,
+      "lng": 1.1549
+    },
+    {
+      "lat": 41.0733,
+      "lng": 1.131
+    }
+  ],
+  "pdfUrl": {
+    "es": "https://empresaplana.cat/uploads/boxes-lineas-configuration/reus-salou-periode-01052026-a-31102026-2.pdf",
+    "ca": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/REUS-SALOU%20Per%C3%ADode%2001.05.2026%20a%2031.10.2026.pdf",
+    "en": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/reus-salou-periode-01052026-a-31102026-3.pdf"
+  }
+}

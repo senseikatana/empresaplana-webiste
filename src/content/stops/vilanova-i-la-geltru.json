@@ -1,0 +1,9 @@
+{
+  "name": "Vilanova i la Geltrú",
+  "address": "Estació d'autobusos",
+  "lat": 41.224,
+  "lng": 1.725,
+  "routes": [
+    "l68"
+  ]
+}

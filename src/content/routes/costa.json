@@ -1,0 +1,35 @@
+{
+  "code": "COSTA",
+  "name": "Costa Daurada",
+  "origin": "Tarragona",
+  "destination": "Cambrils",
+  "color": "#13AEB8",
+  "status": "active",
+  "path": [
+    {
+      "lat": 41.1189,
+      "lng": 1.2445
+    },
+    {
+      "lat": 41.1108,
+      "lng": 1.1447
+    },
+    {
+      "lat": 41.0753,
+      "lng": 1.1807
+    },
+    {
+      "lat": 41.0733,
+      "lng": 1.131
+    },
+    {
+      "lat": 41.07,
+      "lng": 1.058
+    }
+  ],
+  "pdfUrl": {
+    "es": "https://empresaplana.cat/uploads/boxes-lineas-configuration/horari-de-la-costa-a-partir-30032026-2.pdf",
+    "ca": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/Horari%20de%20la%20Costa%20a%20partir%2030.03.2026.pdf",
+    "en": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/horari-de-la-costa-a-partir-30032026-3.pdf"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Marta Rius",
+  "phone": "+34 689 012 345",
+  "license": "D89012345",
+  "busNumber": "bus-008",
+  "routeId": "tgn-vss",
+  "shiftDays": "Lun–Sáb",
+  "shiftHours": "07:00–15:00",
+  "status": "active"
+}

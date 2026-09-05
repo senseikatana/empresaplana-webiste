@@ -1,0 +1,10 @@
+{
+  "name": "Jordi Vila",
+  "phone": "+34 656 789 012",
+  "license": "D56789012",
+  "busNumber": "bus-005",
+  "routeId": "e5",
+  "shiftDays": "Lun–Vie",
+  "shiftHours": "07:00–15:00",
+  "status": "inactive"
+}

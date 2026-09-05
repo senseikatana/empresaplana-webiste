@@ -1,0 +1,9 @@
+{
+  "id": "8",
+  "routeId": "ame-tor",
+  "departure": "07:00",
+  "arrival": "08:30",
+  "frequency": "120 min",
+  "days": "Lun–Vie",
+  "status": "active"
+}

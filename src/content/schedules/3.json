@@ -1,0 +1,9 @@
+{
+  "id": "3",
+  "routeId": "tgn-bcn",
+  "departure": "07:00",
+  "arrival": "08:30",
+  "frequency": "45 min",
+  "days": "Lun–Vie",
+  "status": "active"
+}

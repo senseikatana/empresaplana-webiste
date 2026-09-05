@@ -1,0 +1,9 @@
+{
+  "id": "2",
+  "routeId": "bcn-aer",
+  "departure": "17:00",
+  "arrival": "18:45",
+  "frequency": "60 min",
+  "days": "Lun–Dom",
+  "status": "active"
+}

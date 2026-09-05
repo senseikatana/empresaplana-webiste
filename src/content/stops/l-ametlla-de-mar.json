@@ -1,0 +1,9 @@
+{
+  "name": "L'Ametlla de Mar",
+  "address": "Ctra. N-340",
+  "lat": 40.884,
+  "lng": 0.803,
+  "routes": [
+    "ame-tor"
+  ]
+}

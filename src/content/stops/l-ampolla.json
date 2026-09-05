@@ -1,0 +1,9 @@
+{
+  "name": "L'Ampolla",
+  "address": "Av. del Mar",
+  "lat": 40.813,
+  "lng": 0.708,
+  "routes": [
+    "ame-tor"
+  ]
+}

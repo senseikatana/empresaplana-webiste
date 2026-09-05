@@ -1,0 +1,27 @@
+{
+  "code": "TGN-VSS",
+  "name": "Tarragona – Vila-seca – Salou",
+  "origin": "Tarragona",
+  "destination": "Salou",
+  "color": "#4D7C0F",
+  "status": "inactive",
+  "path": [
+    {
+      "lat": 41.1189,
+      "lng": 1.2445
+    },
+    {
+      "lat": 41.1108,
+      "lng": 1.1447
+    },
+    {
+      "lat": 41.0733,
+      "lng": 1.131
+    }
+  ],
+  "pdfUrl": {
+    "es": "https://empresaplana.cat/uploads/boxes-lineas-configuration/tarragona-vilaseca-salou-2.pdf",
+    "ca": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/tarragona-vilaseca-salou.pdf",
+    "en": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/tarragona-vilaseca-salou-3.pdf"
+  }
+}
