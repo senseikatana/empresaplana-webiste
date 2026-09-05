@@ -3,6 +3,7 @@ import "../styles/global.css";
 import SiteHeader from "@/components/SiteHeader.astro";
 import SiteFooter from "@/components/SiteFooter.astro";
 import CookieBanner from "@/components/CookieBanner.astro";
+import { LOCALES } from "@/config/i18n";
 
 interface Props {
 	title: string;
@@ -37,6 +38,9 @@ const {
 	showHeader = true,
 	showFooter = true,
 } = Astro.props;
+
+const pathname = Astro.url.pathname;
+const alternateHref = (l: string) => `${pathname}?lang=${l}`;
 ---
 
 <!doctype html>
@@ -62,11 +66,16 @@ const {
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 		/>
+		{LOCALES.map((l) => (
+			<link rel="alternate" hreflang={l} href={alternateHref(l)} />
+		))}
+		<link rel="alternate" hreflang="x-default" href={pathname} />
 	</head>
 	<body class={bodyClass}>
 		{showHeader && <SiteHeader />}
 		<slot />
 		{showFooter && <SiteFooter />}
 		<CookieBanner />
+		<script>import "@/lib/i18n-client.ts";</script>
 	</body>
 </html>

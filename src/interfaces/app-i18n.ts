@@ -93,6 +93,20 @@ export interface AppWorkerDict {
 	today: string;
 	addReport: string;
 	reportOk: string;
+	myService: string;
+	myBus: string;
+	myRoute: string;
+	myShift: string;
+	noDriverAssigned: string;
+	activeDrivers: string;
+	driverBus: string;
+	driverRoute: string;
+	driverShift: string;
+	noAssignment: string;
+	incidents: string;
+	incidentsDesc: string;
+	viewAll: string;
+	noIncidents: string;
 }
 
 export interface AppMiscDict {
@@ -188,6 +202,14 @@ export interface GestionNotificationsDict {
 	subtitle: string;
 	markAll: string;
 	newNotif: string;
+	entityLabel: string;
+	fieldType: string;
+	fieldTitle: string;
+	fieldDesc: string;
+	fieldRoute: string;
+	created: string;
+	deleted: string;
+	markedRead: string;
 	types: { delay: string; accident: string; detour: string; info: string };
 	unread: string;
 	noResults: string;

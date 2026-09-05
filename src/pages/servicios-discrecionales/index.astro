@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
+export const prerender = true;
 import { getLocale, getDictionary } from "@/config/i18n";
 
 const locale = getLocale(Astro.url.searchParams.get("lang"));
@@ -46,9 +47,9 @@ const iconMap: Record<string, string> = {
 		</div>
 		<div class="relative z-10 w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
 			<div class="max-w-2xl text-on-primary">
-				<h1 class="font-display-lg text-display-lg md:text-[56px] md:leading-[64px] mb-stack-md font-bold drop-shadow-md">{dc.hero.title}</h1>
-				<p class="font-body-lg text-body-lg opacity-90 mb-stack-lg max-w-xl">{dc.hero.subtitle}</p>
-				<a class="inline-flex items-center justify-center bg-energetic-orange text-on-primary px-8 py-4 rounded font-button text-button shadow-lg hover:opacity-90 transition-opacity min-h-[48px]" href="#contacto">{dc.hero.cta}</a>
+				<h1 class="font-display-lg text-display-lg md:text-[56px] md:leading-[64px] mb-stack-md font-bold drop-shadow-md" data-i18n="discretionary.hero.title">{dc.hero.title}</h1>
+				<p class="font-body-lg text-body-lg opacity-90 mb-stack-lg max-w-xl" data-i18n="discretionary.hero.subtitle">{dc.hero.subtitle}</p>
+				<a class="inline-flex items-center justify-center bg-energetic-orange text-on-primary px-8 py-4 rounded font-button text-button shadow-lg hover:opacity-90 transition-opacity min-h-[48px]" href="#contacto" data-i18n="discretionary.hero.cta">{dc.hero.cta}</a>
 			</div>
 		</div>
 	</section>
@@ -57,8 +58,8 @@ const iconMap: Record<string, string> = {
 	<section class="py-16 md:py-24 bg-surface-container-lowest">
 		<div class="w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto flex flex-col md:flex-row gap-12 items-center">
 			<div class="md:w-1/2">
-				<h2 class="font-headline-lg text-headline-lg text-deep-navy mb-stack-md">{dc.professionals.title}</h2>
-				<p class="font-body-md text-body-md text-on-surface-variant mb-4">{dc.professionals.subtitle}</p>
+				<h2 class="font-headline-lg text-headline-lg text-deep-navy mb-stack-md" data-i18n="discretionary.professionals.title">{dc.professionals.title}</h2>
+				<p class="font-body-md text-body-md text-on-surface-variant mb-4" data-i18n="discretionary.professionals.subtitle">{dc.professionals.subtitle}</p>
 				<ul class="space-y-3 mt-6">
 					{dc.professionals.bullets.map((bullet) => (
 						<li class="flex items-start gap-3">
@@ -79,8 +80,8 @@ const iconMap: Record<string, string> = {
 	<section class="py-16 md:py-24 bg-surface-gray">
 		<div class="w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
 			<div class="text-center mb-16">
-				<h2 class="font-headline-lg text-headline-lg text-deep-navy mb-4">{dc.services.title}</h2>
-				<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto">{dc.services.subtitle}</p>
+				<h2 class="font-headline-lg text-headline-lg text-deep-navy mb-4" data-i18n="discretionary.services.title">{dc.services.title}</h2>
+				<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mx-auto" data-i18n="discretionary.services.subtitle">{dc.services.subtitle}</p>
 			</div>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
 				{serviceCards.map(([key, card]) => (
@@ -109,8 +110,8 @@ const iconMap: Record<string, string> = {
 		<div class="absolute top-0 right-0 w-64 h-64 bg-primary rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 		<div class="absolute bottom-0 left-0 w-96 h-96 bg-primary-container rounded-full blur-3xl opacity-30 translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
 		<div class="relative z-10 w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center">
-			<h2 class="font-display-lg text-display-lg md:text-[40px] md:leading-[48px] mb-4">{dc.cta.title}</h2>
-			<p class="font-body-lg text-body-lg text-primary-fixed-dim max-w-2xl mx-auto mb-10">{dc.cta.subtitle}</p>
+			<h2 class="font-display-lg text-display-lg md:text-[40px] md:leading-[48px] mb-4" data-i18n="discretionary.cta.title">{dc.cta.title}</h2>
+			<p class="font-body-lg text-body-lg text-primary-fixed-dim max-w-2xl mx-auto mb-10" data-i18n="discretionary.cta.subtitle">{dc.cta.subtitle}</p>
 			<div class="flex flex-col md:flex-row justify-center items-center gap-6 mb-12">
 				<div class="bg-on-primary/10 backdrop-blur-md border border-on-primary/20 rounded-xl p-6 flex flex-col items-center min-w-[280px]">
 					<span class="material-symbols-outlined text-coastal-teal text-[32px] mb-2">location_city</span>

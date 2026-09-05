@@ -1,0 +1,259 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import KpiCard from "@/components/app/KpiCard.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+import "leaflet/dist/leaflet.css";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const g = dict.app.gestion;
+const d = g.dashboard;
+const a = dict.app;
+
+const uiJson = JSON.stringify({
+	locale,
+	noUpcoming: d.noUpcoming,
+	states: g.states,
+	mapTitle: g.nav.map,
+	notifAll: g.nav.notifications,
+	linesTitle: d.linesTitle,
+	linesDesc: d.linesDesc,
+	activityTitle: d.activityTitle,
+	quickTitle: d.quickTitle,
+	quickItems: [
+		{ href: "/dashboard/gestion/rutas", icon: "route", label: g.nav.routes },
+		{ href: "/dashboard/gestion/autobuses", icon: "directions_bus", label: g.nav.buses },
+		{ href: "/dashboard/gestion/paradas", icon: "location_on", label: g.nav.stops },
+		{ href: "/dashboard/gestion/horarios", icon: "schedule", label: g.nav.schedules },
+		{ href: "/dashboard/gestion/conductores", icon: "badge", label: g.nav.drivers },
+		{ href: "/dashboard/gestion/reportes", icon: "bar_chart", label: g.nav.reports },
+		{ href: "/dashboard/gestion/integraciones", icon: "hub", label: g.nav.integrations },
+		{ href: "/dashboard/gestion/notificaciones", icon: "notifications", label: g.nav.notifications },
+	],
+});
+---
+
+<AppLayout title={d.title} description={a.tagline} active="panel" role="management">
+	<div class="flex flex-col gap-stack-lg">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{d.title}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{d.subtitle}</p>
+		</div>
+
+		<!-- KPIs -->
+		<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+			<KpiCard kpiKey="buses" icon="directions_bus" label={d.kpiBuses} value="" tone="navy" />
+			<KpiCard kpiKey="routes" icon="route" label={d.kpiRoutes} value="" tone="teal" />
+			<KpiCard kpiKey="stops" icon="location_on" label={d.kpiStops} value="" tone="default" />
+			<KpiCard kpiKey="alerts" icon="notifications" label={d.kpiAlerts} value="" tone="orange" />
+		</div>
+
+		<div class="grid grid-cols-1 xl:grid-cols-3 gap-gutter items-start">
+			<!-- Left column -->
+			<div class="xl:col-span-2 flex flex-col gap-stack-md">
+				<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient overflow-hidden">
+					<div class="flex items-center justify-between px-4 py-3 border-b border-surface-variant">
+						<h2 class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2">
+							<span class="material-symbols-outlined text-coastal-teal icon-filled">map</span>
+							{g.nav.map}
+						</h2>
+						<a href="/dashboard/gestion/mapa" class="inline-flex items-center gap-1 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-3 py-2 hover:bg-surface-container-low transition-colors">
+							<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+							{d.openMap}
+						</a>
+					</div>
+					<div id="mini-map" class="h-80 w-full"></div>
+				</section>
+
+				<section>
+					<h2 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">{d.linesTitle}</h2>
+					<p class="font-body-md text-body-md text-on-surface-variant mb-stack-sm">{d.linesDesc}</p>
+					<div id="line-status" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+				</section>
+
+				<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient">
+					<div class="px-4 py-3 border-b border-surface-variant">
+						<h2 class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2">
+							<span class="material-symbols-outlined text-energetic-orange icon-filled">schedule</span>
+							{d.upcomingTitle}
+						</h2>
+					</div>
+					<div id="upcoming" class="flex flex-col divide-y divide-surface-variant"></div>
+				</section>
+			</div>
+
+			<!-- Right column -->
+			<div class="flex flex-col gap-stack-md">
+				<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient">
+					<div class="flex items-center justify-between px-4 py-3 border-b border-surface-variant">
+						<h2 class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2">
+							<span class="material-symbols-outlined text-error icon-filled">notifications</span>
+							{d.notifTitle}
+						</h2>
+						<a href="/dashboard/gestion/notificaciones" class="font-label-md text-label-md text-coastal-teal hover:text-deep-navy transition-colors">{g.nav.notifications}</a>
+					</div>
+					<div id="dashboard-notifs" class="flex flex-col divide-y divide-surface-variant"></div>
+				</section>
+
+				<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient">
+					<div class="px-4 py-3 border-b border-surface-variant">
+						<h2 class="font-headline-md text-headline-md font-bold text-deep-navy">{d.activityTitle}</h2>
+					</div>
+					<div id="activity-list" class="flex flex-col divide-y divide-surface-variant"></div>
+				</section>
+
+				<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-4">
+					<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-3">{d.quickTitle}</h2>
+					<div id="quick-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+				</section>
+			</div>
+		</div>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { getFleet, seedFleetIfEmpty } from "@/lib/fleet-store";
+	import { escapeHtml, timeAgo } from "@/lib/fleet-ui";
+	import { initFleetMap } from "@/lib/fleet-map";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+	seedFleetIfEmpty();
+	const data = getFleet();
+
+	// KPIs
+	const kpiValues: Record<string, string> = {
+		buses: String(data.buses.filter((b) => b.status === "active").length),
+		routes: String(data.routes.filter((r) => r.status !== "inactive").length),
+		stops: String(data.stops.length),
+		drivers: String(data.drivers.filter((d) => d.status === "active").length),
+		alerts: String(data.notifications.filter((n) => !n.read).length),
+	};
+	document.querySelectorAll<HTMLElement>("[data-kpi]").forEach((el) => {
+		const key = el.dataset.kpi ?? "";
+		if (kpiValues[key]) el.textContent = kpiValues[key];
+	});
+
+	// Line status cards
+	const lineStatus = document.getElementById("line-status");
+	if (lineStatus) {
+		lineStatus.innerHTML = data.routes
+			.map((route) => {
+				const label = ui.states[route.status] ?? route.status;
+				const dot =
+					route.status === "active"
+						? "bg-coastal-teal"
+						: route.status === "delayed"
+							? "bg-energetic-orange"
+							: "bg-surface-container-high";
+				const busCount = data.buses.filter((b) => b.routeId === route.id && b.status === "active").length;
+				return `
+				<article class="bg-surface-container-lowest rounded-xl border border-surface-variant p-3.5 flex items-center gap-3">
+					<span class="w-3 h-3 rounded-full ${dot} flex-shrink-0"></span>
+					<div class="min-w-0 flex-1">
+						<p class="font-headline-md text-headline-md font-bold text-deep-navy leading-tight truncate">
+							<span style="color:${escapeHtml(route.color)}">${escapeHtml(route.code)}</span> · ${escapeHtml(route.name)}
+						</p>
+						<p class="font-body-md text-body-md text-on-surface-variant truncate">${escapeHtml(route.origin)} → ${escapeHtml(route.destination)}</p>
+					</div>
+					<div class="text-right flex-shrink-0">
+						<span class="font-label-md text-label-md text-on-surface-variant">${busCount} 🚌</span>
+						<p class="font-label-md text-label-md ${route.status === "active" ? "text-coastal-teal" : route.status === "delayed" ? "text-energetic-orange" : "text-outline"}">${escapeHtml(label)}</p>
+					</div>
+				</article>`;
+			})
+			.join("");
+	}
+
+	// Upcoming departures (active schedules, ordered by departure time)
+	const upcoming = document.getElementById("upcoming");
+	if (upcoming) {
+		const actives = data.schedules
+			.filter((s) => s.status === "active")
+			.sort((x, y) => x.departure.localeCompare(y.departure))
+			.slice(0, 6);
+		upcoming.innerHTML =
+			actives.length === 0
+				? `<p class="px-4 py-6 text-center font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.noUpcoming)}</p>`
+				: actives
+						.map((s) => {
+							const route = data.routes.find((r) => r.id === s.routeId);
+							return `
+							<div class="flex items-center justify-between px-4 py-2.5">
+								<div class="flex items-center gap-2.5 min-w-0">
+									<span class="w-2 h-2 rounded-full flex-shrink-0" style="background:${escapeHtml(route?.color ?? "#013990")}"></span>
+									<div class="min-w-0">
+										<p class="font-body-md text-body-md font-semibold text-on-surface">${escapeHtml(route?.code ?? s.routeId)} · ${escapeHtml(route?.name ?? "")}</p>
+										<p class="font-body-md text-body-md text-on-surface-variant text-sm">${escapeHtml(route?.origin ?? "")} → ${escapeHtml(route?.destination ?? "")}</p>
+									</div>
+								</div>
+								<div class="text-right flex-shrink-0">
+									<p class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(s.departure)}</p>
+									<p class="font-label-md text-label-md text-outline">${escapeHtml(s.frequency)} · ${escapeHtml(s.days)}</p>
+								</div>
+							</div>`;
+						})
+						.join("");
+	}
+
+	// Notifications (latest 4)
+	const notifs = document.getElementById("dashboard-notifs");
+	if (notifs) {
+		notifs.innerHTML = data.notifications
+			.slice(0, 4)
+			.map((n) => {
+				const icon =
+					n.type === "delay"
+						? "schedule text-energetic-orange"
+						: n.type === "accident"
+							? "warning text-error"
+							: n.type === "detour"
+								? "alt_route text-deep-navy"
+								: "info text-coastal-teal";
+				return `
+				<div class="flex items-start gap-3 px-4 py-3 ${n.read ? "" : "bg-primary-fixed/20"}">
+					<span class="material-symbols-outlined ${icon} icon-filled mt-0.5">${icon.split(" ")[0]}</span>
+					<div class="min-w-0 flex-1">
+						<p class="font-body-md text-body-md font-semibold text-on-surface">${escapeHtml(n.title)}</p>
+						<p class="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-1">${escapeHtml(n.desc)}</p>
+					</div>
+					<span class="font-label-md text-label-md text-outline flex-shrink-0">${escapeHtml(timeAgo(n.createdAt, ui.locale))}</span>
+				</div>`;
+			})
+			.join("");
+	}
+
+	// Activity (latest 5)
+	const activity = document.getElementById("activity-list");
+	if (activity) {
+		activity.innerHTML = data.activity
+			.slice(0, 5)
+			.map(
+				(a) => `
+				<div class="flex items-center gap-3 px-4 py-2.5">
+					<span class="material-symbols-outlined text-on-surface-variant">history</span>
+					<p class="font-body-md text-body-md text-on-surface flex-1 min-w-0 truncate">${escapeHtml(a.action)}</p>
+					<span class="font-label-md text-label-md text-outline flex-shrink-0">${escapeHtml(timeAgo(a.at, ui.locale))}</span>
+				</div>`,
+			)
+			.join("");
+	}
+
+	// Quick management grid
+	const quick = document.getElementById("quick-grid");
+	if (quick) {
+		quick.innerHTML = (ui.quickItems as { href: string; icon: string; label: string }[])
+			.map(
+				(item) => `
+				<a href="${item.href}" class="flex flex-col items-center gap-1.5 rounded-xl border border-surface-variant bg-surface-container-low/60 px-2 py-3 text-center hover:border-deep-navy hover:bg-surface-container-lowest transition-colors">
+					<span class="material-symbols-outlined text-deep-navy icon-filled">${item.icon}</span>
+					<span class="font-label-md text-label-md text-on-surface-variant leading-tight">${escapeHtml(item.label)}</span>
+				</a>`,
+			)
+			.join("");
+	}
+
+	// Mini live map
+	const miniMap = document.getElementById("mini-map");
+	if (miniMap) initFleetMap(miniMap, { animate: true, routesOnly: true });
+</script>

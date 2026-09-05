@@ -22,7 +22,11 @@
 			"fleet": "Flota",
 			"sitemap": "Mapa del sitio",
 			"copyright": "© 2024 Empresa Plana. Todos los derechos reservados. Movilidad eficiente para el Mediterráneo."
-		}
+		},
+		"confirmationTitle": "Solicitud confirmada",
+		"confirmationHeading": "¡Solicitud enviada!",
+		"confirmationDesc": "Gracias por tu solicitud. Nos pondremos en contacto contigo a la brevedad.",
+		"backHome": "Volver al inicio"
 	},
 	"home": {
 		"title": "Empresa Plana - Pantallas",
@@ -196,7 +200,21 @@
 			"noReports": "Sin reportes hoy en esta línea.",
 			"today": "Hoy",
 			"addReport": "Registrar reporte",
-			"reportOk": "Reporte registrado. ¡Gracias!"
+			"reportOk": "Reporte registrado. ¡Gracias!",
+			"myService": "Mi servicio",
+			"myBus": "Mi autobús",
+			"myRoute": "Mi ruta",
+			"myShift": "Mi turno",
+			"noDriverAssigned": "No tienes un conductor asignado",
+			"activeDrivers": "Conductores activos",
+			"driverBus": "Autobús",
+			"driverRoute": "Ruta",
+			"driverShift": "Turno",
+			"noAssignment": "Sin asignar",
+			"incidents": "Incidencias",
+			"incidentsDesc": "Incidencias y alertas de la operación",
+			"viewAll": "Ver todas",
+			"noIncidents": "No hay incidencias"
 		},
 		"misc": {
 			"demoNote": "Modo demo: los datos se guardan solo en este dispositivo.",
@@ -340,7 +358,15 @@
 					"info": "Aviso"
 				},
 				"unread": "Sin leer",
-				"noResults": "No hay notificaciones con este filtro."
+				"noResults": "No hay notificaciones con este filtro.",
+				"entityLabel": "Notificación",
+				"fieldType": "Tipo",
+				"fieldTitle": "Título",
+				"fieldDesc": "Descripción",
+				"fieldRoute": "Ruta",
+				"created": "Notificación creada",
+				"deleted": "Notificación eliminada",
+				"markedRead": "Notificaciones marcadas como leídas"
 			},
 			"reports": {
 				"title": "Reportes",
@@ -372,7 +398,11 @@
 					"port": "Puerto API",
 					"gtfsFile": "Archivo GTFS",
 					"region": "Región",
-					"regionOptions": ["Cataluña", "España", "Europa"],
+					"regionOptions": [
+						"Cataluña",
+						"España",
+						"Europa"
+					],
 					"test": "Probar conexión",
 					"importGtfs": "Importar GTFS",
 					"docs": "Documentación"

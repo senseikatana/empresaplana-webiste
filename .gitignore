@@ -9,6 +9,7 @@ dist/
 .codex/
 .claude/
 .vscode/*.json
+generated/
 
 # dependencies
 node_modules/

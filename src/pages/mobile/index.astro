@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
+export const prerender = true;
 import { getLocale, getDictionary } from "@/config/i18n";
 
 const locale = getLocale(Astro.url.searchParams.get("lang"));

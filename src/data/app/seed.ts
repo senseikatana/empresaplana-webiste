@@ -25,6 +25,7 @@ export const DEMO_USERS: AppUser[] = [
 		email: "laura.ferrer@empresaplana.cat",
 		phone: "+34 600 333 444",
 		role: "worker",
+		driverId: 2,
 	},
 	{
 		id: 3,
