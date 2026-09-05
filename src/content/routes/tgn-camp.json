@@ -1,0 +1,27 @@
+{
+  "code": "TGN-CAMP",
+  "name": "Tarragona – Estació del Camp",
+  "origin": "Tarragona",
+  "destination": "Estació del Camp AVE",
+  "color": "#0E7490",
+  "status": "active",
+  "path": [
+    {
+      "lat": 41.1189,
+      "lng": 1.2445
+    },
+    {
+      "lat": 41.153,
+      "lng": 1.214
+    },
+    {
+      "lat": 41.191,
+      "lng": 1.252
+    }
+  ],
+  "pdfUrl": {
+    "es": "https://empresaplana.cat/uploads/boxes-lineas-configuration/tarragona-estacio-del-camp-9.pdf",
+    "ca": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/Tarragona%20Estaci%C3%B3%20del%20Camp.pdf",
+    "en": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/tarragona-estacio-del-camp-10.pdf"
+  }
+}

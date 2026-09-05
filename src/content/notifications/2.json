@@ -1,0 +1,9 @@
+{
+  "id": "2",
+  "type": "accident",
+  "title": "Incidente en la AP-7",
+  "desc": "Tráfico lento en la AP-7 entre El Vendrell y Sitges. Salidas con hasta 15 min de demora.",
+  "createdAt": "2026-09-05T14:36:49.108Z",
+  "read": false,
+  "routeId": "tgn-bcn"
+}

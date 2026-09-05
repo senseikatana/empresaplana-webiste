@@ -1,0 +1,13 @@
+{
+  "name": "Tarragona · Rambla Nova",
+  "address": "Rambla Nova, 45",
+  "lat": 41.1189,
+  "lng": 1.2445,
+  "routes": [
+    "bcn-aer",
+    "tgn-bcn",
+    "costa",
+    "tgn-camp",
+    "tgn-vss"
+  ]
+}

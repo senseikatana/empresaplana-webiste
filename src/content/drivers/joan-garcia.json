@@ -1,0 +1,10 @@
+{
+  "name": "Joan García",
+  "phone": "+34 612 345 678",
+  "license": "D12345678",
+  "busNumber": "bus-001",
+  "routeId": "bcn-aer",
+  "shiftDays": "Lun–Dom",
+  "shiftHours": "06:00–14:00",
+  "status": "active"
+}

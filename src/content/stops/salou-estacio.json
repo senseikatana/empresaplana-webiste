@@ -1,0 +1,12 @@
+{
+  "name": "Salou · Estació",
+  "address": "C/ de Barcelona",
+  "lat": 41.0733,
+  "lng": 1.131,
+  "routes": [
+    "bcn-aer",
+    "costa",
+    "e5",
+    "tgn-vss"
+  ]
+}

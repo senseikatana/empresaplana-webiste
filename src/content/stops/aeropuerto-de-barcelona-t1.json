@@ -1,0 +1,9 @@
+{
+  "name": "Aeropuerto de Barcelona · T1",
+  "address": "El Prat de Llobregat",
+  "lat": 41.2888,
+  "lng": 2.073,
+  "routes": [
+    "bcn-aer"
+  ]
+}

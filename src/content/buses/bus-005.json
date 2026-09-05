@@ -1,0 +1,8 @@
+{
+  "number": "BUS-005",
+  "plate": "7890 MNO",
+  "company": "Empresa Plana",
+  "capacity": 35,
+  "routeId": "l68",
+  "status": "maintenance"
+}

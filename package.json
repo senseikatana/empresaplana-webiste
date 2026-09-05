@@ -21,12 +21,17 @@
 		"db:migrate": "bunx --bun prisma migrate dev",
 		"db:seed": "bunx --bun prisma db seed",
 		"db:studio": "bunx --bun prisma studio",
-		"db:setup": "bun run db:generate && bun run db:push && bun run db:seed"
+		"db:setup": "bun run db:generate && bun run db:push && bun run db:seed",
+		"seed:keystatic": "bun run scripts/seed-keystatic.ts"
 	},
 	"prisma": {
 		"seed": "bun run prisma/seed.ts"
 	},
 	"dependencies": {
+		"@astrojs/markdoc": "^2.0.9",
+		"@astrojs/react": "^6.0.5",
+		"@keystatic/astro": "^6.0.0",
+		"@keystatic/core": "^0.6.9",
 		"@prisma/adapter-pg": "^7.10.0",
 		"@prisma/client": "^7.10.0",
 		"@tailwindcss/vite": "^4.3.3",
@@ -36,6 +41,8 @@
 		"jose": "^6.2.10",
 		"leaflet": "^1.9.4",
 		"pg": "^8.23.0",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8",
 		"tailwindcss": "^4.3.3",
 		"zod": "^4.5.4"
 	},
@@ -46,6 +53,8 @@
 		"@js-temporal/polyfill": "^0.5.1",
 		"@types/node": "^26.4.1",
 		"@types/pg": "^8.23.1",
+		"@types/react": "^19.2.18",
+		"@types/react-dom": "^19.2.7",
 		"docx": "^9.7.1",
 		"prisma": "^7.10.0",
 		"typescript": "^6.0.3"

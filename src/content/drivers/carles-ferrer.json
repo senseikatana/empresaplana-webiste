@@ -1,0 +1,10 @@
+{
+  "name": "Carles Ferrer",
+  "phone": "+34 678 901 234",
+  "license": "D78901234",
+  "busNumber": "bus-007",
+  "routeId": "ame-tor",
+  "shiftDays": "Lun–Vie",
+  "shiftHours": "06:00–14:00",
+  "status": "active"
+}

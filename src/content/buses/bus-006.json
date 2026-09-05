@@ -1,0 +1,8 @@
+{
+  "number": "BUS-006",
+  "plate": "1122 PQR",
+  "company": "Empresa Plana",
+  "capacity": 50,
+  "routeId": "l68",
+  "status": "active"
+}

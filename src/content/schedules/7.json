@@ -1,0 +1,9 @@
+{
+  "id": "7",
+  "routeId": "tgn-camp",
+  "departure": "05:50",
+  "arrival": "06:05",
+  "frequency": "60 min",
+  "days": "Lun–Dom",
+  "status": "active"
+}

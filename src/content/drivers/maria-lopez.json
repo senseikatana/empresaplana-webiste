@@ -1,0 +1,10 @@
+{
+  "name": "Maria López",
+  "phone": "+34 623 456 789",
+  "license": "D23456789",
+  "busNumber": "bus-002",
+  "routeId": "tgn-bcn",
+  "shiftDays": "Lun–Vie",
+  "shiftHours": "07:00–15:00",
+  "status": "active"
+}

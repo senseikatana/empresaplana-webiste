@@ -1,0 +1,9 @@
+{
+  "name": "Tortosa · Estació",
+  "address": "Pl. de l'Estació",
+  "lat": 40.8125,
+  "lng": 0.5215,
+  "routes": [
+    "ame-tor"
+  ]
+}

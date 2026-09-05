@@ -1,0 +1,10 @@
+{
+  "name": "La Pineda",
+  "address": "Av. de la Diputació",
+  "lat": 41.0753,
+  "lng": 1.1807,
+  "routes": [
+    "bcn-aer",
+    "costa"
+  ]
+}

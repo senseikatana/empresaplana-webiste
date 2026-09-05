@@ -1,0 +1,9 @@
+{
+  "name": "Estació del Camp · AVE",
+  "address": "La Secuita",
+  "lat": 41.191,
+  "lng": 1.252,
+  "routes": [
+    "tgn-camp"
+  ]
+}

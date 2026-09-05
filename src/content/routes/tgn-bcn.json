@@ -1,0 +1,35 @@
+{
+  "code": "TGN-BCN",
+  "name": "Tarragona – Barcelona",
+  "origin": "Tarragona",
+  "destination": "Barcelona",
+  "color": "#00696F",
+  "status": "active",
+  "path": [
+    {
+      "lat": 41.1189,
+      "lng": 1.2445
+    },
+    {
+      "lat": 41.219,
+      "lng": 1.533
+    },
+    {
+      "lat": 41.234,
+      "lng": 1.811
+    },
+    {
+      "lat": 41.297,
+      "lng": 2.098
+    },
+    {
+      "lat": 41.3915,
+      "lng": 2.181
+    }
+  ],
+  "pdfUrl": {
+    "es": "https://empresaplana.cat/uploads/boxes-lineas-configuration/barcelona-aeroport-tarragona-2906-al-0111-13.pdf",
+    "ca": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/barcelona-aeroport-tarragona-2906-al-0111-12.pdf",
+    "en": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/barcelona-aeroport-tarragona-2906-al-0111-14.pdf"
+  }
+}

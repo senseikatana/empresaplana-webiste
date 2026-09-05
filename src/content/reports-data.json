@@ -1,0 +1,53 @@
+{
+  "passengers": {
+    "barcelonaAirport": 2450,
+    "tarragonaBarcelona": 3200,
+    "costaDorada": 1800,
+    "penedes": 950,
+    "estacioCamp": 420,
+    "ametllaTortosa": 620,
+    "reusSalou": 2100,
+    "tarragonaVilasecaSalou": 1500
+  },
+  "occupancy": {
+    "barcelonaAirport": 88,
+    "tarragonaBarcelona": 92,
+    "costaDorada": 76,
+    "penedes": 64,
+    "estacioCamp": 55,
+    "ametllaTortosa": 48,
+    "reusSalou": 85,
+    "tarragonaVilasecaSalou": 71
+  },
+  "weeklyPunctuality": [
+    94,
+    96,
+    92,
+    95,
+    93,
+    90,
+    88
+  ],
+  "satisfaction": [
+    {
+      "name": "punctuality",
+      "value": 94
+    },
+    {
+      "name": "cleanliness",
+      "value": 87
+    },
+    {
+      "name": "comfort",
+      "value": 82
+    },
+    {
+      "name": "information",
+      "value": 91
+    },
+    {
+      "name": "attention",
+      "value": 89
+    }
+  ]
+}

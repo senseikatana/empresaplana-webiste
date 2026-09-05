@@ -1,0 +1,10 @@
+{
+  "name": "Anna Puig",
+  "phone": "+34 645 678 901",
+  "license": "D45678901",
+  "busNumber": "bus-004",
+  "routeId": "l68",
+  "shiftDays": "Lun–Vie",
+  "shiftHours": "05:30–13:30",
+  "status": "active"
+}

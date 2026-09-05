@@ -1,0 +1,10 @@
+{
+  "name": "Cambrils · Av. Diputació",
+  "address": "Pl. del Mercat",
+  "lat": 41.07,
+  "lng": 1.058,
+  "routes": [
+    "bcn-aer",
+    "costa"
+  ]
+}

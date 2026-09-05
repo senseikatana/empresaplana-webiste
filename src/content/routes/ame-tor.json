@@ -1,0 +1,39 @@
+{
+  "code": "AME-TOR",
+  "name": "L'Ametlla de Mar – Tortosa",
+  "origin": "L'Ametlla de Mar",
+  "destination": "Tortosa",
+  "color": "#7C3AED",
+  "status": "active",
+  "path": [
+    {
+      "lat": 40.884,
+      "lng": 0.803
+    },
+    {
+      "lat": 40.875,
+      "lng": 0.713
+    },
+    {
+      "lat": 40.813,
+      "lng": 0.708
+    },
+    {
+      "lat": 40.772,
+      "lng": 0.672
+    },
+    {
+      "lat": 40.741,
+      "lng": 0.615
+    },
+    {
+      "lat": 40.8125,
+      "lng": 0.5215
+    }
+  ],
+  "pdfUrl": {
+    "es": "https://empresaplana.cat/uploads/boxes-lineas-configuration/horari-lametlla-de-mar-el-perello-lampolla-camarles-laldea-tortosa-escolar-no-escolar-2024-2.pdf",
+    "ca": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/Horari%20L'Ametlla%20de%20Mar-El%20Perell%C3%B3-L'Ampolla-Camarles-L'Aldea-Tortosa%20ESCOLAR%20-%20NO%20ESCOLAR%202024.pdf",
+    "en": "https://www.empresaplana.cat/uploads/boxes-lineas-configuration/horari-lametlla-de-mar-el-perello-lampolla-camarles-laldea-tortosa-escolar-no-escolar-2024-3.pdf"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Núria Soler",
+  "phone": "+34 667 890 123",
+  "license": "D67890123",
+  "busNumber": "bus-006",
+  "routeId": "tgn-camp",
+  "shiftDays": "Lun–Dom",
+  "shiftHours": "05:00–13:00",
+  "status": "active"
+}

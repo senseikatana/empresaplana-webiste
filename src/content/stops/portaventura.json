@@ -1,0 +1,9 @@
+{
+  "name": "PortAventura",
+  "address": "Av. Alcalde Pere Molas",
+  "lat": 41.0876,
+  "lng": 1.1549,
+  "routes": [
+    "e5"
+  ]
+}

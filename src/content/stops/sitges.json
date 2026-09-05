@@ -1,0 +1,10 @@
+{
+  "name": "Sitges",
+  "address": "Estació d'autobusos",
+  "lat": 41.234,
+  "lng": 1.811,
+  "routes": [
+    "bcn-aer",
+    "tgn-bcn"
+  ]
+}

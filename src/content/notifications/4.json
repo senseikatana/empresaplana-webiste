@@ -1,0 +1,9 @@
+{
+  "id": "4",
+  "type": "info",
+  "title": "Nuevo horario de la e5",
+  "desc": "A partir del lunes la frecuencia de la e5 Reus–Salou pasa a ser de 30 minutos en hora punta.",
+  "createdAt": "2026-09-04T13:16:49.108Z",
+  "read": true,
+  "routeId": "e5"
+}

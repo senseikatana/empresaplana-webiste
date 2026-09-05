@@ -1,0 +1,8 @@
+{
+  "number": "BUS-008",
+  "plate": "5566 VWX",
+  "company": "Empresa Plana",
+  "capacity": 55,
+  "routeId": "ame-tor",
+  "status": "active"
+}

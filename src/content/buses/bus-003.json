@@ -1,0 +1,8 @@
+{
+  "number": "BUS-003",
+  "plate": "9012 GHI",
+  "company": "Empresa Plana",
+  "capacity": 50,
+  "routeId": "tgn-bcn",
+  "status": "active"
+}

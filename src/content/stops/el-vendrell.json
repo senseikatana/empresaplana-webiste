@@ -1,0 +1,10 @@
+{
+  "name": "El Vendrell",
+  "address": "Ctra. N-340",
+  "lat": 41.219,
+  "lng": 1.533,
+  "routes": [
+    "bcn-aer",
+    "tgn-bcn"
+  ]
+}
