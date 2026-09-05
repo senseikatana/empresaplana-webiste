@@ -160,13 +160,13 @@ const uiJson = JSON.stringify(ui);
 		button.addEventListener("click", () => {
 			const nextRole = (button.dataset.roleSwitch ?? "client") as "client" | "worker" | "admin";
 			setSessionRole(nextRole);
-			window.location.href = nextRole === "client" ? "/app/cliente/" : "/app/trabajador/";
+			window.location.href = nextRole === "client" ? "/dashboard/cliente/" : "/dashboard/trabajador/";
 		});
 	});
 
 	// Logout.
 	document.getElementById("logout-btn")?.addEventListener("click", () => {
 		logout();
-		window.location.href = "/app/";
+		window.location.href = "/dashboard/";
 	});
 </script>

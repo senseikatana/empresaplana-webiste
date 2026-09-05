@@ -10,16 +10,18 @@ const f = dict.homeVariant2.footer;
 const year = new Date().getFullYear();
 const copyright = c.footer.copyright.replace("2024", String(year));
 
+const langParam = `?lang=${locale}`;
+
 const serviceLinks = [
-	{ href: "/rutas-horarios", label: dict.homeVariant2.nav.routesSchedules },
-	{ href: "/servicios-discrecionales", label: dict.homeVariant2.nav.privateServices },
-	{ href: "/donde-estamos", label: dict.homeVariant2.nav.aboutUs },
+	{ href: `/rutas-horarios${langParam}`, label: dict.homeVariant2.nav.routesSchedules, key: "homeVariant2.nav.routesSchedules" },
+	{ href: `/servicios-discrecionales${langParam}`, label: dict.homeVariant2.nav.privateServices, key: "homeVariant2.nav.privateServices" },
+	{ href: `/donde-estamos${langParam}`, label: dict.homeVariant2.nav.aboutUs, key: "homeVariant2.nav.aboutUs" },
 ];
 
 const legalLinks = [
-	{ href: "/politica-privacidad", label: c.footer.privacy },
-	{ href: "/politica-cookies", label: c.footer.cookies },
-	{ href: "/aviso-legal", label: dict.legal.legalNotice.title },
+	{ href: `/politica-privacidad${langParam}`, label: c.footer.privacy, key: "common.footer.privacy" },
+	{ href: `/politica-cookies${langParam}`, label: c.footer.cookies, key: "common.footer.cookies" },
+	{ href: `/aviso-legal${langParam}`, label: dict.legal.legalNotice.title, key: "legal.legalNotice.title" },
 ];
 
 const socialLinks = [
@@ -49,11 +51,11 @@ const socialLinks = [
 <footer id="contacto" class="bg-deep-navy text-on-primary w-full">
 	<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg grid grid-cols-1 md:grid-cols-12 gap-gutter border-b border-on-primary/20">
 		<div class="md:col-span-4 flex flex-col gap-4">
-			<a class="font-headline-md text-headline-md font-bold flex items-center gap-2" href="/">
+			<a class="font-headline-md text-headline-md font-bold flex items-center gap-2" href={`/${langParam}`} data-i18n="common.brand">
 				<span class="material-symbols-outlined icon-filled" aria-hidden="true">directions_bus</span>
 				{c.brand}
 			</a>
-			<p class="font-body-md text-body-md text-on-primary/80 max-w-sm">{dict.about.aboutFooter}</p>
+			<p class="font-body-md text-body-md text-on-primary/80 max-w-sm" data-i18n="about.aboutFooter">{dict.about.aboutFooter}</p>
 			<div class="flex gap-3">
 				{socialLinks.map((social) => (
 					<a
@@ -72,19 +74,19 @@ const socialLinks = [
 		</div>
 
 		<nav class="md:col-span-3 flex flex-col gap-4" aria-label={f.services}>
-			<span class="font-label-md text-label-md uppercase tracking-widest text-on-primary/60">{f.services}</span>
+			<span class="font-label-md text-label-md uppercase tracking-widest text-on-primary/60" data-i18n="homeVariant2.footer.services">{f.services}</span>
 			{serviceLinks.map((link) => (
-				<a class="font-body-md text-body-md text-on-primary/80 hover:text-secondary-fixed transition-colors" href={link.href}>
+				<a class="font-body-md text-body-md text-on-primary/80 hover:text-secondary-fixed transition-colors" href={link.href} data-i18n={link.key}>
 					{link.label}
 				</a>
 			))}
-			<a class="font-body-md text-body-md text-on-primary/80 hover:text-secondary-fixed transition-colors" href="/solicitar-presupuesto">
+			<a class="font-body-md text-body-md text-on-primary/80 hover:text-secondary-fixed transition-colors" href={`/solicitar-presupuesto${langParam}`} data-i18n="discretionary.hero.cta">
 				{dict.discretionary.hero.cta}
 			</a>
 		</nav>
 
 		<div class="md:col-span-3 flex flex-col gap-4">
-			<span class="font-label-md text-label-md uppercase tracking-widest text-on-primary/60">{f.contact}</span>
+			<span class="font-label-md text-label-md uppercase tracking-widest text-on-primary/60" data-i18n="homeVariant2.footer.contact">{f.contact}</span>
 			<a class="flex items-center gap-2 font-body-md text-body-md text-on-primary/80 hover:text-secondary-fixed transition-colors" href={`tel:${contact.generalPhone.replace(/\s/g, "")}`}>
 				<span class="material-symbols-outlined text-[20px]" aria-hidden="true">call</span>
 				{contact.generalPhone}
@@ -97,13 +99,13 @@ const socialLinks = [
 				<span class="material-symbols-outlined text-[20px]" aria-hidden="true">chat</span>
 				WhatsApp
 			</a>
-			<p class="font-label-md text-label-md text-on-primary/60">{dict.about.phoneHours}</p>
+			<p class="font-label-md text-label-md text-on-primary/60" data-i18n="about.phoneHours">{dict.about.phoneHours}</p>
 		</div>
 
 		<nav class="md:col-span-2 flex flex-col gap-4" aria-label={f.legal}>
-			<span class="font-label-md text-label-md uppercase tracking-widest text-on-primary/60">{f.legal}</span>
+			<span class="font-label-md text-label-md uppercase tracking-widest text-on-primary/60" data-i18n="homeVariant2.footer.legal">{f.legal}</span>
 			{legalLinks.map((link) => (
-				<a class="font-body-md text-body-md text-on-primary/80 hover:text-secondary-fixed transition-colors" href={link.href}>
+				<a class="font-body-md text-body-md text-on-primary/80 hover:text-secondary-fixed transition-colors" href={link.href} data-i18n={link.key}>
 					{link.label}
 				</a>
 			))}
@@ -111,11 +113,11 @@ const socialLinks = [
 	</div>
 
 	<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 flex flex-col md:flex-row justify-between items-center gap-4 font-label-md text-label-md text-on-primary/60">
-		<p>{copyright}</p>
+		<p data-i18n="common.footer.copyright">{copyright}</p>
 		<div class="flex gap-6">
-			<a class="hover:text-on-primary transition-colors" href="/politica-privacidad">{c.footer.privacy}</a>
-			<a class="hover:text-on-primary transition-colors" href="/politica-cookies">{c.footer.cookies}</a>
-			<a class="hover:text-on-primary transition-colors" href="/aviso-legal">{dict.legal.legalNotice.title}</a>
+			<a class="hover:text-on-primary transition-colors" href={`/politica-privacidad${langParam}`} data-i18n="common.footer.privacy">{c.footer.privacy}</a>
+			<a class="hover:text-on-primary transition-colors" href={`/politica-cookies${langParam}`} data-i18n="common.footer.cookies">{c.footer.cookies}</a>
+			<a class="hover:text-on-primary transition-colors" href={`/aviso-legal${langParam}`} data-i18n="legal.legalNotice.title">{dict.legal.legalNotice.title}</a>
 		</div>
 	</div>
 </footer>

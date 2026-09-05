@@ -22,7 +22,11 @@
 			"fleet": "Flota",
 			"sitemap": "Mapa del lloc",
 			"copyright": "© 2024 Empresa Plana. Tots els drets reservats. Mobilitat eficient per al Mediterrani."
-		}
+		},
+		"confirmationTitle": "Sol·licitud confirmada",
+		"confirmationHeading": "Sol·licitud enviada!",
+		"confirmationDesc": "Gràcies per la teva sol·licitud. Ens posarem en contacte amb tu aviat.",
+		"backHome": "Tornar a l'inici"
 	},
 	"home": {
 		"title": "Empresa Plana - Pantalles",
@@ -196,7 +200,21 @@
 			"noReports": "Sense reportes avui en aquesta línia.",
 			"today": "Avui",
 			"addReport": "Registra reporte",
-			"reportOk": "Reporte registrat. Gràcies!"
+			"reportOk": "Reporte registrat. Gràcies!",
+			"myService": "El meu servei",
+			"myBus": "El meu autobús",
+			"myRoute": "La meva ruta",
+			"myShift": "El meu torn",
+			"noDriverAssigned": "No tens un conductor assignat",
+			"activeDrivers": "Conductors actius",
+			"driverBus": "Autobús",
+			"driverRoute": "Ruta",
+			"driverShift": "Torn",
+			"noAssignment": "Sense assignar",
+			"incidents": "Incidències",
+			"incidentsDesc": "Incidències i alertes de l'operació",
+			"viewAll": "Veure totes",
+			"noIncidents": "No hi ha incidències"
 		},
 		"misc": {
 			"demoNote": "Mode demo: les dades es desen només en aquest dispositiu.",
@@ -340,7 +358,15 @@
 					"info": "Avís"
 				},
 				"unread": "Sense llegir",
-				"noResults": "No hi ha notificacions amb aquest filtre."
+				"noResults": "No hi ha notificacions amb aquest filtre.",
+				"entityLabel": "Notificació",
+				"fieldType": "Tipus",
+				"fieldTitle": "Títol",
+				"fieldDesc": "Descripció",
+				"fieldRoute": "Ruta",
+				"created": "Notificació creada",
+				"deleted": "Notificació eliminada",
+				"markedRead": "Notificacions marcades com a llegides"
 			},
 			"reports": {
 				"title": "Reportes",

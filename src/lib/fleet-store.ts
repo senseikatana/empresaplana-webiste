@@ -1,5 +1,5 @@
 /**
- * Fleet-management store for /app/gestion. Demo layer over localStorage
+ * Fleet-management store for /dashboard/gestion. Demo layer over localStorage
  * (`plana-app:fleet`), seeded from src/data/app/fleet-seed.ts.
  * Every mutation appends a FleetActivity entry.
  */

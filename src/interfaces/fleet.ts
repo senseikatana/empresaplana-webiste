@@ -1,4 +1,4 @@
-/** Fleet-management entities for the /app/gestion area (admin/bosses). */
+/** Fleet-management entities for the /dashboard/gestion area (admin/bosses). */
 
 export type FleetStatus = "active" | "inactive" | "delayed" | "maintenance";
 
@@ -60,6 +60,9 @@ export interface FleetDriver {
 	phone: string;
 	license: string;
 	busNumber?: string;
+	routeId?: string;
+	shiftDays?: string;
+	shiftHours?: string;
 	status: "active" | "inactive";
 }
 

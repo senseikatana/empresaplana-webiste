@@ -1,10 +1,10 @@
 {
-	"id": "/app/",
+	"id": "/dashboard/",
 	"name": "Empresa Plana App",
 	"short_name": "Empresa Plana",
 	"description": "Rutas y horarios, presupuestos y gestión de flota de Empresa Plana — transporte público y discrecional en la Costa Daurada.",
-	"start_url": "/app/",
-	"scope": "/app/",
+	"start_url": "/dashboard/",
+	"scope": "/dashboard/",
 	"display": "standalone",
 	"orientation": "portrait",
 	"background_color": "#f8f9fa",
@@ -36,14 +36,14 @@
 			"name": "Área de cliente",
 			"short_name": "Cliente",
 			"description": "Rutas, horarios y presupuestos",
-			"url": "/app/cliente/",
+			"url": "/dashboard/cliente/",
 			"icons": [{ "src": "/app-icons/icon-192.png", "sizes": "192x192" }]
 		},
 		{
 			"name": "Área de trabajador",
 			"short_name": "Trabajador",
 			"description": "Flota, solicitudes y reportes",
-			"url": "/app/trabajador/",
+			"url": "/dashboard/trabajador/",
 			"icons": [{ "src": "/app-icons/icon-192.png", "sizes": "192x192" }]
 		}
 	]

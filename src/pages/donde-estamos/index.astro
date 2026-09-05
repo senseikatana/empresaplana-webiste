@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import contact from "@/data/contact.json";
+export const prerender = true;
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
 import { getLocale, getDictionary } from "@/config/i18n";
 
@@ -37,8 +38,8 @@ const bases = Object.entries(loc.delegations.bases).map(([key, base], i) => ({
 			/>
 		</div>
 		<div class="relative z-10 text-center px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-			<h1 class="font-display-lg text-display-lg text-on-primary mb-stack-md">{loc.hero.title}</h1>
-			<p class="font-body-lg text-body-lg text-on-primary/90 max-w-2xl mx-auto">{loc.hero.subtitle}</p>
+			<h1 class="font-display-lg text-display-lg text-on-primary mb-stack-md" data-i18n="locations.hero.title">{loc.hero.title}</h1>
+			<p class="font-body-lg text-body-lg text-on-primary/90 max-w-2xl mx-auto" data-i18n="locations.hero.subtitle">{loc.hero.subtitle}</p>
 		</div>
 	</section>
 
@@ -53,7 +54,7 @@ const bases = Object.entries(loc.delegations.bases).map(([key, base], i) => ({
 				/>
 				<div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
 					<span class="material-symbols-outlined text-energetic-orange text-sm">my_location</span>
-					<span class="font-label-md text-label-md text-deep-navy">{loc.mapBadge}</span>
+					<span class="font-label-md text-label-md text-deep-navy" data-i18n="locations.mapBadge">{loc.mapBadge}</span>
 				</div>
 			</div>
 			<div class="lg:col-span-4 flex flex-col">
@@ -63,8 +64,8 @@ const bases = Object.entries(loc.delegations.bases).map(([key, base], i) => ({
 						<div class="w-12 h-12 bg-primary-fixed text-primary-container rounded-xl flex items-center justify-center mb-6">
 							<span class="material-symbols-outlined" style="font-size: 28px;">business</span>
 						</div>
-						<h2 class="font-headline-md text-headline-md text-deep-navy mb-2">{loc.central.title}</h2>
-						<h3 class="font-label-md text-label-md text-coastal-teal mb-6 uppercase tracking-wider">{loc.central.tag}</h3>
+						<h2 class="font-headline-md text-headline-md text-deep-navy mb-2" data-i18n="locations.central.title">{loc.central.title}</h2>
+						<h3 class="font-label-md text-label-md text-coastal-teal mb-6 uppercase tracking-wider" data-i18n="locations.central.tag">{loc.central.tag}</h3>
 						<div class="space-y-4 font-body-md text-body-md text-on-surface-variant">
 							<div class="flex items-start gap-3">
 								<span class="material-symbols-outlined text-outline mt-1 text-xl">location_on</span>
@@ -87,7 +88,7 @@ const bases = Object.entries(loc.delegations.bases).map(([key, base], i) => ({
 	<!-- Delegations Grid -->
 	<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg mb-24">
 		<div class="flex items-center gap-4 mb-8">
-			<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-deep-navy">{loc.delegations.title}</h2>
+			<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-deep-navy" data-i18n="locations.delegations.title">{loc.delegations.title}</h2>
 			<div class="h-px bg-surface-variant flex-grow"></div>
 		</div>
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">

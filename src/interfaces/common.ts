@@ -26,4 +26,8 @@ export interface Common {
 	lang: CommonLang;
 	phone: string;
 	footer: CommonFooter;
+	confirmationTitle: string;
+	confirmationHeading: string;
+	confirmationDesc: string;
+	backHome: string;
 }

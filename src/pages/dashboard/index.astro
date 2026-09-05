@@ -151,7 +151,7 @@ const uiJson = JSON.stringify({ invalid: a.auth.invalid });
 	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
 
 	const homeFor = (role: string) =>
-		role === "client" ? "/app/cliente/" : role === "admin" ? "/app/gestion/" : "/app/trabajador/";
+		role === "client" ? "/dashboard/cliente/" : role === "admin" ? "/dashboard/gestion/" : "/dashboard/trabajador/";
 
 	function redirectToSession() {
 		const session = getSession();

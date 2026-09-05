@@ -1,6 +1,7 @@
 ---
 import LegalPolicy from "@/components/LegalPolicy.astro";
 import { getDictionary } from "@/config/i18n";
+export const prerender = true;
 
 const policy = getDictionary("es").legal.cookiePolicy;
 const sections = [

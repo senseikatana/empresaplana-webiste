@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import BusTrackingPanel from "@/components/BusTrackingPanel.astro";
+export const prerender = true;
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
 import { getLocale, getDictionary } from "@/config/i18n";
 

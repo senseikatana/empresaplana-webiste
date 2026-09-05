@@ -21,27 +21,30 @@ const langHref = (lang: Locale) => {
 };
 
 const links = [
-	{ href: "/rutas-horarios", label: navDict.routesSchedules },
-	{ href: "/servicios-discrecionales", label: navDict.privateServices },
-	{ href: "/donde-estamos", label: navDict.aboutUs },
-	{ href: "#contacto", label: navDict.contact },
+	{ href: "/rutas-horarios", label: navDict.routesSchedules, key: "homeVariant2.nav.routesSchedules" },
+	{ href: "/servicios-discrecionales", label: navDict.privateServices, key: "homeVariant2.nav.privateServices" },
+	{ href: "/donde-estamos", label: navDict.aboutUs, key: "homeVariant2.nav.aboutUs" },
+	{ href: "/solicitar-presupuesto", label: navDict.contact, key: "homeVariant2.nav.contact" },
 ];
 ---
 
 <div class="w-full bg-surface-container-lowest border-b border-surface-variant hidden md:block">
 	<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2 flex justify-end items-center gap-gutter text-sm font-label-md text-on-surface-variant">
-		<div class="flex gap-2 items-center">
-			{LOCALES.map((lang) => (
-				<a
-					class={`hover:text-deep-navy transition-colors cursor-pointer ${lang === locale ? "font-bold text-deep-navy" : ""}`}
-					href={langHref(lang)}
-					hreflang={lang}
-					aria-label={c.lang[lang]}
-				>
-					{c.lang[lang]}
-				</a>
-			))}
-		</div>
+			<div class="flex gap-2 items-center">
+				{LOCALES.map((lang) => (
+					<a
+						class={`hover:text-deep-navy transition-colors cursor-pointer ${lang === locale ? "font-bold text-deep-navy" : ""}`}
+						href={langHref(lang)}
+						hreflang={lang}
+						aria-label={c.lang[lang]}
+						data-lang-href={lang}
+						data-lang-link={lang}
+						data-i18n={`common.lang.${lang}`}
+					>
+						{c.lang[lang]}
+					</a>
+				))}
+			</div>
 		<a class="flex items-center gap-1 hover:text-deep-navy transition-colors" href={`tel:${contact.generalPhone.replace(/\s/g, "")}`}>
 			<span class="material-symbols-outlined text-[18px]">call</span>
 			{contact.generalPhone}
@@ -51,7 +54,7 @@ const links = [
 
 <header class="sticky top-0 z-50 w-full bg-surface-container-lowest border-b border-surface-variant shadow-sm">
 	<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto h-20" aria-label="Main">
-		<a class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2" href="/">
+		<a class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2" href="/" data-i18n="common.brand">
 			<span class="material-symbols-outlined icon-filled" aria-hidden="true">directions_bus</span>
 			{c.brand}
 		</a>
@@ -69,6 +72,7 @@ const links = [
 							}`}
 							href={link.href}
 							aria-current={isActive ? "page" : undefined}
+							data-i18n={link.key}
 						>
 							{link.label}
 						</a>
@@ -81,6 +85,7 @@ const links = [
 			<a
 				href="/solicitar-presupuesto"
 				class="bg-energetic-orange text-on-primary font-button text-button px-6 py-3 rounded min-h-[48px] flex items-center hover:opacity-90 transition-opacity"
+				data-i18n="common.nav.bookNow"
 			>
 				{c.nav.bookNow}
 			</a>
@@ -109,32 +114,37 @@ const links = [
 							}`}
 							href={link.href}
 							aria-current={isActive ? "page" : undefined}
+							data-i18n={link.key}
 						>
 							{link.label}
 						</a>
 					</li>
 				);
 			})}
-			<li class="pt-stack-sm pb-stack-md">
-				<a
-					href="/solicitar-presupuesto"
-					class="block bg-energetic-orange text-on-primary font-button text-button px-6 py-3 rounded text-center min-h-[48px]"
-				>
-					{c.nav.bookNow}
-				</a>
-			</li>
-			<li class="flex items-center justify-between py-stack-sm border-t border-surface-variant">
-				<div class="flex gap-3 font-label-md text-label-md">
-					{LOCALES.map((lang) => (
-						<a
-							class={`transition-colors ${lang === locale ? "font-bold text-deep-navy" : "text-on-surface-variant"}`}
-							href={langHref(lang)}
-							hreflang={lang}
-						>
-							{c.lang[lang]}
-						</a>
-					))}
-				</div>
+				<li class="pt-stack-sm pb-stack-md">
+					<a
+						href="/solicitar-presupuesto"
+						class="block bg-energetic-orange text-on-primary font-button text-button px-6 py-3 rounded text-center min-h-[48px]"
+						data-i18n="common.nav.bookNow"
+					>
+						{c.nav.bookNow}
+					</a>
+				</li>
+				<li class="flex items-center justify-between py-stack-sm border-t border-surface-variant">
+					<div class="flex gap-3 font-label-md text-label-md">
+						{LOCALES.map((lang) => (
+							<a
+								class={`transition-colors ${lang === locale ? "font-bold text-deep-navy" : "text-on-surface-variant"}`}
+								href={langHref(lang)}
+								hreflang={lang}
+								data-lang-href={lang}
+								data-lang-link={lang}
+								data-i18n={`common.lang.${lang}`}
+							>
+								{c.lang[lang]}
+							</a>
+						))}
+					</div>
 				<a class="flex items-center gap-1 font-label-md text-label-md text-deep-navy" href={`tel:${contact.generalPhone.replace(/\s/g, "")}`}>
 					<span class="material-symbols-outlined text-[18px]">call</span>
 					{contact.generalPhone}

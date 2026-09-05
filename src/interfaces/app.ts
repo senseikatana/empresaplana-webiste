@@ -10,6 +10,8 @@ export interface AppUser {
 	email: string;
 	phone: string;
 	role: UsuarioRole;
+	/** Links the user to a fleet driver record (for workers). */
+	driverId?: number;
 }
 
 export interface AppSession {

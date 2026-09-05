@@ -181,14 +181,14 @@ export const FLEET_SEED: FleetData = {
 		{ id: 10, routeId: "tarragonaVilasecaSalou", departure: "07:20", arrival: "07:45", frequency: "45 min", days: "Lun–Sáb", status: "inactive" },
 	],
 	drivers: [
-		{ id: 1, name: "Joan García", phone: "+34 612 345 678", license: "D12345678", busNumber: "BUS-001", status: "active" },
-		{ id: 2, name: "Maria López", phone: "+34 623 456 789", license: "D23456789", busNumber: "BUS-002", status: "active" },
-		{ id: 3, name: "Pere Martí", phone: "+34 634 567 890", license: "D34567890", busNumber: "BUS-003", status: "active" },
-		{ id: 4, name: "Anna Puig", phone: "+34 645 678 901", license: "D45678901", busNumber: "BUS-004", status: "active" },
-		{ id: 5, name: "Jordi Vila", phone: "+34 656 789 012", license: "D56789012", busNumber: "BUS-005", status: "inactive" },
-		{ id: 6, name: "Núria Soler", phone: "+34 667 890 123", license: "D67890123", busNumber: "BUS-006", status: "active" },
-		{ id: 7, name: "Carles Ferrer", phone: "+34 678 901 234", license: "D78901234", busNumber: "BUS-007", status: "active" },
-		{ id: 8, name: "Marta Rius", phone: "+34 689 012 345", license: "D89012345", busNumber: "BUS-008", status: "active" },
+		{ id: 1, name: "Joan García", phone: "+34 612 345 678", license: "D12345678", busNumber: "BUS-001", routeId: "barcelonaAirport", shiftDays: "Lun–Dom", shiftHours: "06:00–14:00", status: "active" },
+		{ id: 2, name: "Maria López", phone: "+34 623 456 789", license: "D23456789", busNumber: "BUS-002", routeId: "tarragonaBarcelona", shiftDays: "Lun–Vie", shiftHours: "07:00–15:00", status: "active" },
+		{ id: 3, name: "Pere Martí", phone: "+34 634 567 890", license: "D34567890", busNumber: "BUS-003", routeId: "costaDorada", shiftDays: "Lun–Sáb", shiftHours: "06:30–14:30", status: "active" },
+		{ id: 4, name: "Anna Puig", phone: "+34 645 678 901", license: "D45678901", busNumber: "BUS-004", routeId: "penedes", shiftDays: "Lun–Vie", shiftHours: "05:30–13:30", status: "active" },
+		{ id: 5, name: "Jordi Vila", phone: "+34 656 789 012", license: "D56789012", busNumber: "BUS-005", routeId: "reusSalou", shiftDays: "Lun–Vie", shiftHours: "07:00–15:00", status: "inactive" },
+		{ id: 6, name: "Núria Soler", phone: "+34 667 890 123", license: "D67890123", busNumber: "BUS-006", routeId: "estacioCamp", shiftDays: "Lun–Dom", shiftHours: "05:00–13:00", status: "active" },
+		{ id: 7, name: "Carles Ferrer", phone: "+34 678 901 234", license: "D78901234", busNumber: "BUS-007", routeId: "ametllaTortosa", shiftDays: "Lun–Vie", shiftHours: "06:00–14:00", status: "active" },
+		{ id: 8, name: "Marta Rius", phone: "+34 689 012 345", license: "D89012345", busNumber: "BUS-008", routeId: "tarragonaVilasecaSalou", shiftDays: "Lun–Sáb", shiftHours: "07:00–15:00", status: "active" },
 	],
 	notifications: [
 		{

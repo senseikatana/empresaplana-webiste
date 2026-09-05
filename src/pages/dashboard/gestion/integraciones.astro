@@ -1,0 +1,383 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+import { FLEET_SEED } from "@/data/app/fleet-seed";
+import "leaflet/dist/leaflet.css";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const g = dict.app.gestion;
+const it = g.integrations;
+const a = dict.app;
+const cfg = FLEET_SEED.config;
+
+const uiJson = JSON.stringify({
+	locale,
+	connected: it.connected,
+	stepLabels: it.stepLabels,
+	ok: "OK",
+	exported: it.data.export,
+	imported: it.data.import,
+	traccarFields: it.traccar,
+	statusLabel: g.common.statusLabel,
+	states: g.states,
+	activityTitle: it.data.activityTitle,
+});
+---
+
+<AppLayout title={it.title} description={a.tagline} active="integrations" role="management">
+	<div class="flex flex-col gap-stack-lg">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{it.title}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{it.subtitle}</p>
+		</div>
+
+		<!-- MOTIS -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5">
+			<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-1 flex items-center gap-2">
+				<span class="material-symbols-outlined text-deep-navy icon-filled">hub</span>
+				{it.motis.title}
+			</h2>
+			<p class="font-body-md text-body-md text-on-surface-variant mb-4">{it.motis.desc}</p>
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.motis.url}
+					<input id="motis-url" value={cfg.motisUrl} class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal" />
+				</label>
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.motis.port}
+					<input id="motis-port" value="8080" class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal" />
+				</label>
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.motis.gtfsFile}
+					<input value="/data/gtfs/catalunya.zip" class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal" />
+				</label>
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.motis.region}
+					<select class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal">
+						{it.motis.regionOptions.map((region) => <option>{region}</option>)}
+					</select>
+				</label>
+			</div>
+			<div class="flex flex-wrap gap-2 mt-4">
+				<button data-toast="MOTIS" data-msg="ok" class="js-integration inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-4 py-2.5 min-h-[44px] hover:opacity-90 transition-opacity">
+					<span class="material-symbols-outlined text-[19px]">plug</span>{it.motis.test}
+				</button>
+				<button data-toast="MOTIS" class="js-integration inline-flex items-center gap-1.5 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 min-h-[44px] hover:bg-surface-container-low transition-colors">
+					<span class="material-symbols-outlined text-[19px]">file_open</span>{it.motis.importGtfs}
+				</button>
+			</div>
+		</section>
+
+		<!-- Traccar -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5 flex flex-col gap-4">
+			<div>
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-1 flex items-center gap-2">
+					<span class="material-symbols-outlined text-coastal-teal icon-filled">satellite_alt</span>
+					{it.traccar.title}
+				</h2>
+				<p class="font-body-md text-body-md text-on-surface-variant">{it.traccar.desc}</p>
+			</div>
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.traccar.url}
+					<input id="traccar-url" value={cfg.traccarUrl} class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal" />
+				</label>
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.traccar.apiKey}
+					<input type="password" value="••••••••••••" class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal" />
+				</label>
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.traccar.protocol}
+					<select class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal">
+						<option>OSMAND</option>
+						<option>Teltonika</option>
+						<option>GPS103</option>
+					</select>
+				</label>
+			</div>
+			<div class="flex flex-wrap gap-2">
+				<button data-toast="Traccar" class="js-integration inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-4 py-2.5 min-h-[44px] hover:opacity-90 transition-opacity">
+					<span class="material-symbols-outlined text-[19px]">plug</span>{it.traccar.test}
+				</button>
+				<button data-toast="Traccar" class="js-integration inline-flex items-center gap-1.5 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 min-h-[44px] hover:bg-surface-container-low transition-colors">
+					<span class="material-symbols-outlined text-[19px]">sync</span>{it.traccar.sync}
+				</button>
+			</div>
+
+			<div class="rounded-xl border border-surface-variant overflow-hidden">
+				<div class="px-4 py-3 border-b border-surface-variant bg-surface-container-low/50">
+					<h3 class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2">
+						<span class="material-symbols-outlined text-coastal-teal icon-filled">gps_fixed</span>
+						{it.traccar.devicesTitle}
+					</h3>
+				</div>
+				<div id="gps-table" class="overflow-x-auto"></div>
+				<div id="traccar-map" class="h-80 w-full border-t border-surface-variant"></div>
+			</div>
+		</section>
+
+		<!-- GTFS -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5 flex flex-col gap-4">
+			<div>
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-1 flex items-center gap-2">
+					<span class="material-symbols-outlined text-energetic-orange icon-filled">folder_zip</span>
+					{it.gtfs.title}
+				</h2>
+				<p class="font-body-md text-body-md text-on-surface-variant">{it.gtfs.desc}</p>
+			</div>
+			<!-- Flow steps -->
+			<div data-flow class="flex items-center gap-2 overflow-x-auto py-1"></div>
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.gtfs.agency}
+					<input value={dict.common.brand} class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal" />
+				</label>
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{it.gtfs.timezone}
+					<select class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal">
+						<option>Europe/Madrid</option>
+						<option>UTC</option>
+					</select>
+				</label>
+				<label class="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
+					{a.misc.language}
+					<select class="mt-1 w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal">
+						<option>es</option>
+						<option selected>ca</option>
+						<option>en</option>
+					</select>
+				</label>
+			</div>
+			<div class="flex flex-wrap gap-2">
+				<button id="gtfs-generate" class="inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-4 py-2.5 min-h-[44px] hover:opacity-90 transition-opacity">
+					<span class="material-symbols-outlined text-[19px]">file_export</span>{it.gtfs.generate}
+				</button>
+				<button id="gtfs-download" class="inline-flex items-center gap-1.5 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 min-h-[44px] hover:bg-surface-container-low transition-colors">
+					<span class="material-symbols-outlined text-[19px]">download</span>{it.gtfs.download}
+				</button>
+			</div>
+		</section>
+
+		<!-- Google Sheets Sync -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5 flex flex-col gap-4">
+			<div>
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-1 flex items-center gap-2">
+					<span class="material-symbols-outlined text-coastal-teal icon-filled">table_chart</span>
+					Google Sheets Sync
+				</h2>
+				<p class="font-body-md text-body-md text-on-surface-variant">Sincroniza las tablas del dashboard (rutas, autobuses, paradas, horarios, conductores) con una Google Sheet en tiempo real.</p>
+			</div>
+			<div class="flex flex-wrap gap-2">
+				<button id="sheets-test" class="inline-flex items-center gap-1.5 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 min-h-[44px] hover:bg-surface-container-low transition-colors">
+					<span class="material-symbols-outlined text-[19px]">plug</span> Probar conexión
+				</button>
+				<button id="sheets-push" class="inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-4 py-2.5 min-h-[44px] hover:opacity-90 transition-opacity">
+					<span class="material-symbols-outlined text-[19px]">cloud_upload</span> Sincronizar → Sheet
+				</button>
+			</div>
+			<div id="sheets-status" class="hidden rounded-lg border border-surface-variant bg-surface-container-low p-3 font-body-md text-body-md"></div>
+		</section>
+
+		<!-- Data & backup -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5 flex flex-col gap-4">
+			<div>
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-1 flex items-center gap-2">
+					<span class="material-symbols-outlined text-coastal-teal icon-filled">database</span>
+					{it.data.title}
+				</h2>
+				<p class="font-body-md text-body-md text-on-surface-variant">{it.data.desc}</p>
+			</div>
+			<div class="flex flex-wrap gap-2">
+				<button id="data-export" class="inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-4 py-2.5 min-h-[44px] hover:opacity-90 transition-opacity">
+					<span class="material-symbols-outlined text-[19px]">download</span>{it.data.export}
+				</button>
+				<button id="data-import" class="inline-flex items-center gap-1.5 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 min-h-[44px] hover:bg-surface-container-low transition-colors">
+					<span class="material-symbols-outlined text-[19px]">upload</span>{it.data.import}
+				</button>
+			</div>
+			<div>
+				<h3 class="font-headline-md text-headline-md font-bold text-deep-navy mb-2">{it.data.activityTitle}</h3>
+				<div id="activity-log" class="flex flex-col divide-y divide-surface-variant rounded-xl border border-surface-variant"></div>
+			</div>
+		</section>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { getFleet, seedFleetIfEmpty, exportFleet, importFleet, listActivity } from "@/lib/fleet-store";
+	import { toast, escapeHtml, timeAgo, statusPill } from "@/lib/fleet-ui";
+	import { initFleetMap } from "@/lib/fleet-map";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+	seedFleetIfEmpty();
+
+	// Integration buttons: demo toasts.
+	document.querySelectorAll<HTMLButtonElement>(".js-integration").forEach((button) => {
+		button.addEventListener("click", () => {
+			const name = button.dataset.toast ?? "Servicio";
+			toast(`${name} · ${ui.ok}`, "success");
+		});
+	});
+
+	// Google Sheets sync.
+	const sheetsStatus = document.getElementById("sheets-status");
+
+	document.getElementById("sheets-test")?.addEventListener("click", async () => {
+		try {
+			const res = await fetch("/api/sheets/sync");
+			const data = await res.json();
+			if (sheetsStatus) {
+				sheetsStatus.classList.remove("hidden");
+				sheetsStatus.textContent = data.message;
+				sheetsStatus.className = `rounded-lg border p-3 font-body-md text-body-md ${data.success ? "border-coastal-teal/40 bg-coastal-teal/10 text-on-secondary-container" : "border-error-container bg-error-container/10 text-on-error-container"}`;
+			}
+			toast(data.message, data.success ? "success" : "error");
+		} catch {
+			toast("Error de conexión", "error");
+		}
+	});
+
+	document.getElementById("sheets-push")?.addEventListener("click", async () => {
+		try {
+			toast("Sincronizando…", "info");
+			const res = await fetch("/api/sheets/sync", { method: "POST" });
+			const data = await res.json();
+			if (sheetsStatus) {
+				sheetsStatus.classList.remove("hidden");
+				sheetsStatus.textContent = data.message;
+				sheetsStatus.className = `rounded-lg border p-3 font-body-md text-body-md ${data.success ? "border-coastal-teal/40 bg-coastal-teal/10 text-on-secondary-container" : "border-error-container bg-error-container/10 text-on-error-container"}`;
+			}
+			toast(data.message, data.success ? "success" : "error");
+		} catch {
+			toast("Error al sincronizar", "error");
+		}
+	});
+
+	// GTFS flow steps.
+	const flow = document.querySelector<HTMLElement>("[data-flow]");
+	if (flow) {
+		const icons = ["table_chart", "settings", "folder_zip", "hub"];
+		flow.innerHTML = (ui.stepLabels as string[])
+			.map(
+				(step, i) => `
+				<div class="flex items-center gap-2 flex-shrink-0">
+					${i > 0 ? '<span class="material-symbols-outlined text-outline">arrow_forward</span>' : ""}
+					<div class="flex items-center gap-2 rounded-lg border border-coastal-teal/40 bg-coastal-teal/10 px-3 py-2">
+						<span class="material-symbols-outlined text-coastal-teal icon-filled">${icons[i]}</span>
+						<span class="font-body-md text-body-md font-semibold text-on-surface whitespace-nowrap">${escapeHtml(step)}</span>
+					</div>
+				</div>`,
+			)
+			.join("");
+	}
+
+	// GPS devices table.
+	const tableBody = document.getElementById("gps-table");
+	if (tableBody) {
+		const buses = getFleet().buses;
+		
+		
+		tableBody.innerHTML = `
+			<table class="w-full min-w-[600px]">
+				<thead>
+					<tr class="text-left bg-surface-container-low/50">
+						<th class="px-4 py-2.5 font-label-md text-label-md uppercase tracking-wider text-outline">${escapeHtml(ui.traccarFields.bus)}</th>
+						<th class="px-4 py-2.5 font-label-md text-label-md uppercase tracking-wider text-outline">${escapeHtml(ui.traccarFields.device)}</th>
+						<th class="px-4 py-2.5 font-label-md text-label-md uppercase tracking-wider text-outline">${escapeHtml(ui.traccarFields.speed)}</th>
+						<th class="px-4 py-2.5 font-label-md text-label-md uppercase tracking-wider text-outline">${escapeHtml(ui.traccarFields.battery)}</th>
+						<th class="px-4 py-2.5 font-label-md text-label-md uppercase tracking-wider text-outline">${escapeHtml(ui.statusLabel)}</th>
+					</tr>
+				</thead>
+				<tbody>
+					${buses
+						.map((bus) => {
+							const online = bus.gps.online && bus.status === "active";
+							const batteryColor = bus.gps.battery > 50 ? "bg-coastal-teal" : bus.gps.battery > 20 ? "bg-energetic-orange" : "bg-error";
+							return `
+							<tr class="border-t border-surface-variant">
+								<td class="px-4 py-2.5 font-body-md text-body-md font-semibold text-on-surface">${escapeHtml(bus.number)}</td>
+								<td class="px-4 py-2.5 font-body-md text-body-md text-on-surface-variant"><code class="text-xs">${bus.gps.lat.toFixed(4)}, ${bus.gps.lng.toFixed(4)}</code></td>
+								<td class="px-4 py-2.5 font-body-md text-body-md text-on-surface">${bus.gps.speed}</td>
+								<td class="px-4 py-2.5">
+									<div class="flex items-center gap-2">
+										<div class="w-14 h-1.5 rounded-full bg-surface-container overflow-hidden"><div class="h-full rounded-full ${batteryColor}" style="width:${bus.gps.battery}%"></div></div>
+										<span class="font-label-md text-label-md text-on-surface-variant">${bus.gps.battery}%</span>
+									</div>
+								</td>
+								<td class="px-4 py-2.5">${statusPill(online ? "online" : "offline", ui.states)}</td>
+							</tr>`;
+						})
+						.join("")}
+				</tbody>
+			</table>`;
+	}
+
+	// Traccar mini map with live fleet.
+	const traccarMap = document.getElementById("traccar-map");
+	if (traccarMap) initFleetMap(traccarMap, { animate: true, routesOnly: true });
+
+	// Data export / import.
+	document.getElementById("data-export")?.addEventListener("click", () => {
+		const blob = new Blob([exportFleet()], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.href = url;
+		link.download = "empresa-plana-flota.json";
+		link.click();
+		URL.revokeObjectURL(url);
+		toast(`${ui.exported} · OK`, "success");
+	});
+	document.getElementById("data-import")?.addEventListener("click", () => {
+		const input = document.createElement("input");
+		input.type = "file";
+		input.accept = ".json";
+		input.onchange = () => {
+			const file = input.files?.[0];
+			if (!file) return;
+			const reader = new FileReader();
+			reader.onload = () => {
+				const ok = importFleet(String(reader.result ?? ""));
+				toast(ok ? `${ui.imported} · JSON` : "Error", ok ? "success" : "error");
+				if (ok) renderActivity();
+			};
+			reader.readAsText(file);
+		};
+		input.click();
+	});
+
+	// Activity log.
+	function renderActivity() {
+		const log = document.getElementById("activity-log");
+		if (!log) return;
+		const activity = listActivity().slice(0, 8);
+		log.innerHTML =
+			activity.length === 0
+				? `<p class="px-4 py-4 text-center font-body-md text-body-md text-on-surface-variant">—</p>`
+				: activity
+						.map(
+							(a) => `
+							<div class="flex items-center gap-3 px-4 py-2.5">
+								<span class="material-symbols-outlined text-on-surface-variant text-[20px]">history</span>
+								<p class="font-body-md text-body-md text-on-surface flex-1 min-w-0">${escapeHtml(a.action)}</p>
+								<span class="font-label-md text-label-md text-outline flex-shrink-0">${escapeHtml(a.user)} · ${escapeHtml(timeAgo(a.at, ui.locale))}</span>
+							</div>`,
+						)
+						.join("");
+	}
+	renderActivity();
+
+	// GTFS demo actions.
+	document.getElementById("gtfs-generate")?.addEventListener("click", () => toast("GTFS · OK", "success"));
+	document.getElementById("gtfs-download")?.addEventListener("click", () => {
+		const blob = new Blob([exportFleet()], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.href = url;
+		link.download = "empresa-plana-gtfs.zip";
+		link.click();
+		URL.revokeObjectURL(url);
+		toast("GTFS · OK", "success");
+	});
+</script>

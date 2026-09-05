@@ -54,35 +54,39 @@ const langHref = (lang: string) => {
 type NavItem = { key: NavKey; href: string; icon: string; label: string; roles: string };
 
 const clientNav: NavItem[] = [
-	{ key: "home", href: "/app/cliente/", icon: "home", label: a.nav.home, roles: "client,admin" },
-	{ key: "routes", href: "/app/cliente/rutas", icon: "route", label: a.nav.routes, roles: "client,admin" },
-	{ key: "budgets", href: "/app/cliente/presupuestos", icon: "request_quote", label: a.nav.budgets, roles: "client,admin" },
-	{ key: "profile", href: "/app/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
+	{ key: "home", href: "/dashboard/cliente/", icon: "home", label: a.nav.home, roles: "client" },
+	{ key: "routes", href: "/dashboard/cliente/rutas", icon: "route", label: a.nav.routes, roles: "client" },
+	{ key: "budgets", href: "/dashboard/cliente/presupuestos", icon: "request_quote", label: a.nav.budgets, roles: "client" },
+	{ key: "profile", href: "/dashboard/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
 ];
 
 const workerNav: NavItem[] = [
-	{ key: "home", href: "/app/trabajador/", icon: "directions_bus", label: a.nav.fleet, roles: "worker,admin" },
-	{ key: "requests", href: "/app/trabajador/solicitudes", icon: "assignment", label: a.nav.requests, roles: "worker,admin" },
-	{ key: "lines", href: "/app/trabajador/lineas", icon: "route", label: a.nav.lines, roles: "worker,admin" },
-	{ key: "reports", href: "/app/trabajador/reportes", icon: "fact_check", label: a.nav.reports, roles: "worker,admin" },
-	{ key: "profile", href: "/app/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
+	{ key: "home", href: "/dashboard/trabajador/", icon: "directions_bus", label: a.nav.fleet, roles: "worker" },
+	{ key: "incidents", href: "/dashboard/trabajador/incidencias", icon: "notifications", label: a.worker.incidents, roles: "worker" },
+	{ key: "requests", href: "/dashboard/trabajador/solicitudes", icon: "assignment", label: a.nav.requests, roles: "worker" },
+	{ key: "lines", href: "/dashboard/trabajador/lineas", icon: "route", label: a.nav.lines, roles: "worker" },
+	{ key: "reports", href: "/dashboard/trabajador/reportes", icon: "fact_check", label: a.nav.reports, roles: "worker" },
+	{ key: "profile", href: "/dashboard/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
 ];
 
 const g = dict.app.gestion;
 
 const managementNav: NavItem[] = [
-	{ key: "panel", href: "/app/gestion/", icon: "space_dashboard", label: g.nav.panel, roles: "admin" },
-	{ key: "map", href: "/app/gestion/mapa", icon: "map", label: g.nav.map, roles: "admin" },
-	{ key: "routes", href: "/app/gestion/rutas", icon: "route", label: g.nav.routes, roles: "admin" },
-	{ key: "buses", href: "/app/gestion/autobuses", icon: "directions_bus", label: g.nav.buses, roles: "admin" },
-	{ key: "stops", href: "/app/gestion/paradas", icon: "location_on", label: g.nav.stops, roles: "admin" },
-	{ key: "schedules", href: "/app/gestion/horarios", icon: "schedule", label: g.nav.schedules, roles: "admin" },
-	{ key: "drivers", href: "/app/gestion/conductores", icon: "badge", label: g.nav.drivers, roles: "admin" },
-	{ key: "notifications", href: "/app/gestion/notificaciones", icon: "notifications", label: g.nav.notifications, roles: "admin" },
-	{ key: "reports", href: "/app/gestion/reportes", icon: "bar_chart", label: g.nav.reports, roles: "admin" },
-	{ key: "integrations", href: "/app/gestion/integraciones", icon: "hub", label: g.nav.integrations, roles: "admin" },
-	{ key: "profile", href: "/app/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
+	{ key: "panel", href: "/dashboard/gestion/", icon: "space_dashboard", label: g.nav.panel, roles: "admin" },
+	{ key: "map", href: "/dashboard/gestion/mapa", icon: "map", label: g.nav.map, roles: "admin" },
+	{ key: "routes", href: "/dashboard/gestion/rutas", icon: "route", label: g.nav.routes, roles: "admin" },
+	{ key: "buses", href: "/dashboard/gestion/autobuses", icon: "directions_bus", label: g.nav.buses, roles: "admin" },
+	{ key: "stops", href: "/dashboard/gestion/paradas", icon: "location_on", label: g.nav.stops, roles: "admin" },
+	{ key: "schedules", href: "/dashboard/gestion/horarios", icon: "schedule", label: g.nav.schedules, roles: "admin" },
+	{ key: "drivers", href: "/dashboard/gestion/conductores", icon: "badge", label: g.nav.drivers, roles: "admin" },
+	{ key: "notifications", href: "/dashboard/gestion/notificaciones", icon: "notifications", label: g.nav.notifications, roles: "admin" },
+	{ key: "reports", href: "/dashboard/gestion/reportes", icon: "bar_chart", label: g.nav.reports, roles: "admin" },
+	{ key: "integrations", href: "/dashboard/gestion/integraciones", icon: "hub", label: g.nav.integrations, roles: "admin" },
+	{ key: "profile", href: "/dashboard/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
 ];
+
+/** Every item, used by shared pages ("both") whose script filters by role. */
+const navAll = [...clientNav, ...workerNav, ...managementNav];
 
 /** Desktop sidebar items (shared pages render the union, filtered by script). */
 const nav =
@@ -95,9 +99,6 @@ const navMobile =
 		: role === "both"
 			? navAll
 			: nav;
-
-/** Every item, used by shared pages ("both") whose script filters by role. */
-const navAll = [...clientNav, ...workerNav, ...managementNav];
 const uiJson = JSON.stringify({ requiredRole: role });
 
 const defaultBodyClass =
@@ -129,7 +130,7 @@ const defaultBodyClass =
 			<div class="flex items-center justify-between gap-4 px-margin-mobile md:px-margin-desktop h-16">
 				<div class="flex items-center gap-3">
 					<a
-						href={role === "client" ? "/app/cliente/" : role === "worker" ? "/app/trabajador/" : role === "management" ? "/app/gestion/" : "/app/"}
+						href={role === "client" ? "/dashboard/cliente/" : role === "worker" ? "/dashboard/trabajador/" : role === "management" ? "/dashboard/gestion/" : "/dashboard/"}
 						class="flex items-center gap-2.5"
 					>
 						<img src="/app-icons/logo.svg" alt="" class="h-9 w-9" />
@@ -150,7 +151,7 @@ const defaultBodyClass =
 							</a>
 						))}
 					</nav>
-					<a href="/app/perfil" class="text-on-surface-variant hover:text-deep-navy transition-colors" aria-label={a.nav.profile}>
+					<a href="/dashboard/perfil" class="text-on-surface-variant hover:text-deep-navy transition-colors" aria-label={a.nav.profile}>
 						<span class="material-symbols-outlined text-[26px]">account_circle</span>
 					</a>
 				</div>
@@ -159,13 +160,13 @@ const defaultBodyClass =
 
 		<div class="flex">
 			<!-- Sidebar (desktop) -->
-			<aside class="hidden lg:block w-56 shrink-0 border-r border-surface-variant">
-				<nav class="sticky top-16 py-stack-md pr-2" aria-label="Dashboard">
-					<ul class="flex flex-col gap-1">
+			<aside class="hidden lg:block w-64 shrink-0 border-r border-surface-variant">
+				<nav class="sticky top-16 py-stack-lg pr-3" aria-label="Dashboard">
+					<ul class="flex flex-col gap-1.5">
 						{nav.map((item) => (
 							<li data-roles={item.roles}>
 								<a
-									class={`flex items-center gap-3 rounded-lg px-4 py-3 font-label-md text-label-md transition-colors ${
+									class={`flex items-center gap-3 rounded-lg px-4 py-3.5 font-label-md text-label-md transition-colors ${
 										active === item.key
 											? "bg-deep-navy text-on-primary shadow-sm"
 											: "text-on-surface-variant hover:bg-surface-container-low hover:text-deep-navy"
@@ -184,7 +185,7 @@ const defaultBodyClass =
 			</aside>
 
 			<!-- Page content -->
-			<div class="app-content min-w-0 flex-1 px-margin-mobile md:px-margin-desktop py-stack-md md:py-stack-lg pb-28 lg:pb-16">
+			<div class="app-content min-w-0 flex-1 px-margin-mobile md:px-margin-desktop py-stack-lg pb-28 lg:pb-20">
 				<slot />
 			</div>
 		</div>
@@ -226,23 +227,23 @@ const defaultBodyClass =
 		}
 		const session = getSession();
 		if (!session) {
-			window.location.replace("/app/");
+			window.location.replace("/dashboard/");
 			return;
 		}
 		if (requiredRole === "both") {
 			// Shared pages: show only the nav items of the signed-in role.
 			const allowed =
 				session.role === "client"
-					? "client,admin"
+					? "client"
 					: session.role === "worker"
-						? "worker,admin"
+						? "worker"
 						: "admin";
 			document.querySelectorAll<HTMLElement>("[data-roles]").forEach((el) => {
 				const roles = el.dataset.roles ?? "";
 				el.classList.toggle("hidden", !roles.split(",").some((r) => allowed.split(",").includes(r)));
 			});
 		} else if (session.role !== requiredRole && session.role !== "admin") {
-			window.location.replace(session.role === "client" ? "/app/cliente/" : "/app/trabajador/");
+			window.location.replace(session.role === "client" ? "/dashboard/cliente/" : "/dashboard/trabajador/");
 			return;
 		}
 		content?.classList.add("app-content-ready");

@@ -1,9 +1,9 @@
 /* Empresa Plana PWA service worker.
  *
  * Strategy:
- *  - The app shell (/app/*) is served with network-first + cache fallback so
+ *  - The app shell (/dashboard/*) is served with network-first + cache fallback so
  *    updates propagate while the app stays usable offline.
- *  - Static assets (/app-icons, CSS/JS hashed bundles) are cache-first.
+ *  - Static assets (/dashboard-icons, CSS/JS hashed bundles) are cache-first.
  *  - Remote fonts (Geist via jsDelivr, Material Symbols via Google Fonts) are
  *    cached at runtime (stale-while-revalidate), so icons/typography keep
  *    working offline after the first visit.
@@ -13,7 +13,7 @@ const SHELL_CACHE = "plana-shell-v1";
 const ASSET_CACHE = "plana-assets-v1";
 const FONT_CACHE = "plana-fonts-v1";
 
-const SHELL_NAV = ["/app/", "/app/cliente/", "/app/trabajador/", "/app/perfil/"];
+const SHELL_NAV = ["/dashboard/", "/dashboard/cliente/", "/dashboard/trabajador/", "/dashboard/perfil/"];
 
 const FONT_HOSTS = [
 	"cdn.jsdelivr.net",
@@ -26,7 +26,7 @@ self.addEventListener("install", (event) => {
 	event.waitUntil(
 		caches
 			.open(SHELL_CACHE)
-			.then((cache) => cache.addAll(["/app/", "/manifest.webmanifest", "/app-icons/icon-192.png", "/app-icons/icon-512.png"]))
+			.then((cache) => cache.addAll(["/dashboard/", "/manifest.webmanifest", "/app-icons/icon-192.png", "/app-icons/icon-512.png"]))
 			.then(() => self.skipWaiting()),
 	);
 });
@@ -85,7 +85,7 @@ self.addEventListener("fetch", (event) => {
 	}
 
 	// App shell navigations: network-first, cache fallback.
-	if (request.mode === "navigate" && url.pathname.startsWith("/app/")) {
+	if (request.mode === "navigate" && url.pathname.startsWith("/dashboard/")) {
 		event.respondWith(
 			caches.open(SHELL_CACHE).then(async (cache) => {
 				const cached = await cache.match(request);
@@ -95,8 +95,8 @@ self.addEventListener("fetch", (event) => {
 					return response;
 				} catch {
 					if (cached) return cached;
-					// Unknown /app route offline: fall back to the shell entry.
-					const fallback = await cache.match("/app/");
+					// Unknown /dashboard route offline: fall back to the shell entry.
+					const fallback = await cache.match("/dashboard/");
 					if (fallback) return fallback;
 					throw new Error("offline");
 				}

@@ -22,7 +22,11 @@
 			"fleet": "Fleet",
 			"sitemap": "Sitemap",
 			"copyright": "© 2024 Empresa Plana. All rights reserved. Efficient Mobility for the Mediterranean."
-		}
+		},
+		"confirmationTitle": "Request confirmed",
+		"confirmationHeading": "Request sent!",
+		"confirmationDesc": "Thank you for your request. We will contact you shortly.",
+		"backHome": "Back to home"
 	},
 	"home": {
 		"title": "Empresa Plana - Screens",
@@ -196,7 +200,21 @@
 			"noReports": "No reports today on this line.",
 			"today": "Today",
 			"addReport": "Log report",
-			"reportOk": "Report logged. Thank you!"
+			"reportOk": "Report logged. Thank you!",
+			"myService": "My service",
+			"myBus": "My bus",
+			"myRoute": "My route",
+			"myShift": "My shift",
+			"noDriverAssigned": "You don't have an assigned driver",
+			"activeDrivers": "Active drivers",
+			"driverBus": "Bus",
+			"driverRoute": "Route",
+			"driverShift": "Shift",
+			"noAssignment": "Unassigned",
+			"incidents": "Incidents",
+			"incidentsDesc": "Operation incidents and alerts",
+			"viewAll": "View all",
+			"noIncidents": "No incidents"
 		},
 		"misc": {
 			"demoNote": "Demo mode: data is only stored on this device.",
@@ -340,7 +358,15 @@
 					"info": "Notice"
 				},
 				"unread": "Unread",
-				"noResults": "No notifications match this filter."
+				"noResults": "No notifications match this filter.",
+				"entityLabel": "Notification",
+				"fieldType": "Type",
+				"fieldTitle": "Title",
+				"fieldDesc": "Description",
+				"fieldRoute": "Route",
+				"created": "Notification created",
+				"deleted": "Notification deleted",
+				"markedRead": "Notifications marked as read"
 			},
 			"reports": {
 				"title": "Reports",
