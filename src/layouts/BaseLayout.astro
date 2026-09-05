@@ -1,5 +1,8 @@
 ---
 import "../styles/global.css";
+import SiteHeader from "@/components/SiteHeader.astro";
+import SiteFooter from "@/components/SiteFooter.astro";
+import CookieBanner from "@/components/CookieBanner.astro";
 
 interface Props {
 	title: string;
@@ -14,6 +17,8 @@ interface Props {
 	themeColor?: string;
 	keywords?: string[];
 	bodyClass?: string;
+	showHeader?: boolean;
+	showFooter?: boolean;
 }
 
 const {
@@ -29,6 +34,8 @@ const {
 	themeColor,
 	keywords,
 	bodyClass = "",
+	showHeader = true,
+	showFooter = true,
 } = Astro.props;
 ---
 
@@ -57,6 +64,9 @@ const {
 		/>
 	</head>
 	<body class={bodyClass}>
+		{showHeader && <SiteHeader />}
 		<slot />
+		{showFooter && <SiteFooter />}
+		<CookieBanner />
 	</body>
 </html>

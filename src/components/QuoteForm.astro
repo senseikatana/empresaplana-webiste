@@ -8,7 +8,7 @@ const serviceFields = QUOTE_FORM.fields.filter((field) => field.group === "servi
 ---
 
 <BaseLayout title="Solicitud de Presupuesto - Empresa Plana" description={QUOTE_FORM.title[locale]}>
-	<main class="mx-auto w-full max-w-container px-margin-mobile py-stack-lg md:px-margin-desktop">
+	<main class="mx-auto w-full max-w-container-max px-margin-mobile py-stack-lg md:px-margin-desktop">
 		<section class="mx-auto max-w-3xl rounded-xl border border-outline-variant bg-surface-container-lowest p-stack-md shadow-ambient md:p-stack-lg">
 			<h1 class="mb-stack-sm text-display-lg font-bold text-deep-navy">{QUOTE_FORM.title[locale]}</h1>
 			<p class="mb-stack-lg text-body-md text-on-surface-variant">Completa el formulario y nos pondremos en contacto contigo a la brevedad.</p>
@@ -35,7 +35,7 @@ const serviceFields = QUOTE_FORM.fields.filter((field) => field.group === "servi
 						))}
 					</div>
 				</fieldset>
-				<label class="flex gap-2 text-body-sm text-on-surface-variant"><input type="checkbox" required /> <span>{QUOTE_FORM.consent[locale]}</span></label>
+				<label class="flex gap-2 text-body-md text-on-surface-variant"><input type="checkbox" required /> <span>{QUOTE_FORM.consent[locale]}</span></label>
 				<button class="rounded bg-energetic-orange px-stack-md py-stack-sm font-semibold text-white" type="submit">{QUOTE_FORM.submit[locale]}</button>
 			</form>
 		</section>

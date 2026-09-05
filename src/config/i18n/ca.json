@@ -62,6 +62,48 @@
 			}
 		}
 	},
+	"homeContent": {
+		"valueProps": {
+			"title": "QUÈ T'OFEREIX EMPRESA PLANA?",
+			"items": {
+				"routes": {
+					"title": "Rutes i horaris adaptats a tu",
+					"desc": "Línies regulars i horaris pensats per als teus desplaçaments diaris i les teves vacances a la Costa Daurada."
+				},
+				"accessibility": {
+					"title": "Accessibilitat per a mobilitats reduïdes",
+					"desc": "Autobusos i autocars adaptats per a persones amb mobilitat reduïda (P. M. R.)."
+				},
+				"fleet": {
+					"title": "Flota moderna en constant renovació",
+					"desc": "Més de 60 anys d'experiència i una flota de més de 600 autocars amb l'última tecnologia."
+				},
+				"personalized": {
+					"title": "Serveis personalitzats",
+					"desc": "Transfers, excursions i lloguer d'autocars amb conductor a mida de cada grup."
+				}
+			}
+		},
+		"airportPromo": {
+			"tag": "Aeroport de Barcelona",
+			"title": "VIATJA A L'AEROPORT DE BARCELONA",
+			"subtitle": "Transfers directes des de Tarragona, La Pineda, Salou i Cambrils. Compra el teu trasllat aquí.",
+			"cta": "COMPRAR TRANSLLAT"
+		},
+		"coachRental": {
+			"title": "LLOGUER D'AUTOCARS",
+			"subtitle": "Més de 60 anys al sector. Sol·licita el teu pressupost sense compromís i viatja amb la seguretat d'Empresa Plana.",
+			"quoteCta": "SOL·LICITAR PRESSUPOST"
+		},
+		"fundedBy": {
+			"title": "Finançat per",
+			"items": [
+				"Unió Europea - NextGenerationEU",
+				"Pla de Recuperació, Transformació i Resiliència",
+				"Generalitat de Catalunya"
+			]
+		}
+	},
 	"routes": {
 		"title": "Descàrregues i Horaris - Empresa Plana",
 		"hero": {

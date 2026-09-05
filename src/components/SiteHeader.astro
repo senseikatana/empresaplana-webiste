@@ -1,0 +1,163 @@
+---
+import { LOCALES, getLocale, getDictionary } from "@/config/i18n";
+import contact from "@/data/contact.json";
+import type { Locale } from "@/interfaces/common";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const c = dict.common;
+const navDict = dict.homeVariant2.nav;
+
+const pathname = Astro.url.pathname;
+
+// Language switch links that preserve other query params and replace `lang`.
+const langHref = (lang: Locale) => {
+	const url = new URL(Astro.url.pathname, Astro.url.origin);
+	for (const [key, value] of Astro.url.searchParams.entries()) {
+		if (key !== "lang") url.searchParams.set(key, value);
+	}
+	url.searchParams.set("lang", lang);
+	return `${url.pathname}${url.search}`;
+};
+
+const links = [
+	{ href: "/rutas-horarios", label: navDict.routesSchedules },
+	{ href: "/servicios-discrecionales", label: navDict.privateServices },
+	{ href: "/donde-estamos", label: navDict.aboutUs },
+	{ href: "#contacto", label: navDict.contact },
+];
+---
+
+<div class="w-full bg-surface-container-lowest border-b border-surface-variant hidden md:block">
+	<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-2 flex justify-end items-center gap-gutter text-sm font-label-md text-on-surface-variant">
+		<div class="flex gap-2 items-center">
+			{LOCALES.map((lang) => (
+				<a
+					class={`hover:text-deep-navy transition-colors cursor-pointer ${lang === locale ? "font-bold text-deep-navy" : ""}`}
+					href={langHref(lang)}
+					hreflang={lang}
+					aria-label={c.lang[lang]}
+				>
+					{c.lang[lang]}
+				</a>
+			))}
+		</div>
+		<a class="flex items-center gap-1 hover:text-deep-navy transition-colors" href={`tel:${contact.generalPhone.replace(/\s/g, "")}`}>
+			<span class="material-symbols-outlined text-[18px]">call</span>
+			{contact.generalPhone}
+		</a>
+	</div>
+</div>
+
+<header class="sticky top-0 z-50 w-full bg-surface-container-lowest border-b border-surface-variant shadow-sm">
+	<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto h-20" aria-label="Main">
+		<a class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2" href="/">
+			<span class="material-symbols-outlined icon-filled" aria-hidden="true">directions_bus</span>
+			{c.brand}
+		</a>
+
+		<ul class="hidden md:flex items-center gap-8 h-full">
+			{links.map((link) => {
+				const isActive = link.href !== "#contacto" && pathname.startsWith(link.href);
+				return (
+					<li class="h-full flex items-center">
+						<a
+							class={`font-label-md text-label-md h-full flex items-center border-b-2 transition-colors duration-200 ${
+								isActive
+									? "text-deep-navy border-coastal-teal"
+									: "text-on-surface-variant border-transparent hover:text-deep-navy"
+							}`}
+							href={link.href}
+							aria-current={isActive ? "page" : undefined}
+						>
+							{link.label}
+						</a>
+					</li>
+				);
+			})}
+		</ul>
+
+		<div class="hidden md:flex items-center gap-4">
+			<a
+				href="/solicitar-presupuesto"
+				class="bg-energetic-orange text-on-primary font-button text-button px-6 py-3 rounded min-h-[48px] flex items-center hover:opacity-90 transition-opacity"
+			>
+				{c.nav.bookNow}
+			</a>
+		</div>
+
+		<button
+			id="site-mobile-menu-button"
+			class="md:hidden text-deep-navy p-2"
+			aria-expanded="false"
+			aria-controls="site-mobile-menu"
+			aria-label="Menu"
+		>
+			<span class="material-symbols-outlined text-[28px]">menu</span>
+		</button>
+	</nav>
+
+	<div id="site-mobile-menu" class="hidden md:hidden border-t border-surface-variant bg-surface-container-lowest">
+		<ul class="flex flex-col px-margin-mobile py-stack-sm">
+			{links.map((link) => {
+				const isActive = link.href !== "#contacto" && pathname.startsWith(link.href);
+				return (
+					<li>
+						<a
+							class={`block py-stack-sm font-label-md text-label-md border-l-2 pl-3 transition-colors ${
+								isActive ? "text-deep-navy border-coastal-teal" : "text-on-surface-variant border-transparent"
+							}`}
+							href={link.href}
+							aria-current={isActive ? "page" : undefined}
+						>
+							{link.label}
+						</a>
+					</li>
+				);
+			})}
+			<li class="pt-stack-sm pb-stack-md">
+				<a
+					href="/solicitar-presupuesto"
+					class="block bg-energetic-orange text-on-primary font-button text-button px-6 py-3 rounded text-center min-h-[48px]"
+				>
+					{c.nav.bookNow}
+				</a>
+			</li>
+			<li class="flex items-center justify-between py-stack-sm border-t border-surface-variant">
+				<div class="flex gap-3 font-label-md text-label-md">
+					{LOCALES.map((lang) => (
+						<a
+							class={`transition-colors ${lang === locale ? "font-bold text-deep-navy" : "text-on-surface-variant"}`}
+							href={langHref(lang)}
+							hreflang={lang}
+						>
+							{c.lang[lang]}
+						</a>
+					))}
+				</div>
+				<a class="flex items-center gap-1 font-label-md text-label-md text-deep-navy" href={`tel:${contact.generalPhone.replace(/\s/g, "")}`}>
+					<span class="material-symbols-outlined text-[18px]">call</span>
+					{contact.generalPhone}
+				</a>
+			</li>
+		</ul>
+	</div>
+</header>
+
+<script>
+	const menuButton = document.getElementById("site-mobile-menu-button");
+	const menuPanel = document.getElementById("site-mobile-menu");
+
+	menuButton?.addEventListener("click", () => {
+		if (!menuPanel) return;
+		const isOpen = !menuPanel.classList.toggle("hidden");
+		menuButton.setAttribute("aria-expanded", String(isOpen));
+	});
+
+	// Close the mobile menu when a link inside it is followed.
+	menuPanel?.addEventListener("click", (event) => {
+		if (!(event.target instanceof HTMLAnchorElement)) return;
+		menuPanel.classList.add("hidden");
+		menuButton?.setAttribute("aria-expanded", "false");
+	});
+</script>

@@ -62,6 +62,48 @@
 			}
 		}
 	},
+	"homeContent": {
+		"valueProps": {
+			"title": "WHAT DOES EMPRESA PLANA OFFER YOU?",
+			"items": {
+				"routes": {
+					"title": "Routes and timetables adapted to you",
+					"desc": "Regular lines and timetables designed for your daily commutes and your holidays on the Costa Daurada."
+				},
+				"accessibility": {
+					"title": "Reduced mobility accessibility",
+					"desc": "Buses and coaches adapted for passengers with reduced mobility."
+				},
+				"fleet": {
+					"title": "Modern, constantly renewed fleet",
+					"desc": "Over 60 years of experience and a fleet of more than 600 coaches with the latest technology."
+				},
+				"personalized": {
+					"title": "Personalized services",
+					"desc": "Transfers, excursions and coach hire with driver, tailored to every group."
+				}
+			}
+		},
+		"airportPromo": {
+			"tag": "Barcelona Airport",
+			"title": "TRAVEL TO BARCELONA AIRPORT",
+			"subtitle": "Direct transfers from Tarragona, La Pineda, Salou and Cambrils. Book your transfer here.",
+			"cta": "BOOK TRANSFER"
+		},
+		"coachRental": {
+			"title": "COACH RENTAL",
+			"subtitle": "Over 60 years in the industry. Request a quote with no obligation and travel with Empresa Plana's peace of mind.",
+			"quoteCta": "REQUEST A QUOTE"
+		},
+		"fundedBy": {
+			"title": "Funded by",
+			"items": [
+				"European Union - NextGenerationEU",
+				"Recovery, Transformation and Resilience Plan",
+				"Generalitat de Catalunya"
+			]
+		}
+	},
 	"routes": {
 		"title": "Downloads & Schedules - Empresa Plana",
 		"hero": {

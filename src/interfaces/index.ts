@@ -5,6 +5,7 @@ export * from "@/interfaces/bus-tracking";
 export * from "@/interfaces/common";
 export * from "@/interfaces/discretionary";
 export * from "@/interfaces/home";
+export * from "@/interfaces/home-content";
 export * from "@/interfaces/i18n";
 export * from "@/interfaces/layout";
 export * from "@/interfaces/legal";
