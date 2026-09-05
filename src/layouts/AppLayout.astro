@@ -220,6 +220,10 @@ const defaultBodyClass =
 	async function routeByRole() {
 		const { seedIfEmpty, getSession } = await import("@/lib/app-store");
 		seedIfEmpty();
+		if (requiredRole === "management") {
+			const { seedFleetIfEmpty } = await import("@/lib/fleet-store");
+			seedFleetIfEmpty();
+		}
 		const session = getSession();
 		if (!session) {
 			window.location.replace("/app/");

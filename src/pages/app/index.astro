@@ -122,6 +122,18 @@ const uiJson = JSON.stringify({ invalid: a.auth.invalid });
 								</span>
 								<span class="font-label-md text-label-md text-outline">trabajador / 12345678</span>
 							</button>
+							<button
+								type="button"
+								class="js-demo-login flex items-center justify-between rounded-lg border border-surface-variant bg-surface-container-low px-4 py-3 hover:border-deep-navy hover:bg-surface-container-lowest transition-colors text-left"
+								data-username="admin"
+								data-passkey="12345678"
+							>
+								<span class="flex items-center gap-3">
+									<span class="material-symbols-outlined text-deep-navy icon-filled">admin_panel_settings</span>
+									<span class="font-body-md text-body-md text-on-surface">{a.auth.asBoss}</span>
+								</span>
+								<span class="font-label-md text-label-md text-outline">admin / 12345678</span>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -138,7 +150,8 @@ const uiJson = JSON.stringify({ invalid: a.auth.invalid });
 
 	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
 
-	const homeFor = (role: string) => (role === "client" ? "/app/cliente/" : "/app/trabajador/");
+	const homeFor = (role: string) =>
+		role === "client" ? "/app/cliente/" : role === "admin" ? "/app/gestion/" : "/app/trabajador/";
 
 	function redirectToSession() {
 		const session = getSession();
