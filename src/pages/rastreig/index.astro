@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import BusTrackingPanel from "@/components/BusTrackingPanel.astro";
+export const prerender = true;
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
 import { getLocale, getDictionary } from "@/config/i18n";
 
@@ -25,7 +26,7 @@ const stops = [
 ];
 ---
 
-<BaseLayout {...siteInfo} bodyClass="bg-background text-on-background font-body-md antialiased">
+<BaseLayout {...siteInfo} bodyClass="bg-background text-on-background font-body-md antialiased" showHeader={false} showFooter={false}>
 	<header class="bg-deep-navy text-on-primary py-6 px-margin-mobile md:px-margin-desktop">
 		<div class="max-w-2xl mx-auto">
 			<a href="/" class="font-body-md text-body-md text-on-primary/70 hover:text-secondary-fixed transition-colors">

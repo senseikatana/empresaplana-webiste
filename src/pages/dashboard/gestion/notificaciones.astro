@@ -1,0 +1,233 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const g = dict.app.gestion;
+const n = g.notifications;
+const gc = g.common;
+const a = dict.app;
+
+const uiJson = JSON.stringify({
+	locale,
+	filterAll: gc.all,
+	unread: n.unread,
+	noResults: n.noResults,
+	types: n.types,
+	entityLabel: n.entityLabel,
+	fieldType: n.fieldType,
+	fieldTitle: n.fieldTitle,
+	fieldDesc: n.fieldDesc,
+	fieldRoute: n.fieldRoute,
+	created: n.created,
+	deleted: n.deleted,
+	markedRead: n.markedRead,
+	titleLabel: n.newNotif,
+	save: gc.save,
+	cancel: gc.cancel,
+	markRead: "✓",
+	markAll: n.markAll,
+});
+---
+
+<AppLayout title={n.title} description={a.tagline} active="notifications" role="management">
+	<div class="flex flex-col gap-stack-md">
+		<div class="flex flex-wrap items-center justify-between gap-3">
+			<div>
+				<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{n.title}</h1>
+				<p class="font-body-md text-body-md text-on-surface-variant mt-1">{n.subtitle}</p>
+			</div>
+			<div class="flex flex-wrap gap-2">
+				<button id="mark-all" class="inline-flex items-center gap-1.5 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 min-h-[44px] hover:bg-surface-container-low transition-colors">
+					<span class="material-symbols-outlined text-[19px]">done_all</span>
+					{n.markAll}
+				</button>
+				<button id="new-notif" class="inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-4 py-2.5 min-h-[44px] hover:opacity-90 transition-opacity">
+					<span class="material-symbols-outlined text-[19px]">add</span>
+					{n.newNotif}
+				</button>
+			</div>
+		</div>
+
+		<!-- Type filters -->
+		<div id="type-filters" class="flex flex-wrap gap-2"></div>
+
+		<!-- List -->
+		<div id="notif-list" class="flex flex-col gap-2">
+			<!-- rendered client-side -->
+		</div>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import {
+		getFleet,
+		seedFleetIfEmpty,
+		setNotificationRead,
+		setAllNotificationsRead,
+		removeFleetItem,
+		addFleetNotification,
+	} from "@/lib/fleet-store";
+	import { toast, escapeHtml, timeAgo } from "@/lib/fleet-ui";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+	seedFleetIfEmpty();
+
+	let filter = "all";
+
+	const ICONS: Record<string, { icon: string; cls: string }> = {
+		delay: { icon: "schedule", cls: "bg-tertiary-fixed text-on-tertiary-fixed" },
+		accident: { icon: "warning", cls: "bg-error-container text-on-error-container" },
+		detour: { icon: "alt_route", cls: "bg-primary-fixed text-on-primary-fixed" },
+		info: { icon: "info", cls: "bg-coastal-teal/15 text-on-secondary-container" },
+	};
+
+	const filtersEl = document.getElementById("type-filters");
+	const listEl = document.getElementById("notif-list");
+
+	function renderFilters() {
+		if (!filtersEl) return;
+		const chips: [string, string][] = [["all", ui.filterAll], ...Object.entries(ui.types as Record<string, string>)];
+		filtersEl.innerHTML = chips
+			.map(
+				([key, label]) => `
+				<button type="button" data-filter="${key}" class="rounded-full px-4 py-2 font-label-md text-label-md transition-colors ${
+					filter === key ? "bg-deep-navy text-on-primary shadow-sm" : "text-on-surface-variant hover:bg-surface-container-low hover:text-deep-navy"
+				}">${escapeHtml(label)}</button>`,
+			)
+			.join("");
+		filtersEl.querySelectorAll<HTMLButtonElement>("[data-filter]").forEach((button) => {
+			button.addEventListener("click", () => {
+				filter = button.dataset.filter ?? "all";
+				renderFilters();
+				renderList();
+			});
+		});
+	}
+
+	function renderList() {
+		if (!listEl) return;
+		const items = getFleet().notifications.filter((n) => filter === "all" || n.type === filter);
+		if (items.length === 0) {
+			listEl.innerHTML = `
+				<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-10 text-center flex flex-col items-center gap-2">
+					<span class="material-symbols-outlined text-[44px] text-outline">notifications_off</span>
+					<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.noResults)}</p>
+				</div>`;
+			return;
+		}
+		listEl.innerHTML = items
+			.map((item) => {
+				const meta = ICONS[item.type] ?? ICONS.info;
+				return `
+				<article class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-4 flex items-start gap-3 ${item.read ? "" : "border-l-4 border-l-deep-navy"}">
+					<span class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${meta.cls}">
+						<span class="material-symbols-outlined icon-filled text-[20px]">${meta.icon}</span>
+					</span>
+					<div class="min-w-0 flex-1">
+						<div class="flex flex-wrap items-center gap-2">
+							<p class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(item.title)}</p>
+							${item.read ? "" : `<span class="rounded-full bg-error-container text-on-error-container px-2 py-0.5 font-label-md text-label-md">${escapeHtml(ui.unread)}</span>`}
+						</div>
+						<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">${escapeHtml(item.desc)}</p>
+						<p class="font-label-md text-label-md text-outline mt-1.5 flex items-center gap-1">
+							<span class="material-symbols-outlined text-[16px]">${ui.types[item.type] ? "label" : "label"}</span>
+							${escapeHtml((ui.types as Record<string, string>)[item.type] ?? item.type)}
+							· ${escapeHtml(timeAgo(item.createdAt, ui.locale))}
+						</p>
+					</div>
+					<div class="flex gap-1.5 flex-shrink-0">
+						${item.read ? "" : `<button data-act="read" data-id="${item.id}" title="${escapeHtml(ui.markRead)}" class="w-9 h-9 rounded-lg bg-coastal-teal/15 text-on-secondary-container hover:bg-coastal-teal hover:text-on-primary transition-colors inline-flex items-center justify-center"><span class="material-symbols-outlined text-[19px]">check</span></button>`}
+						<button data-act="delete" data-id="${item.id}" title="${escapeHtml(ui.cancel)}" class="w-9 h-9 rounded-lg bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors inline-flex items-center justify-center"><span class="material-symbols-outlined text-[19px]">delete</span></button>
+					</div>
+				</article>`;
+			})
+			.join("");
+		listEl.querySelectorAll<HTMLButtonElement>("[data-act]").forEach((button) => {
+			button.addEventListener("click", () => {
+				const id = Number(button.dataset.id);
+				if (button.dataset.act === "read") {
+					setNotificationRead(id, true);
+				} else {
+					removeFleetItem("notifications", id, ui.deleted);
+					toast(`${ui.deleted}`, "success");
+				}
+				renderList();
+			});
+		});
+	}
+
+	document.getElementById("mark-all")?.addEventListener("click", () => {
+		setAllNotificationsRead();
+		renderList();
+		toast(ui.markedRead, "success");
+	});
+
+	// New notification modal.
+	document.getElementById("new-notif")?.addEventListener("click", () => {
+		const routes = getFleet().routes;
+		const modal = document.createElement("div");
+		modal.className = "fixed inset-0 z-[65] flex items-center justify-center bg-inverse-surface/50 backdrop-blur-sm px-margin-mobile";
+		modal.innerHTML = `
+			<div class="bg-surface-container-lowest w-full max-w-lg rounded-xl shadow-ambient-lg flex flex-col">
+				<div class="flex items-center justify-between gap-4 px-5 py-4 border-b border-surface-variant">
+					<h3 class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(ui.titleLabel)}</h3>
+					<button data-close class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">close</span></button>
+				</div>
+				<form data-form class="px-5 py-4 flex flex-col gap-3">
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+						<div class="flex flex-col gap-1">
+							<label class="font-label-md text-label-md text-on-surface">${escapeHtml(ui.fieldType)} *</label>
+							<select name="type" class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal">
+								${Object.entries(ui.types as Record<string, string>).map(([key, label]) => `<option value="${key}">${escapeHtml(label)}</option>`).join("")}
+							</select>
+						</div>
+						<div class="flex flex-col gap-1">
+							<label class="font-label-md text-label-md text-on-surface">${escapeHtml(ui.fieldRoute)}</label>
+							<select name="routeId" class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal">
+								<option value="">—</option>
+								${routes.map((r) => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.code)} · ${escapeHtml(r.name)}</option>`).join("")}
+							</select>
+						</div>
+					</div>
+					<div class="flex flex-col gap-1">
+						<label class="font-label-md text-label-md text-on-surface">${escapeHtml(ui.fieldTitle)} *</label>
+						<input name="title" required class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal" />
+					</div>
+					<div class="flex flex-col gap-1">
+						<label class="font-label-md text-label-md text-on-surface">${escapeHtml(ui.fieldDesc)} *</label>
+						<textarea name="desc" required class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2.5 font-body-md text-body-md outline-none focus:border-coastal-teal min-h-24"></textarea>
+					</div>
+					<div class="flex justify-end gap-2 pt-1">
+						<button type="button" data-close class="rounded-lg border border-outline-variant text-on-surface font-button text-button px-5 py-2.5 min-h-[44px] hover:border-deep-navy transition-colors">${escapeHtml(ui.cancel)}</button>
+						<button type="submit" class="rounded-lg bg-deep-navy text-on-primary font-button text-button px-6 py-2.5 min-h-[44px] hover:opacity-90 transition-opacity">${escapeHtml(ui.save)}</button>
+					</div>
+				</form>
+			</div>`;
+		document.body.appendChild(modal);
+		modal.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => modal.remove()));
+		modal.querySelector<HTMLFormElement>("[data-form]")?.addEventListener("submit", (e) => {
+			e.preventDefault();
+			const data = new FormData(e.target as HTMLFormElement);
+			addFleetNotification(
+				{
+					type: (String(data.get("type") ?? "info") || "info") as "delay" | "accident" | "detour" | "info",
+					routeId: String(data.get("routeId") ?? "") || undefined,
+					title: String(data.get("title") ?? "").trim(),
+					desc: String(data.get("desc") ?? "").trim(),
+					createdAt: new Date().toISOString(),
+					read: false,
+				},
+				`${ui.created}: ${String(data.get("title") ?? "")}`,
+			);
+			modal.remove();
+			renderList();
+			toast(ui.created, "success");
+		});
+	});
+
+	renderFilters();
+	renderList();
+</script>

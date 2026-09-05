@@ -14,21 +14,40 @@
 		"format": "biome format --write .",
 		"format:check": "biome format .",
 		"lint": "biome lint .",
-		"check": "biome check ."
+		"check": "biome check .",
+		"postinstall": "prisma skills sync || exit 0",
+		"db:generate": "bunx --bun prisma generate",
+		"db:push": "bunx --bun prisma db push",
+		"db:migrate": "bunx --bun prisma migrate dev",
+		"db:seed": "bunx --bun prisma db seed",
+		"db:studio": "bunx --bun prisma studio",
+		"db:setup": "bun run db:generate && bun run db:push && bun run db:seed"
+	},
+	"prisma": {
+		"seed": "bun run prisma/seed.ts"
 	},
 	"dependencies": {
+		"@prisma/adapter-pg": "^7.10.0",
+		"@prisma/client": "^7.10.0",
 		"@tailwindcss/vite": "^4.3.3",
 		"astro": "^7.2.10",
+		"dotenv": "^17.4.2",
+		"googleapis": "^178.0.0",
 		"jose": "^6.2.10",
+		"leaflet": "^1.9.4",
+		"pg": "^8.23.0",
 		"tailwindcss": "^4.3.3",
 		"zod": "^4.5.4"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.10",
+		"@astrojs/node": "^11.1.5",
 		"@biomejs/biome": "^2.5.11",
 		"@js-temporal/polyfill": "^0.5.1",
 		"@types/node": "^26.4.1",
+		"@types/pg": "^8.23.1",
 		"docx": "^9.7.1",
+		"prisma": "^7.10.0",
 		"typescript": "^6.0.3"
 	},
 	"author": "Sergio Jurado - @senseikatana",

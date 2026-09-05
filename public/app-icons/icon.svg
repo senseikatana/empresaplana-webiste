@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Optimized Icon 'P' - stylized bus front + map pin -->
+  <path d="M120 100C120 66.8629 146.863 40 180 40H300C366.274 40 420 93.7258 420 160C420 226.274 366.274 280 300 280H220V360C220 382.091 202.091 400 180 400H140C128.954 400 120 391.046 120 380V100Z" fill="#013990"/>
+  <!-- Location Pin Detail (Orange) -->
+  <circle cx="280" cy="160" r="45" fill="#EB8E02"/>
+  <!-- Stylized Bus Front Detail (White negative space) -->
+  <rect x="150" y="300" width="40" height="60" rx="10" fill="white"/>
+  <circle cx="160" cy="370" r="8" fill="white"/>
+  <!-- Responsive Text Layout (Visible in larger formats) -->
+  <text x="120" y="480" font-family="Geist, sans-serif" font-size="70" font-weight="bold" fill="#013990">PLANA</text>
+</svg>

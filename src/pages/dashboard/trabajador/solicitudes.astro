@@ -1,0 +1,205 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+import { QUOTE_FORM } from "@/data";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const w = a.worker;
+
+const ui = {
+	filterAll: w.filterAll,
+	noRequests: w.noRequests,
+	noRequestsDesc: w.noRequestsDesc,
+	actReview: w.actReview,
+	actAnswer: w.actAnswer,
+	actContract: w.actContract,
+	details: a.client.details,
+	hide: a.client.hide,
+	sentOn: a.client.sentOn,
+	updatedOn: a.client.updatedOn,
+	statusLabel: a.status.label,
+	statusLabels: a.status,
+	locale,
+};
+
+const uiJson = JSON.stringify(ui);
+---
+
+<AppLayout title={w.requestsTitle} description={a.tagline} active="requests" role="worker">
+	<div class="flex flex-col gap-stack-md">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{w.requestsTitle}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{w.requestsDesc}</p>
+		</div>
+
+		<!-- Status filters -->
+		<div id="filters" class="flex flex-wrap gap-2" role="group" aria-label={ui.statusLabel}>
+			<button type="button" class="js-filter rounded-full px-4 py-2 font-label-md text-label-md transition-colors" data-status="all">
+				{ui.filterAll}
+			</button>
+			<button type="button" class="js-filter rounded-full px-4 py-2 font-label-md text-label-md transition-colors" data-status="received">
+				{ui.statusLabels.received}
+			</button>
+			<button type="button" class="js-filter rounded-full px-4 py-2 font-label-md text-label-md transition-colors" data-status="review">
+				{ui.statusLabels.review}
+			</button>
+			<button type="button" class="js-filter rounded-full px-4 py-2 font-label-md text-label-md transition-colors" data-status="answered">
+				{ui.statusLabels.answered}
+			</button>
+			<button type="button" class="js-filter rounded-full px-4 py-2 font-label-md text-label-md transition-colors" data-status="contracted">
+				{ui.statusLabels.contracted}
+			</button>
+		</div>
+
+		<div id="request-list" class="flex flex-col gap-2">
+			<!-- rendered client-side -->
+		</div>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { listBudgets, updateBudgetStatus } from "@/lib/app-store";
+	import { fmtDay, escapeHtml, statusMeta } from "@/lib/app-format";
+	import { QUOTE_FORM } from "@/data";
+	import type { AppBudget, BudgetStatus } from "@/interfaces/app";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+
+	const listEl = document.getElementById("request-list");
+	const activeFilters = [...document.querySelectorAll<HTMLButtonElement>(".js-filter")];
+	let currentFilter: string = "all";
+
+	const reasonLabel = (id: string) =>
+		QUOTE_FORM.reasons.find((r) => r.id === id)?.labels[ui.locale as "es" | "ca" | "en"] ?? id;
+
+	const actionFor = (status: BudgetStatus): { label: string; next: BudgetStatus; icon: string } | null => {
+		if (status === "received") return { label: ui.actReview, next: "review", icon: "visibility" };
+		if (status === "review") return { label: ui.actAnswer, next: "answered", icon: "reply" };
+		if (status === "answered") return { label: ui.actContract, next: "contracted", icon: "handshake" };
+		return null;
+	};
+
+	function chipFor(status: BudgetStatus) {
+		const meta = statusMeta(status, ui.statusLabels);
+		return `<span class="${meta.chipClass}"><span class="material-symbols-outlined text-[16px]">${meta.icon}</span>${escapeHtml(meta.label)}</span>`;
+	}
+
+	function card(b: AppBudget) {
+		const meta = statusMeta(b.status, ui.statusLabels);
+		const action = actionFor(b.status);
+		const contactRows = [
+			["Email", b.email],
+			["Teléfono", b.phone],
+			b.company ? ["Empresa", b.company] : null,
+		].filter((row): row is [string, string] => Boolean(row));
+		return `
+		<article class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient overflow-hidden">
+			<div class="p-4 flex flex-col lg:flex-row lg:items-center gap-3">
+				<div class="flex-1 min-w-0">
+					<div class="flex flex-wrap items-center gap-2">
+						<h3 class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(reasonLabel(b.reasonId))}</h3>
+						${chipFor(b.status)}
+					</div>
+					<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+						<span class="material-symbols-outlined text-[16px] align-middle">person</span>
+						${escapeHtml(b.clientName)}
+						${b.departureCity && b.arrivalCity && b.departureCity !== b.arrivalCity ? ` · ${escapeHtml(b.departureCity)} → ${escapeHtml(b.arrivalCity)}` : ""}
+						${b.departureDay ? ` · ${escapeHtml(fmtDay(b.departureDay, ui.locale))} ${escapeHtml(b.departureTime)}` : ""}
+					</p>
+					<p class="font-body-md text-body-md text-outline text-sm mt-0.5">${escapeHtml(ui.sentOn)} ${escapeHtml(fmtDay(b.createdAt.slice(0, 10), ui.locale))}${b.people ? ` · ${escapeHtml(b.people)} pax` : ""}</p>
+				</div>
+				<div class="flex flex-wrap items-center gap-2 shrink-0">
+					${
+						action
+							? `<button type="button" class="js-advance inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-4 py-2.5 min-h-[44px] hover:opacity-90 transition-opacity" data-id="${escapeHtml(b.id)}">
+									<span class="material-symbols-outlined text-[18px]">${action.icon}</span>${escapeHtml(action.label)}
+								</button>`
+							: ""
+					}
+					<button type="button" class="js-details inline-flex items-center gap-1 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 min-h-[44px] hover:bg-surface-container-low transition-colors" data-id="${escapeHtml(b.id)}">
+						<span class="js-details-label">${escapeHtml(ui.details)}</span>
+						<span class="material-symbols-outlined text-[18px] js-details-icon">expand_more</span>
+					</button>
+				</div>
+			</div>
+			<div class="js-detail hidden border-t border-surface-variant bg-surface-container-low/40 px-4 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 font-body-md text-body-md">
+				${b.description ? `<div class="md:col-span-2"><p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-1">${escapeHtml(reasonLabel(b.reasonId))}</p><p class="text-on-surface">${escapeHtml(b.description)}</p></div>` : ""}
+				${contactRows
+					.map(
+						([label, value]) =>
+							`<div><p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-1">${escapeHtml(label)}</p><p class="text-on-surface">${escapeHtml(value)}</p></div>`,
+					)
+					.join("")}
+				<div>
+					<p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-1">${escapeHtml(ui.statusLabel)}</p>
+					<div class="flex items-center gap-2">${chipFor(b.status)}<span class="text-on-surface-variant">· ${escapeHtml(ui.updatedOn)} ${escapeHtml(fmtDay(b.updatedAt.slice(0, 10), ui.locale))}</span></div>
+				</div>
+			</div>
+		</article>`;
+	}
+
+	function render() {
+		if (!listEl) return;
+		const budgets = listBudgets().filter((b) => currentFilter === "all" || b.status === currentFilter);
+		if (budgets.length === 0) {
+			listEl.innerHTML = `
+				<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-10 text-center flex flex-col items-center gap-2">
+					<span class="material-symbols-outlined text-[44px] text-outline">inbox</span>
+					<p class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(ui.noRequests)}</p>
+					<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.noRequestsDesc)}</p>
+				</div>`;
+			return;
+		}
+		listEl.innerHTML = budgets.map(card).join("");
+		wire();
+	}
+
+	function wire() {
+		// Advance status.
+		listEl?.querySelectorAll<HTMLButtonElement>(".js-advance").forEach((button) => {
+			button.addEventListener("click", () => {
+				const id = button.dataset.id ?? "";
+				const budget = listBudgets().find((b) => b.id === id);
+				if (!budget) return;
+				const action = actionFor(budget.status);
+				if (!action) return;
+				updateBudgetStatus(id, action.next);
+				render();
+			});
+		});
+		// Toggle details.
+		listEl?.querySelectorAll<HTMLButtonElement>(".js-details").forEach((button) => {
+			button.addEventListener("click", () => {
+				const id = button.dataset.id ?? "";
+				const article = button.closest("article");
+				const detail = article?.querySelector<HTMLElement>(".js-detail");
+				const label = button.querySelector<HTMLElement>(".js-details-label");
+				const icon = button.querySelector<HTMLElement>(".js-details-icon");
+				if (!detail) return;
+				const isOpen = !detail.classList.contains("hidden");
+				detail.classList.toggle("hidden", isOpen);
+				if (label) label.textContent = isOpen ? ui.details : ui.hide;
+				if (icon) icon.textContent = isOpen ? "expand_more" : "expand_less";
+			});
+		});
+	}
+
+	activeFilters.forEach((button) => {
+		button.addEventListener("click", () => {
+			currentFilter = button.dataset.status ?? "all";
+			activeFilters.forEach((btn) => {
+				const isActive = btn === button;
+				btn.className = `js-filter rounded-full px-4 py-2 font-label-md text-label-md transition-colors ${
+					isActive ? "bg-deep-navy text-on-primary shadow-sm" : "text-on-surface-variant hover:bg-surface-container-low hover:text-deep-navy"
+				}`;
+			});
+			render();
+		});
+	});
+
+	// Initial filter chip style (all active).
+	activeFilters[0]?.click();
+</script>

@@ -177,6 +177,7 @@
 
 	/* Elevation */
 	--shadow-ambient: 0px 4px 20px rgba(1, 57, 144, 0.08);
+	--shadow-ambient-lg: 0px 8px 30px rgba(1, 57, 144, 0.12);
 }
 
 /* ── Shared component classes ──────────────────────────────────────────── */

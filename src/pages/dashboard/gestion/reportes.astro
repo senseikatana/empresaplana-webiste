@@ -1,0 +1,172 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import KpiCard from "@/components/app/KpiCard.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const g = dict.app.gestion;
+const r = g.reports;
+const a = dict.app;
+
+const uiJson = JSON.stringify({
+	locale,
+	passengersByRoute: r.passengersByRoute,
+	occupancyByRoute: r.occupancyByRoute,
+	weeklyPunctuality: r.weeklyPunctuality,
+	satisfaction: r.satisfaction,
+	satNames: r.satisfactionNames,
+});
+---
+
+<AppLayout title={r.title} description={a.tagline} active="reports" role="management">
+	<div class="flex flex-col gap-stack-lg">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{r.title}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{r.subtitle}</p>
+		</div>
+
+		<!-- KPIs -->
+		<div class="grid grid-cols-2 xl:grid-cols-4 gap-3">
+			<KpiCard kpiKey="passengers" icon="groups" label={r.kpiPassengers} value="" tone="teal" />
+			<KpiCard kpiKey="punctuality" icon="schedule" label={r.kpiPunctuality} value="" tone="navy" />
+			<KpiCard kpiKey="km" icon="route" label={r.kpiKm} value="" tone="orange" />
+			<KpiCard kpiKey="fuel" icon="local_gas_station" label={r.kpiFuel} value="" tone="default" />
+		</div>
+
+		<!-- Charts -->
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+			<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5">
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-4 flex items-center gap-2">
+					<span class="material-symbols-outlined text-coastal-teal icon-filled">bar_chart</span>
+					{r.passengersByRoute}
+				</h2>
+				<div id="passengers-chart" class="flex items-end gap-3 h-52 border-b border-surface-variant"></div>
+			</section>
+
+			<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5">
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-4 flex items-center gap-2">
+					<span class="material-symbols-outlined text-energetic-orange icon-filled">trending_up</span>
+					{r.occupancyByRoute}
+				</h2>
+				<div id="occupancy-chart" class="flex flex-col gap-3.5"></div>
+			</section>
+
+			<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5">
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-4 flex items-center gap-2">
+					<span class="material-symbols-outlined text-coastal-teal icon-filled">calendar_month</span>
+					{r.weeklyPunctuality}
+				</h2>
+				<div id="weekly-chart" class="flex items-end gap-3 h-52 border-b border-surface-variant"></div>
+			</section>
+
+			<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5">
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-4 flex items-center gap-2">
+					<span class="material-symbols-outlined text-energetic-orange icon-filled">star</span>
+					{r.satisfaction}
+				</h2>
+				<div id="satisfaction-chart" class="flex flex-col gap-3.5"></div>
+			</section>
+		</div>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { getFleet, seedFleetIfEmpty } from "@/lib/fleet-store";
+	import { escapeHtml, weekDayLabels } from "@/lib/fleet-ui";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+	seedFleetIfEmpty();
+	const data = getFleet();
+	const routes = data.routes;
+
+	// KPIs
+	const totalPassengers = Object.values(data.reports.passengers).reduce((a, b) => a + b, 0);
+	const occupancyValues = Object.values(data.reports.occupancy);
+	const avgPunctuality = Math.round(
+		data.reports.weeklyPunctuality.reduce((a, b) => a + b, 0) / data.reports.weeklyPunctuality.length,
+	);
+	const kpiValues: Record<string, string> = {
+		passengers: totalPassengers.toLocaleString(ui.locale === "en" ? "en-GB" : "es-ES"),
+		punctuality: `${avgPunctuality}%`,
+		km: "48.520",
+		fuel: "3.240 L",
+	};
+	document.querySelectorAll<HTMLElement>("[data-kpi]").forEach((el) => {
+		const key = el.dataset.kpi ?? "";
+		if (kpiValues[key]) el.textContent = kpiValues[key];
+	});
+
+	// Passengers per route (bars)
+	const pChart = document.getElementById("passengers-chart");
+	if (pChart) {
+		const max = Math.max(...Object.values(data.reports.passengers));
+		pChart.innerHTML = routes
+			.map((route) => {
+				const value = data.reports.passengers[route.id] ?? 0;
+				const height = Math.max((value / max) * 100, 4);
+				return `
+				<div class="flex-1 flex flex-col items-center gap-1 min-w-0" title="${escapeHtml(route.name)}">
+					<span class="font-label-md text-label-md text-on-surface-variant">${value.toLocaleString()}</span>
+					<div class="w-full rounded-t-lg transition-all" style="height:${height}%;background:${escapeHtml(route.color)};min-height:14px"></div>
+					<span class="font-label-md text-label-md text-outline truncate max-w-full">${escapeHtml(route.code)}</span>
+				</div>`;
+			})
+			.join("");
+	}
+
+	// Occupancy (progress bars)
+	const oChart = document.getElementById("occupancy-chart");
+	if (oChart) {
+		oChart.innerHTML = routes
+			.map((route) => {
+				const value = data.reports.occupancy[route.id] ?? 0;
+				return `
+				<div>
+					<div class="flex justify-between font-body-md text-body-md mb-1">
+						<span class="text-on-surface"><span style="color:${escapeHtml(route.color)}">${escapeHtml(route.code)}</span> · ${escapeHtml(route.name)}</span>
+						<span class="font-semibold text-deep-navy">${value}%</span>
+					</div>
+					<div class="h-2 rounded-full bg-surface-container overflow-hidden">
+						<div class="h-full rounded-full" style="width:${value}%;background:${escapeHtml(route.color)}"></div>
+					</div>
+				</div>`;
+			})
+			.join("");
+	}
+
+	// Weekly punctuality (bars + weekday labels)
+	const wChart = document.getElementById("weekly-chart");
+	if (wChart) {
+		const days = weekDayLabels(ui.locale);
+		wChart.innerHTML = data.reports.weeklyPunctuality
+			.map((value, i) => `
+				<div class="flex-1 flex flex-col items-center gap-1 min-w-0">
+					<span class="font-label-md text-label-md text-on-surface-variant">${value}%</span>
+					<div class="w-full rounded-t-lg bg-coastal-teal/80 transition-all" style="height:${value}%;min-height:12px"></div>
+					<span class="font-label-md text-label-md text-outline">${escapeHtml(days[i] ?? "")}</span>
+				</div>`)
+			.join("");
+	}
+
+	// Satisfaction (progress bars)
+	const sChart = document.getElementById("satisfaction-chart");
+	if (sChart) {
+		sChart.innerHTML = (data.reports.satisfaction as { name: string; value: number }[])
+			.map((metric) => {
+				const name = (ui.satNames as Record<string, string>)[metric.name] ?? metric.name;
+				return `
+				<div>
+					<div class="flex justify-between font-body-md text-body-md mb-1">
+						<span class="text-on-surface">${escapeHtml(name)}</span>
+						<span class="font-semibold text-deep-navy">${metric.value}%</span>
+					</div>
+					<div class="h-2 rounded-full bg-surface-container overflow-hidden">
+						<div class="h-full rounded-full bg-deep-navy transition-all" style="width:${metric.value}%"></div>
+					</div>
+				</div>`;
+			})
+			.join("");
+	}
+</script>

@@ -1,7 +1,8 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
-import { getLocale, getDictionary, LOCALES } from "@/config/i18n";
+export const prerender = true;
+import { getLocale, getDictionary } from "@/config/i18n";
 
 const locale = getLocale(Astro.url.searchParams.get("lang"));
 const dict = getDictionary(locale);
@@ -15,10 +16,22 @@ const bodyClass = "bg-background font-body-md text-on-surface antialiased";
 
 const b = dict.homeVariant2.booking;
 const r = dict.homeVariant2.routes;
-const f = dict.homeVariant2.footer;
 const c = dict.common;
 const nav = dict.homeVariant2.nav;
-const pathname = Astro.url.pathname;
+const hc = dict.homeContent;
+const dcta = dict.discretionary.cta;
+
+const valueProps = [
+	{ icon: "route", ...hc.valueProps.items.routes },
+	{ icon: "accessible", ...hc.valueProps.items.accessibility },
+	{ icon: "directions_bus", ...hc.valueProps.items.fleet },
+	{ icon: "support_agent", ...hc.valueProps.items.personalized },
+];
+
+const rentalPhones = [
+	{ icon: "location_city", area: dcta.areaTarragona, phone: dcta.phoneTarragona },
+	{ icon: "apartment", area: dcta.areaBarcelona, phone: dcta.phoneBarcelona },
+];
 
 const routes = [
 	{
@@ -29,7 +42,7 @@ const routes = [
 	{
 		name: r.cards.salou.name,
 		desc: r.cards.salou.desc,
-		image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCS_Y9gPdjXrImUXZ65N5l76nPP7REWGf_VX9OfqxkeKHgxetcQcDGLUDD6Iv9niiV9-dXPcKnQHZiTPpQhExB1wXFH-bwHEY3OMeMmLo14k9d8hJ4lHs3eKUyCvAuFH2Ij0nsCgDXQhmrd3TTLkR_KzXlKD1mk3cY9al0ZH2P38b640MFuQPzVHPSGSFBd4svdCX-nM1TXb0t-JQdkq8BuyuOHxeoVSscAtXtPvDkCsZmcwpfKurFM",
+		image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCS_Y9gPdjXrImUXZ65N5l76nPP7REWGf_VX9OfqxkeKHgxetcQcDGLUDD6Iv9niiV9-dXPcKnQHZiTPpQhExB1wXFH-bWHEY3OMeMmLo14k9d8hJ4lHs3eKUyCvAuFH2Ij0nsCgDXQhmrd3TTLkR_KzXlKD1mk3cY9al0ZH2P38b640MFuQPzVHPSGSFBd4svdCX-nM1TXb0t-JQdkq8BuyuOHxeoVSscAtXtPvDkCsZmcwpfKurFM",
 	},
 	{
 		name: r.cards.tarragona.name,
@@ -37,167 +50,185 @@ const routes = [
 		image: "https://lh3.googleusercontent.com/aida-public/AB6AXuALCTStN1KjKoERi_amy7j_4oDqH_zKta9y-6njpzTeQLcnGGa9bHoIIBTHSl83I8IvImB6EklI4mcgtLkc9PomRpMBzjilrxBjOd2dM67-vTc44k49lIWtM7l0GLP8o_8h0YsnBsskph1Pm5tUw28j2Z9BLwwonwsKcJiTroFWeQ-PqNy6bbchWNmnCMsKOlphHAljt3BmAoelIhxN3DvyuYMyAZCc5Y8xfMUSSqatmt9eOzSAnhhI",
 	},
 ];
+
+const inputClass =
+	"w-full pl-10 pr-4 py-3 rounded border border-surface-variant focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none font-body-md text-on-surface transition-colors bg-surface-container-lowest";
 ---
 
 <BaseLayout {...siteInfo} bodyClass={bodyClass}>
-	<!-- Utility Bar -->
-	<div class="w-full bg-surface-container-lowest border-b border-surface-variant hidden md:block">
-		<div class="max-w-container-max mx-auto px-margin-desktop py-2 flex justify-end items-center gap-gutter text-sm font-label-md text-on-surface-variant">
-			<div class="flex gap-2 items-center">
-				{LOCALES.map((lang) => (
-					<a
-						class={`hover:text-primary transition-colors cursor-pointer ${lang === locale ? 'font-bold text-primary' : ''}`}
-						href={`${pathname}?lang=${lang}`}
-					>
-						{c.lang[lang]}
-					</a>
-				)).reduce((prev, curr) => <>{prev}<span class="text-outline-variant"> | </span>{curr}</>)}
-			</div>
-			<div class="flex items-center gap-2">
-				<span class="material-symbols-outlined text-[18px]">phone</span>
-				{c.phone}
-			</div>
-		</div>
-	</div>
-	<!-- Navigation -->
-	<nav class="bg-surface dark:bg-inverse-surface docked full-width top-0 z-50 sticky shadow-sm">
-		<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-20">
-			<!-- Brand -->
-			<a class="font-headline-md text-headline-md font-bold text-deep-navy dark:text-primary-fixed-dim flex items-center gap-2 text-primary" href="/">
-				{dict.homeVariant2.brand.name} <span class="text-on-surface-variant font-light">{dict.homeVariant2.brand.suffix}</span>
-			</a>
-			<!-- Links (Desktop) -->
-			<div class="hidden md:flex gap-8 items-center h-full">
-				<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary-fixed transition-colors duration-200 font-label-md h-full flex items-center border-b-2 border-transparent" href="/rutas-horarios">{nav.routesSchedules}</a>
-				<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary-fixed transition-colors duration-200 font-label-md h-full flex items-center border-b-2 border-transparent" href="/servicios-discrecionales">{nav.privateServices}</a>
-				<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary-fixed transition-colors duration-200 font-label-md h-full flex items-center border-b-2 border-transparent" href="/donde-estamos">{nav.aboutUs}</a>
-				<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary-fixed transition-colors duration-200 font-label-md h-full flex items-center border-b-2 border-transparent" href="#contacto">{nav.contact}</a>
-			</div>
-			<!-- Actions (Desktop) -->
-			<div class="hidden md:flex items-center gap-4">
-				<button class="font-button text-button text-on-surface-variant hover:text-primary transition-colors duration-200">{nav.contact}</button>
-				<a href="/solicitar-presupuesto" class="bg-primary text-on-primary font-button text-button px-6 py-3 rounded hover:opacity-90 transition-opacity">{c.nav.bookNow}</a>
-			</div>
-			<!-- Mobile Menu Toggle -->
-			<button class="md:hidden text-primary">
-				<span class="material-symbols-outlined text-[28px]">menu</span>
-			</button>
-		</div>
-	</nav>
 	<!-- Split Hero Section -->
 	<section class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg">
 		<div class="flex flex-col md:flex-row gap-gutter bg-surface-container-lowest rounded-xl overflow-hidden shadow-ambient">
 			<!-- Booking Widget (Left) -->
 			<div class="w-full md:w-5/12 p-8 flex flex-col justify-center">
 				<div class="flex gap-4 mb-8 border-b border-surface-variant">
-					<button class="pb-2 border-b-2 border-primary text-primary font-label-md text-label-md font-bold">{b.tabs.booking}</button>
-					<button class="pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-primary font-label-md text-label-md">{b.tabs.destination}</button>
-					<button class="pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-primary font-label-md text-label-md">{b.tabs.passengers}</button>
+					<button class="pb-2 border-b-2 border-deep-navy text-deep-navy font-label-md text-label-md font-bold" data-i18n="homeVariant2.booking.tabs.booking">{b.tabs.booking}</button>
+					<button class="pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-deep-navy font-label-md text-label-md" data-i18n="homeVariant2.booking.tabs.destination">{b.tabs.destination}</button>
+					<button class="pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-deep-navy font-label-md text-label-md" data-i18n="homeVariant2.booking.tabs.passengers">{b.tabs.passengers}</button>
 				</div>
-				<form class="flex flex-col gap-stack-md">
+				<form class="flex flex-col gap-stack-md" action="/rutas-horarios#results" method="get">
 					<div class="flex flex-col gap-2">
-						<label class="font-label-md text-label-md text-on-surface-variant">{b.origin}</label>
+						<label class="font-label-md text-label-md text-on-surface-variant" for="home-origin" data-i18n="homeVariant2.booking.origin">{b.origin}</label>
 						<div class="relative">
 							<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">location_on</span>
-							<input class="w-full pl-10 pr-4 py-3 rounded border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none font-body-md text-on-surface transition-colors bg-surface-container-lowest" placeholder={b.originPlaceholder} type="text"/>
+							<input id="home-origin" class={inputClass} placeholder={b.originPlaceholder} type="text" name="origin" data-i18n-placeholder="homeVariant2.booking.originPlaceholder" />
 						</div>
 					</div>
 					<div class="flex flex-col gap-2">
-						<label class="font-label-md text-label-md text-on-surface-variant">{b.destination}</label>
+						<label class="font-label-md text-label-md text-on-surface-variant" for="home-destination" data-i18n="homeVariant2.booking.destination">{b.destination}</label>
 						<div class="relative">
 							<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">location_on</span>
-							<input class="w-full pl-10 pr-4 py-3 rounded border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none font-body-md text-on-surface transition-colors bg-surface-container-lowest" placeholder={b.destinationPlaceholder} type="text"/>
+							<input id="home-destination" class={inputClass} placeholder={b.destinationPlaceholder} type="text" name="destination" data-i18n-placeholder="homeVariant2.booking.destinationPlaceholder" />
 						</div>
 					</div>
 					<div class="flex gap-4">
 						<div class="flex flex-col gap-2 w-1/2">
-							<label class="font-label-md text-label-md text-on-surface-variant">{b.date}</label>
+							<label class="font-label-md text-label-md text-on-surface-variant" for="home-date" data-i18n="homeVariant2.booking.date">{b.date}</label>
 							<div class="relative">
 								<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">calendar_month</span>
-								<input class="w-full pl-10 pr-4 py-3 rounded border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none font-body-md text-on-surface transition-colors bg-surface-container-lowest" placeholder={b.datePlaceholder} type="text"/>
+								<input id="home-date" class={inputClass} placeholder={b.datePlaceholder} type="text" name="date" data-i18n-placeholder="homeVariant2.booking.datePlaceholder" />
 							</div>
 						</div>
 						<div class="flex flex-col gap-2 w-1/2">
-							<label class="font-label-md text-label-md text-on-surface-variant">{b.passengers}</label>
+							<label class="font-label-md text-label-md text-on-surface-variant" for="home-passengers" data-i18n="homeVariant2.booking.passengers">{b.passengers}</label>
 							<div class="relative">
 								<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">person</span>
-								<select class="w-full pl-10 pr-4 py-3 rounded border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none font-body-md text-on-surface transition-colors bg-surface-container-lowest appearance-none">
+								<select id="home-passengers" class={`${inputClass} appearance-none`}>
 									<option>{b.oneAdult}</option>
 									<option>{b.twoAdults}</option>
 								</select>
 							</div>
 						</div>
 					</div>
-					<button class="w-full bg-energetic-orange text-on-primary font-button text-button py-4 rounded hover:opacity-90 transition-opacity mt-4 shadow-sm" type="button">
+					<a
+						class="w-full bg-energetic-orange text-on-primary font-button text-button py-4 rounded hover:opacity-90 transition-opacity mt-4 shadow-sm flex items-center justify-center min-h-[48px]"
+						href="/rutas-horarios"
+						data-i18n="homeVariant2.booking.search"
+					>
 						{b.search}
-					</button>
+					</a>
 				</form>
 			</div>
 			<!-- Hero Image (Right) -->
 			<div class="w-full md:w-7/12 h-64 md:h-auto min-h-[400px] relative">
-				<img alt="Empresa Plana Bus" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLuR0px2Ux0FRFwHGZhcyWf4jP8-thYfkTg-Qa9-C0NDlDE89WqHVKUW_V7Hg0Bhyu5wtCeB06RMgrQyVKqq9ea9G47HaWea0cqUfbVlTGjpDLvAL5TSZmlkqRBc6_XcGL6oIVa__QtUFgQWl9QRlaiHrS-THbWgvgczz8HBIZp_u9020eaPbdx9cOZskITDjTlhM7nTQo4K8yGXI5sMX2v9rNQ_xIdJpHM1N4OLNBcL3rg0QdCJt2GmyIk"/>
+				<img alt="Empresa Plana Bus" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLuR0px2Ux0FRFwHGZhcyWf4jP8-thYfkTg-Qa9-C0NDlDE89WqHVKUW_V7Hg0Bhyu5wtCeB06RMgrQyVKqq9ea9G47HaWea0cqUfbVlTGjpDLvAL5TSZmlkqRBc6_XcGL6oIVa__QtUFgQWl9QRlaiHrS-THbWgvgczz8HBIZp_u9020eaPbdx9cOZskITDjTlhM7nTQo4K8yGXI5sMX2v9rNQ_xIdJpHM1N4OLNBcL3rg0QdCJt2GmyIk" />
 				<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none"></div>
 			</div>
 		</div>
 	</section>
+
 	<!-- Popular Routes Section -->
-	<section class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg mb-16">
-		<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-primary mb-8 uppercase tracking-wide">{r.title}</h2>
+	<section class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg">
+		<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy mb-8 uppercase tracking-wide" data-i18n="homeVariant2.routes.title">{r.title}</h2>
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
 			{routes.map((route) => (
-				<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-ambient border border-surface-variant flex flex-col group cursor-pointer hover:-translate-y-1 transition-transform duration-300">
+				<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-ambient hover:shadow-ambient-lg border border-surface-variant flex flex-col group hover:-translate-y-1 transition-all duration-300">
 					<div class="h-48 relative overflow-hidden">
-						<img alt={route.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={route.image}/>
+						<img alt={route.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={route.image} />
 					</div>
 					<div class="p-6 flex flex-col flex-grow">
 						<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-2">{route.name}</h3>
 						<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3">{route.desc}</p>
 						<div class="mt-auto flex justify-between items-end border-t border-surface-variant pt-4">
 							<span class="font-label-md text-label-md text-outline">{r.startingFrom}</span>
-							<span class="font-headline-md text-headline-md font-bold text-primary">{r.price}</span>
+							<span class="font-headline-md text-headline-md font-bold text-deep-navy">{r.price}</span>
 						</div>
 					</div>
 				</div>
 			))}
 		</div>
 	</section>
-	<!-- Footer -->
-	<footer id="contacto" class="bg-primary text-on-primary font-body-md text-body-md full-width">
-		<div class="w-full py-stack-lg px-margin-desktop flex flex-col md:flex-row justify-between items-start gap-gutter max-w-container-max mx-auto border-b border-on-primary/20 pb-12">
-			<div class="flex flex-col gap-4 w-full md:w-1/4">
-				<span class="font-headline-md text-headline-md font-bold text-on-primary">{f.services}</span>
-				<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="/rutas-horarios">{c.nav.services}</a>
-				<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="/servicios-discrecionales">{f.privateServices}</a>
+
+	<!-- Value Props Section -->
+	<section class="bg-surface-gray w-full">
+		<div class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg md:py-20">
+			<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy mb-10 text-center uppercase tracking-wide" data-i18n="homeContent.valueProps.title">{hc.valueProps.title}</h2>
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+				{valueProps.map((item) => (
+					<div class="bg-surface-container-lowest rounded-xl shadow-ambient border border-surface-variant p-6 flex flex-col items-start gap-4">
+						<div class="w-12 h-12 rounded-full bg-primary-fixed text-primary-container flex items-center justify-center">
+							<span class="material-symbols-outlined icon-filled">{item.icon}</span>
+						</div>
+						<h3 class="font-label-md text-label-md uppercase tracking-wide text-deep-navy" data-i18n={`homeContent.valueProps.items.${item.icon === "route" ? "routes" : item.icon === "accessible" ? "accessibility" : item.icon === "directions_bus" ? "fleet" : "personalized"}.title`}>{item.title}</h3>
+						<p class="font-body-md text-body-md text-on-surface-variant" data-i18n={`homeContent.valueProps.items.${item.icon === "route" ? "routes" : item.icon === "accessible" ? "accessibility" : item.icon === "directions_bus" ? "fleet" : "personalized"}.desc`}>{item.desc}</p>
+					</div>
+				))}
 			</div>
-			<div class="flex flex-col gap-4 w-full md:w-1/4">
-				<span class="font-headline-md text-headline-md font-bold text-on-primary">{f.contact}</span>
-				<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="mailto:info@empresaplana.cat">info@empresaplana.cat</a>
-				<span class="text-on-primary/80">{c.phone}</span>
-			</div>
-			<div class="flex flex-col gap-4 w-full md:w-1/4">
-				<span class="font-headline-md text-headline-md font-bold text-on-primary">{f.social}</span>
-				<div class="flex gap-4">
-					<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="https://www.facebook.com/BusPlana"><span class="material-symbols-outlined icon-fill">qr_code_2</span></a>
-					<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="https://twitter.com/BusPlanaOficial"><span class="material-symbols-outlined icon-fill">alternate_email</span></a>
-					<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="https://www.instagram.com/busplana/"><span class="material-symbols-outlined icon-fill">photo_camera</span></a>
-					<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="https://www.youtube.com/user/busplana"><span class="material-symbols-outlined icon-fill">play_circle</span></a>
+		</div>
+	</section>
+
+	<!-- Airport Transfer Promo -->
+	<section class="w-full bg-deep-navy text-on-primary relative overflow-hidden">
+		<div class="absolute top-0 right-0 w-64 h-64 bg-surface-tint rounded-full blur-3xl opacity-40 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+		<div class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg md:py-16 relative flex flex-col md:flex-row items-start md:items-center justify-between gap-stack-lg">
+			<div class="flex items-start gap-5">
+				<div class="w-14 h-14 rounded-full bg-on-primary/10 border border-on-primary/20 flex items-center justify-center flex-shrink-0">
+					<span class="material-symbols-outlined text-secondary-fixed text-[28px]">flight_takeoff</span>
+				</div>
+				<div>
+					<p class="font-label-md text-label-md uppercase tracking-widest text-secondary-fixed mb-2" data-i18n="homeContent.airportPromo.tag">{hc.airportPromo.tag}</p>
+					<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold mb-2" data-i18n="homeContent.airportPromo.title">{hc.airportPromo.title}</h2>
+					<p class="font-body-md text-body-md text-on-primary/80 max-w-xl" data-i18n="homeContent.airportPromo.subtitle">{hc.airportPromo.subtitle}</p>
 				</div>
 			</div>
-			<div class="flex flex-col gap-4 w-full md:w-1/4">
-				<span class="font-headline-md text-headline-md font-bold text-on-primary">{f.legal}</span>
-				<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="/politica-privacidad">{c.footer.privacy}</a>
-				<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="/politica-cookies">{c.footer.cookies}</a>
-				<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors duration-200" href="/aviso-legal">{c.footer.terms}</a>
+			<a
+				class="inline-flex items-center justify-center gap-2 bg-energetic-orange text-on-primary font-button text-button px-8 py-4 rounded min-h-[48px] hover:opacity-90 transition-opacity flex-shrink-0"
+				href="https://www.busplana.com/"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				{hc.airportPromo.cta}
+				<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+			</a>
+		</div>
+	</section>
+
+	<!-- Coach Rental Section -->
+	<section class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg md:py-20">
+		<div class="bg-surface-container-lowest rounded-xl shadow-ambient border border-surface-variant overflow-hidden flex flex-col lg:flex-row">
+			<div class="lg:w-1/2 p-8 md:p-12 flex flex-col justify-center gap-5">
+				<div class="w-12 h-12 rounded-full bg-primary-fixed text-primary-container flex items-center justify-center">
+					<span class="material-symbols-outlined icon-filled">event_seat</span>
+				</div>
+				<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy" data-i18n="homeContent.coachRental.title">{hc.coachRental.title}</h2>
+				<p class="font-body-lg text-body-lg text-on-surface-variant" data-i18n="homeContent.coachRental.subtitle">{hc.coachRental.subtitle}</p>
+				<a
+					class="inline-flex items-center justify-center gap-2 self-start bg-energetic-orange text-on-primary font-button text-button px-8 py-4 rounded min-h-[48px] hover:opacity-90 transition-opacity"
+					href="/solicitar-presupuesto"
+					data-i18n="homeContent.coachRental.quoteCta"
+				>
+					{hc.coachRental.quoteCta}
+					<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+				</a>
+			</div>
+			<div class="lg:w-1/2 bg-surface-gray p-8 md:p-12 flex flex-col justify-center gap-4">
+				{rentalPhones.map((item) => (
+					<div class="bg-surface-container-lowest rounded-lg border border-surface-variant p-6 flex items-center gap-4 shadow-sm">
+						<div class="w-11 h-11 rounded-full bg-primary-fixed text-primary-container flex items-center justify-center flex-shrink-0">
+							<span class="material-symbols-outlined">{item.icon}</span>
+						</div>
+						<div>
+							<p class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">{item.area}</p>
+							<a class="font-headline-md text-headline-md font-bold text-deep-navy hover:text-coastal-teal transition-colors" href={`tel:${item.phone.replace(/\s/g, "")}`}>{item.phone}</a>
+						</div>
+					</div>
+				))}
 			</div>
 		</div>
-		<div class="w-full py-6 px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4 max-w-container-max mx-auto text-sm text-on-primary/60">
-			<p>{c.footer.copyright}</p>
-			<div class="flex gap-6">
-				<a class="hover:text-on-primary transition-colors" href="/politica-privacidad">{c.footer.privacy}</a>
-				<a class="hover:text-on-primary transition-colors" href="/aviso-legal">{c.footer.terms}</a>
-				<a class="hover:text-on-primary transition-colors" href="/politica-cookies">{c.footer.cookies}</a>
-				<a class="hover:text-on-primary transition-colors" href="#contacto">{c.footer.contact}</a>
+	</section>
+
+	<!-- Funded by strip -->
+	<section class="w-full border-t border-surface-variant bg-surface-container-lowest">
+		<div class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-md flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+			<span class="font-label-md text-label-md uppercase tracking-widest text-outline" data-i18n="about.fundedBy">{dict.about.fundedBy}</span>
+			<div class="flex flex-wrap justify-center gap-3">
+				{hc.fundedBy.items.map((item, i) => (
+					<span class="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container-low px-4 py-1.5 font-label-md text-label-md text-on-surface-variant" data-i18n={`homeContent.fundedBy.items.${i}`}>
+						<span class="material-symbols-outlined text-[16px] text-coastal-teal">verified</span>
+						{item}
+					</span>
+				))}
 			</div>
 		</div>
-	</footer>
+	</section>
 </BaseLayout>

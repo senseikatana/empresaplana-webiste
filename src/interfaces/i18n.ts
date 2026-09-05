@@ -1,9 +1,11 @@
 import type { About } from "@/interfaces/about";
+import type { AppDictionary } from "@/interfaces/app-i18n";
 import type { HomeVariant1, HomeVariant2 } from "@/interfaces/booking";
 import type { BusTracking } from "@/interfaces/bus-tracking";
 import type { Common, Locale } from "@/interfaces/common";
 import type { Discretionary } from "@/interfaces/discretionary";
 import type { Home } from "@/interfaces/home";
+import type { HomeContent } from "@/interfaces/home-content";
 import type { Legal } from "@/interfaces/legal";
 import type { Locations, LocationsMobile } from "@/interfaces/locations";
 import type { MobileApp } from "@/interfaces/mobile-app";
@@ -11,6 +13,8 @@ import type { Routes } from "@/interfaces/routes";
 export interface I18nDictionary {
 	common: Common;
 	home: Home;
+	homeContent: HomeContent;
+	app: AppDictionary;
 	routes: Routes;
 	mobileApp: MobileApp;
 	locations: Locations;

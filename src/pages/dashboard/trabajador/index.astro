@@ -1,0 +1,231 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import KpiCard from "@/components/app/KpiCard.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const w = a.worker;
+
+const uiJson = JSON.stringify({
+	locale,
+	myService: w.myService,
+	myBus: w.myBus,
+	myRoute: w.myRoute,
+	myShift: w.myShift,
+	noDriverAssigned: w.noDriverAssigned,
+	activeDrivers: w.activeDrivers,
+	driverBus: w.driverBus,
+	driverRoute: w.driverRoute,
+	driverShift: w.driverShift,
+	noAssignment: w.noAssignment,
+	incidents: w.incidents,
+	incidentsDesc: w.incidentsDesc,
+	viewAll: w.viewAll,
+	noIncidents: w.noIncidents,
+	kpiLines: w.kpiLines,
+	kpiOnTime: w.kpiOnTime,
+	kpiReports: w.kpiReports,
+	kpiRequests: w.kpiRequests,
+	lineStatusTitle: w.lineStatusTitle,
+	lineStatusDesc: w.lineStatusDesc,
+	noLineData: w.noLineData,
+	negativeToday: w.negativeToday,
+	reports: a.nav.reports,
+});
+---
+
+<AppLayout title={w.myService} description={a.tagline} active="home" role="worker">
+	<div class="flex flex-col gap-stack-lg">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{w.myService}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{a.tagline}</p>
+		</div>
+
+		<!-- Mi servicio (driver + bus + route + shift) -->
+		<section id="my-service" class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-6 flex flex-col gap-4">
+			<h2 class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2">
+				<span class="material-symbols-outlined text-coastal-teal icon-filled">badge</span>
+				{w.myService}
+			</h2>
+			<div id="my-service-content" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+		</section>
+
+		<!-- Incidencias recientes -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient">
+			<div class="flex items-center justify-between px-5 py-4 border-b border-surface-variant">
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy flex items-center gap-2">
+					<span class="material-symbols-outlined text-error icon-filled">notifications</span>
+					{w.incidents}
+				</h2>
+				<a href="/dashboard/trabajador/incidencias" class="font-label-md text-label-md text-coastal-teal hover:text-deep-navy transition-colors">{w.viewAll}</a>
+			</div>
+			<div id="recent-incidents" class="flex flex-col divide-y divide-surface-variant"></div>
+		</section>
+
+		<!-- Conductores activos -->
+		<section>
+			<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-3 flex items-center gap-2">
+				<span class="material-symbols-outlined text-coastal-teal icon-filled">group</span>
+				{w.activeDrivers}
+			</h2>
+			<div id="active-drivers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+		</section>
+
+		<!-- KPIs -->
+		<section>
+			<h2 class="font-headline-md text-headline-md font-bold text-on-surface mb-3">{w.lineStatusTitle}</h2>
+			<p class="font-body-md text-body-md text-on-surface-variant mb-4">{w.lineStatusDesc}</p>
+			<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+				<KpiCard kpiKey="lines" icon="directions_bus" label={w.kpiLines} value="" tone="navy" />
+				<KpiCard kpiKey="onTime" icon="schedule" label={w.kpiOnTime} value="" tone="teal" />
+				<KpiCard kpiKey="reports" icon="fact_check" label={w.kpiReports} value="" tone="orange" />
+				<KpiCard kpiKey="requests" icon="request_quote" label={w.kpiRequests} value="" tone="navy" />
+			</div>
+		</section>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { getCurrentUser, listBudgets, listReports, lineStats } from "@/lib/app-store";
+	import { getFleet, seedFleetIfEmpty } from "@/lib/fleet-store";
+	import { escapeHtml, timeAgo } from "@/lib/fleet-ui";
+	import { isToday } from "@/lib/app-format";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+	seedFleetIfEmpty();
+	const user = getCurrentUser();
+	const fleet = getFleet();
+
+	// ── Mi servicio ──
+	const serviceEl = document.getElementById("my-service-content");
+	if (serviceEl && user) {
+		const driver = user.driverId ? fleet.drivers.find((d) => d.id === user.driverId && d.status === "active") : null;
+		if (driver) {
+			const bus = fleet.buses.find((b) => b.number === driver.busNumber);
+			const route = fleet.routes.find((r) => r.id === driver.routeId);
+			const online = bus?.gps.online && bus?.status === "active";
+			const batteryColor = (bus?.gps.battery ?? 0) > 50 ? "text-coastal-teal" : (bus?.gps.battery ?? 0) > 20 ? "text-energetic-orange" : "text-error";
+			serviceEl.innerHTML = `
+				<div class="flex flex-col gap-1.5 p-4 rounded-lg bg-surface-gray border border-surface-variant">
+					<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">${escapeHtml(ui.myBus)}</span>
+					<span class="font-headline-md text-headline-md font-bold text-deep-navy">${bus ? escapeHtml(bus.number) : "—"}</span>
+					${bus ? `<span class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(bus.plate)} · ${bus.capacity} pax</span>` : ""}
+					${bus ? `<span class="font-body-md text-body-md ${batteryColor}">🔋 ${bus.gps.battery}% · ${online ? "🟢 Online" : "🔴 Offline"}</span>` : ""}
+				</div>
+				<div class="flex flex-col gap-1.5 p-4 rounded-lg bg-surface-gray border border-surface-variant">
+					<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">${escapeHtml(ui.myRoute)}</span>
+					<span class="font-headline-md text-headline-md font-bold" style="color:${route?.color ?? "#013990"}">${route ? escapeHtml(route.code + " · " + route.name) : "—"}</span>
+					${route ? `<span class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(route.origin)} → ${escapeHtml(route.destination)}</span>` : ""}
+				</div>
+				<div class="flex flex-col gap-1.5 p-4 rounded-lg bg-surface-gray border border-surface-variant">
+					<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">${escapeHtml(ui.myShift)}</span>
+					<span class="font-headline-md text-headline-md font-bold text-deep-navy">${driver.shiftDays ? escapeHtml(driver.shiftDays) : "—"}</span>
+					<span class="font-body-md text-body-md text-on-surface-variant">${driver.shiftHours ? escapeHtml(driver.shiftHours) : ""}</span>
+				</div>
+				<div class="flex flex-col gap-1.5 p-4 rounded-lg bg-surface-gray border border-surface-variant">
+					<span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">${escapeHtml(ui.driverBus)}</span>
+					<span class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(driver.name)}</span>
+					<span class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(driver.license)}</span>
+				</div>`;
+		} else {
+			serviceEl.innerHTML = `
+				<div class="col-span-full flex flex-col items-center gap-3 p-8 text-center">
+					<span class="material-symbols-outlined text-[48px] text-outline">person_off</span>
+					<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.noDriverAssigned)}</p>
+				</div>`;
+		}
+	}
+
+	// ── Incidencias recientes ──
+	const incidentsEl = document.getElementById("recent-incidents");
+	if (incidentsEl) {
+		const unread = fleet.notifications.filter((n) => !n.read).slice(0, 5);
+		if (unread.length === 0) {
+			incidentsEl.innerHTML = `
+				<div class="px-5 py-8 text-center">
+					<span class="material-symbols-outlined text-[40px] text-outline">notifications_off</span>
+					<p class="font-body-md text-body-md text-on-surface-variant mt-2">${escapeHtml(ui.noIncidents)}</p>
+				</div>`;
+		} else {
+			const ICONS: Record<string, { icon: string; cls: string }> = {
+				delay: { icon: "schedule", cls: "bg-tertiary-fixed text-on-tertiary-fixed" },
+				accident: { icon: "warning", cls: "bg-error-container text-on-error-container" },
+				detour: { icon: "alt_route", cls: "bg-primary-fixed text-on-primary-fixed" },
+				info: { icon: "info", cls: "bg-coastal-teal/15 text-on-secondary-container" },
+			};
+			incidentsEl.innerHTML = unread.map((n) => {
+				const meta = ICONS[n.type] ?? ICONS.info;
+				return `
+				<div class="flex items-start gap-3 px-5 py-4">
+					<span class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${meta.cls}">
+						<span class="material-symbols-outlined icon-filled text-[18px]">${meta.icon}</span>
+					</span>
+					<div class="min-w-0 flex-1">
+						<p class="font-body-md text-body-md font-semibold text-on-surface">${escapeHtml(n.title)}</p>
+						<p class="font-body-md text-body-md text-on-surface-variant text-sm line-clamp-2 mt-0.5">${escapeHtml(n.desc)}</p>
+					</div>
+					<span class="font-label-md text-label-md text-outline flex-shrink-0">${escapeHtml(timeAgo(n.createdAt, ui.locale))}</span>
+				</div>`;
+			}).join("");
+		}
+	}
+
+	// ── Conductores activos ──
+	const driversEl = document.getElementById("active-drivers");
+	if (driversEl) {
+		const active = fleet.drivers.filter((d) => d.status === "active");
+		driversEl.innerHTML = active.map((d) => {
+			const bus = fleet.buses.find((b) => b.number === d.busNumber);
+			const route = fleet.routes.find((r) => r.id === d.routeId);
+			const online = bus?.gps.online && bus?.status === "active";
+			return `
+			<article class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-4 flex flex-col gap-3">
+				<div class="flex items-center gap-3">
+					<span class="w-10 h-10 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center flex-shrink-0">
+						<span class="material-symbols-outlined icon-filled">person</span>
+					</span>
+					<div class="min-w-0">
+						<p class="font-headline-md text-headline-md font-bold text-deep-navy truncate">${escapeHtml(d.name)}</p>
+						<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(d.license)}</p>
+					</div>
+					${bus ? `<span class="ml-auto w-2.5 h-2.5 rounded-full flex-shrink-0 ${online ? "bg-coastal-teal" : "bg-outline-variant"}" title="${online ? "Online" : "Offline"}"></span>` : ""}
+				</div>
+				<div class="grid grid-cols-3 gap-2 text-center">
+					<div class="rounded-lg bg-surface-gray px-2 py-2">
+						<p class="text-[11px] font-label-md uppercase tracking-wider text-outline">${escapeHtml(ui.driverBus)}</p>
+						<p class="font-body-md text-body-md font-semibold text-on-surface">${bus ? escapeHtml(bus.number) : escapeHtml(ui.noAssignment)}</p>
+					</div>
+					<div class="rounded-lg bg-surface-gray px-2 py-2">
+						<p class="text-[11px] font-label-md uppercase tracking-wider text-outline">${escapeHtml(ui.driverRoute)}</p>
+						<p class="font-body-md text-body-md font-semibold" style="color:${route?.color ?? "#747783"}">${route ? escapeHtml(route.code) : escapeHtml(ui.noAssignment)}</p>
+					</div>
+					<div class="rounded-lg bg-surface-gray px-2 py-2">
+						<p class="text-[11px] font-label-md uppercase tracking-wider text-outline">${escapeHtml(ui.driverShift)}</p>
+						<p class="font-body-md text-body-md font-semibold text-on-surface">${d.shiftDays ? escapeHtml(d.shiftDays) : escapeHtml(ui.noAssignment)}</p>
+					</div>
+				</div>
+			</article>`;
+		}).join("");
+	}
+
+	// ── KPIs ──
+	const linesWithReports = fleet.routes.filter((r) => r.status !== "inactive" && listReports(r.id).some((rep) => isToday(rep.createdAt)));
+	const avgRate = linesWithReports.length
+		? Math.round(linesWithReports.reduce((acc, r) => acc + lineStats(r.id).onTimeRate, 0) / linesWithReports.length)
+		: 100;
+	const reportsToday = fleet.routes.reduce((acc, r) => acc + listReports(r.id).filter((rep) => isToday(rep.createdAt)).length, 0);
+	const openBudgets = listBudgets().filter((b) => b.status === "received" || b.status === "review").length;
+	const kpiValues: Record<string, string> = {
+		lines: String(fleet.routes.filter((r) => r.status !== "inactive").length),
+		onTime: `${avgRate}%`,
+		reports: String(reportsToday),
+		requests: String(openBudgets),
+	};
+	document.querySelectorAll<HTMLElement>("[data-kpi]").forEach((el) => {
+		const key = el.dataset.kpi ?? "";
+		if (kpiValues[key]) el.textContent = kpiValues[key];
+	});
+</script>

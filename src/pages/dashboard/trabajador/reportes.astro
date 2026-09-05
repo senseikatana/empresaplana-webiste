@@ -1,0 +1,251 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const w = a.worker;
+const bt = dict.busTracking;
+
+const ui = {
+	chooseLine: w.chooseLine,
+	noReports: w.noReports,
+	today: w.today,
+	addReport: w.addReport,
+	reportOk: w.reportOk,
+	statReports: w.statReports,
+	statRate: w.statRate,
+	statNegative: w.statNegative,
+	selectIssue: bt.feedback.selectIssue,
+	minutesLate: bt.feedback.minutesLate,
+	comment: bt.feedback.comment,
+	commentPlaceholder: bt.feedback.commentPlaceholder,
+	send: bt.feedback.send,
+	actions: bt.actions,
+	locale,
+};
+
+const uiJson = JSON.stringify(ui);
+---
+
+<AppLayout title={w.reportsTitle} description={a.tagline} active="reports" role="worker">
+	<div class="flex flex-col gap-stack-md">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{w.reportsTitle}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{w.reportsDesc}</p>
+		</div>
+
+		<!-- Line selector + stats -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-stack-md flex flex-col gap-4">
+			<div class="flex flex-col sm:flex-row sm:items-center gap-3">
+				<label class="font-label-md text-label-md text-on-surface shrink-0" for="line-select">{ui.chooseLine}</label>
+				<div class="relative flex-1">
+					<select
+						id="line-select"
+						class="w-full appearance-none rounded-lg border border-outline-variant bg-surface-container-lowest pl-4 pr-10 py-2.5 font-body-md text-body-md focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors"
+					></select>
+					<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+				</div>
+			</div>
+			<div class="grid grid-cols-3 gap-3 text-center" data-role="stats" hidden>
+				<div class="rounded-lg bg-surface-gray px-3 py-2.5">
+					<p class="font-label-md text-label-md uppercase tracking-wider text-outline">{ui.statReports}</p>
+					<p class="font-headline-md text-headline-md font-bold text-deep-navy" data-stat="total">0</p>
+				</div>
+				<div class="rounded-lg bg-surface-gray px-3 py-2.5">
+					<p class="font-label-md text-label-md uppercase tracking-wider text-outline">{ui.statRate}</p>
+					<p class="font-headline-md text-headline-md font-bold text-coastal-teal" data-stat="rate">100%</p>
+				</div>
+				<div class="rounded-lg bg-surface-gray px-3 py-2.5">
+					<p class="font-label-md text-label-md uppercase tracking-wider text-outline">{ui.statNegative}</p>
+					<p class="font-headline-md text-headline-md font-bold text-energetic-orange" data-stat="negative">0</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Register report -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-stack-md">
+			<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-3">{ui.addReport}</h2>
+			<form id="report-form" class="flex flex-col gap-4">
+				<div>
+					<p class="font-label-md text-label-md text-on-surface mb-2">{ui.selectIssue}</p>
+					<div id="action-options" class="flex flex-wrap gap-2"></div>
+				</div>
+				<div id="minutes-wrap" class="hidden flex flex-col gap-1.5">
+					<label class="font-label-md text-label-md text-on-surface" for="minutes-late">{ui.minutesLate}</label>
+					<input id="minutes-late" name="minutesLate" type="number" min="0" max="120" class="w-full sm:w-40 rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-body-md text-body-md focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors" />
+				</div>
+				<div class="flex flex-col gap-1.5">
+					<label class="font-label-md text-label-md text-on-surface" for="report-comment">{ui.comment}</label>
+					<textarea id="report-comment" name="comment" placeholder={ui.commentPlaceholder} class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-body-md text-body-md focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors min-h-20"></textarea>
+				</div>
+				<button type="submit" class="self-start inline-flex items-center gap-2 rounded-lg bg-energetic-orange text-on-primary font-button text-button px-6 py-3 min-h-[48px] hover:opacity-90 transition-opacity">
+					<span class="material-symbols-outlined">flag</span>
+					{ui.addReport}
+				</button>
+			</form>
+		</section>
+
+		<!-- Today's reports -->
+		<section>
+			<h2 class="font-headline-md text-headline-md font-bold text-on-surface mb-stack-sm">{ui.today}</h2>
+			<div id="report-list" class="flex flex-col gap-2">
+				<!-- rendered client-side -->
+			</div>
+		</section>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { addReport, listReports, lineStats } from "@/lib/app-store";
+	import { escapeHtml, fmtTime, isToday } from "@/lib/app-format";
+	import popularLines from "@/data/popular-lines.json";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+
+	type Line = { id: string; name: string; origin: string; destination: string };
+	const lines = popularLines.lines as Line[];
+
+	const actionKeys = ["onTime", "late", "early", "notPassed", "cancelled"] as const;
+	type ActionKey = (typeof actionKeys)[number];
+
+	const actionMeta: Record<ActionKey, { icon: string; classes: string }> = {
+		onTime: { icon: "schedule", classes: "peer-checked:bg-coastal-teal/15 peer-checked:text-on-secondary-container peer-checked:border-coastal-teal" },
+		late: { icon: "hourglass_bottom", classes: "peer-checked:bg-energetic-orange/15 peer-checked:text-on-surface peer-checked:border-energetic-orange" },
+		early: { icon: "hourglass_top", classes: "peer-checked:bg-primary-fixed peer-checked:text-on-primary-fixed peer-checked:border-primary" },
+		notPassed: { icon: "cancel", classes: "peer-checked:bg-error-container peer-checked:text-on-error-container peer-checked:border-error" },
+		cancelled: { icon: "block", classes: "peer-checked:bg-error-container peer-checked:text-on-error-container peer-checked:border-error" },
+	};
+
+	const select = document.getElementById("line-select") as HTMLSelectElement | null;
+	const statsWrap = document.querySelector<HTMLElement>('[data-role="stats"]');
+	const actionOptions = document.getElementById("action-options");
+	const minutesWrap = document.getElementById("minutes-wrap");
+	const minutesLate = document.getElementById("minutes-late") as HTMLInputElement | null;
+	const comment = document.getElementById("report-comment") as HTMLTextAreaElement | null;
+	const form = document.getElementById("report-form") as HTMLFormElement | null;
+	const reportList = document.getElementById("report-list");
+
+	let selectedAction: ActionKey | null = null;
+	const params = new URLSearchParams(window.location.search);
+	const initialLine = params.get("linea") ?? "penedes";
+
+	if (select) {
+		select.innerHTML = lines
+			.map((line) => `<option value="${escapeHtml(line.id)}" ${line.id === initialLine ? "selected" : ""}>${escapeHtml(line.name)}</option>`)
+			.join("");
+	}
+
+	// Action chips (radio style).
+	if (actionOptions) {
+		actionOptions.innerHTML = actionKeys
+			.map((key) => {
+				const meta = actionMeta[key];
+				return `
+				<label class="cursor-pointer">
+					<input type="radio" name="action" value="${key}" class="peer sr-only" ${key === "late" ? "" : ""} />
+					<span class="inline-flex items-center gap-1.5 rounded-full border border-outline-variant bg-surface-container-low px-4 py-2 font-label-md text-label-md text-on-surface-variant transition-colors peer-checked:shadow-sm ${meta.classes}">
+						<span class="material-symbols-outlined text-[18px]">${meta.icon}</span>
+						${escapeHtml(ui.actions[key])}
+					</span>
+				</label>`;
+			})
+			.join("");
+		actionOptions.querySelectorAll('input[name="action"]').forEach((input) => {
+			input.addEventListener("change", () => {
+				selectedAction = (input as HTMLInputElement).value as ActionKey;
+				minutesWrap?.classList.toggle("hidden", selectedAction !== "late");
+			});
+		});
+	}
+
+	function currentLine(): Line | null {
+		const id = select?.value ?? initialLine;
+		return lines.find((l) => l.id === id) ?? null;
+	}
+
+	function renderStats() {
+		const line = currentLine();
+		if (!line) return;
+		const stats = lineStats(line.id);
+		const statTotal = document.querySelector<HTMLElement>('[data-stat="total"]');
+		const statRate = document.querySelector<HTMLElement>('[data-stat="rate"]');
+		const statNegative = document.querySelector<HTMLElement>('[data-stat="negative"]');
+		if (statTotal) statTotal.textContent = String(stats.total);
+		if (statRate) statRate.textContent = `${stats.onTimeRate}%`;
+		if (statNegative) statNegative.textContent = String(stats.negative);
+		statsWrap?.removeAttribute("hidden");
+	}
+
+	function renderList() {
+		const line = currentLine();
+		if (!reportList) return;
+		if (!line) return;
+		const reports = listReports(line.id).filter((r) => isToday(r.createdAt));
+		if (reports.length === 0) {
+			reportList.innerHTML = `
+				<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-8 text-center flex flex-col items-center gap-2">
+					<span class="material-symbols-outlined text-[40px] text-outline">fact_check</span>
+					<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.noReports)}</p>
+				</div>`;
+			return;
+		}
+		reportList.innerHTML = reports
+			.map((r) => {
+				const key = r.action as ActionKey;
+				const meta = actionMeta[key] ?? actionMeta.onTime;
+				const toneClass =
+					key === "late" || key === "early" || key === "notPassed" || key === "cancelled"
+						? "bg-error-container/60 text-on-error-container"
+						: "bg-surface-container text-on-surface-variant";
+				return `
+				<article class="bg-surface-container-lowest rounded-xl border border-surface-variant p-4 flex items-start gap-3">
+					<span class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${toneClass}">
+						<span class="material-symbols-outlined text-[20px]">${meta.icon}</span>
+					</span>
+					<div class="min-w-0 flex-1">
+						<div class="flex flex-wrap items-center gap-x-3 gap-y-0.5">
+							<p class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(ui.actions[key] ?? r.action)}</p>
+							<p class="font-label-md text-label-md text-on-surface-variant">${escapeHtml(fmtTime(r.createdAt, ui.locale))}</p>
+						</div>
+						${r.minutesLate ? `<p class="font-body-md text-body-md text-on-surface-variant">${r.minutesLate} min</p>` : ""}
+						${r.comment ? `<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">"${escapeHtml(r.comment)}"</p>` : ""}
+					</div>
+				</article>`;
+			})
+			.join("");
+	}
+
+	function renderAll() {
+		renderStats();
+		renderList();
+	}
+
+	select?.addEventListener("change", () => {
+		const url = new URL(window.location.href);
+		url.searchParams.set("linea", select.value);
+		window.history.replaceState({}, "", url);
+		renderAll();
+	});
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const line = currentLine();
+		if (!line || !selectedAction) return;
+		addReport({
+			lineId: line.id,
+			stop: line.destination,
+			action: selectedAction,
+			minutesLate: selectedAction === "late" ? Number(minutesLate?.value || 0) || undefined : undefined,
+			comment: comment?.value.trim() || undefined,
+		});
+		form.reset();
+		selectedAction = null;
+		minutesWrap?.classList.add("hidden");
+		renderAll();
+	});
+
+	renderAll();
+</script>

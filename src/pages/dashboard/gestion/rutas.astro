@@ -1,0 +1,54 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const g = dict.app.gestion;
+const gc = g.common;
+const ent = g.entities.route;
+
+const uiJson = JSON.stringify({
+	common: {
+		add: gc.add,
+		edit: gc.edit,
+		delete: gc.delete,
+		save: gc.save,
+		cancel: gc.cancel,
+		search: gc.search,
+		actions: gc.actions,
+		empty: gc.empty,
+		confirmDelete: gc.confirmDelete,
+		all: gc.all,
+		newEntity: gc.newEntity,
+		editEntity: gc.editEntity,
+		statusLabel: gc.statusLabel,
+		updated: gc.updated,
+		created: gc.created,
+		deleted: gc.deleted,
+	},
+	states: g.states,
+	fields: ent.fields,
+	entityLabel: ent.label,
+	locale,
+});
+---
+
+<AppLayout title={g.nav.routes} description={dict.app.tagline} active="routes" role="management">
+	<div class="flex flex-col gap-stack-md">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{g.nav.routes}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{dict.app.tagline}</p>
+		</div>
+		<div id="crud-root"></div>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { mountCrud } from "@/lib/fleet-crud";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+	const root = document.getElementById("crud-root");
+	if (root) mountCrud({ root, entity: "routes", ui });
+</script>

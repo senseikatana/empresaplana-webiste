@@ -1,0 +1,172 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const c = dict.common;
+
+const ui = {
+	profile: a.nav.profile,
+	logout: a.nav.logout,
+	switchRole: a.nav.switchRole,
+	role: a.role,
+	roleLabel: a.status.label,
+	historyTitle: a.client.historyTitle,
+	historyDesc: a.client.historyDesc,
+	myBudgets: a.client.myBudgets,
+	locale,
+	statusLabels: a.status,
+	demoNote: a.misc.demoNote,
+	client: a.role.client,
+	worker: a.role.worker,
+	admin: a.role.admin,
+};
+
+const uiJson = JSON.stringify(ui);
+---
+
+<AppLayout title={a.nav.profile} description={a.tagline} active="profile" role="both">
+	<div class="flex flex-col gap-stack-md max-w-2xl">
+		<!-- Identity card (client-side) -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-stack-md md:p-6">
+			<div class="flex items-center gap-4">
+				<span id="p-avatar" class="w-16 h-16 rounded-full bg-deep-navy text-on-primary flex items-center justify-center font-headline-lg text-headline-lg font-bold flex-shrink-0"></span>
+				<div class="min-w-0">
+					<p id="p-fullname" class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy truncate"></p>
+					<p id="p-username" class="font-label-md text-label-md text-on-surface-variant"></p>
+					<span id="p-role-chip" class="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-label-md text-label-md bg-primary-fixed text-on-primary-fixed">
+						<span class="material-symbols-outlined text-[16px]">badge</span>
+						<span id="p-role-text"></span>
+					</span>
+				</div>
+			</div>
+			<dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-stack-md pt-stack-md border-t border-surface-variant font-body-md text-body-md">
+				<div>
+					<dt class="font-label-md text-label-md uppercase tracking-wider text-outline">Email</dt>
+					<dd id="p-email" class="text-on-surface"></dd>
+				</div>
+				<div>
+					<dt class="font-label-md text-label-md uppercase tracking-wider text-outline">Teléfono</dt>
+					<dd id="p-phone" class="text-on-surface"></dd>
+				</div>
+			</dl>
+		</section>
+
+		<!-- History (client role only) -->
+		<section id="history-section" class="hidden">
+			<h2 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">{ui.historyTitle}</h2>
+			<p class="font-body-md text-body-md text-on-surface-variant mb-stack-sm">{ui.historyDesc}</p>
+			<div id="history-list" class="flex flex-col gap-2">
+				<!-- rendered client-side -->
+			</div>
+		</section>
+
+		<!-- Demo role switch -->
+		<section class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-stack-md md:p-6">
+			<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-1">{ui.switchRole}</h2>
+			<p class="font-body-md text-body-md text-on-surface-variant mb-stack-md">{ui.demoNote}</p>
+			<div class="flex flex-col sm:flex-row gap-2">
+				<button type="button" data-role-switch="client" class="js-role-switch flex items-center justify-center gap-2 rounded-lg border border-surface-variant bg-surface-container-low px-4 py-3 font-button text-button text-on-surface hover:border-deep-navy hover:text-deep-navy transition-colors">
+					<span class="material-symbols-outlined text-coastal-teal icon-filled">person</span>
+					{ui.client}
+				</button>
+				<button type="button" data-role-switch="worker" class="js-role-switch flex items-center justify-center gap-2 rounded-lg border border-surface-variant bg-surface-container-low px-4 py-3 font-button text-button text-on-surface hover:border-deep-navy hover:text-deep-navy transition-colors">
+					<span class="material-symbols-outlined text-energetic-orange icon-filled">badge</span>
+					{ui.worker}
+				</button>
+				<button type="button" data-role-switch="admin" class="js-role-switch flex items-center justify-center gap-2 rounded-lg border border-surface-variant bg-surface-container-low px-4 py-3 font-button text-button text-on-surface hover:border-deep-navy hover:text-deep-navy transition-colors">
+					<span class="material-symbols-outlined text-on-surface-variant icon-filled">admin_panel_settings</span>
+					{ui.admin}
+				</button>
+			</div>
+		</section>
+
+		<!-- Logout -->
+		<button
+			id="logout-btn"
+			class="inline-flex items-center justify-center gap-2 rounded-lg bg-energetic-orange text-on-primary font-button text-button px-6 py-3.5 min-h-[48px] hover:opacity-90 transition-opacity w-full sm:w-auto self-start"
+		>
+			<span class="material-symbols-outlined">logout</span>
+			{ui.logout}
+		</button>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { getCurrentUser, getSession, setSessionRole, logout, listBudgets } from "@/lib/app-store";
+	import { fmtDay, escapeHtml, statusMeta } from "@/lib/app-format";
+	import { QUOTE_FORM } from "@/data";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+
+	const user = getCurrentUser();
+	const session = getSession();
+
+	const reasonLabel = (id: string) =>
+		QUOTE_FORM.reasons.find((r) => r.id === id)?.labels[ui.locale as "es" | "ca" | "en"] ?? id;
+
+	const avatar = document.getElementById("p-avatar");
+	const fullname = document.getElementById("p-fullname");
+	const usernameEl = document.getElementById("p-username");
+	const roleText = document.getElementById("p-role-text");
+	const emailEl = document.getElementById("p-email");
+	const phoneEl = document.getElementById("p-phone");
+	const historySection = document.getElementById("history-section");
+	const historyList = document.getElementById("history-list");
+
+	if (user) {
+		const roleKey = session?.role ?? user.role;
+		if (avatar) avatar.textContent = (user.name || "?").charAt(0).toUpperCase();
+		if (fullname) fullname.textContent = user.fullName;
+		if (usernameEl) usernameEl.textContent = `@${user.username} · ${ui.role[roleKey as "client" | "worker" | "admin"]}`;
+		if (roleText) roleText.textContent = ui.role[roleKey as "client" | "worker" | "admin"];
+		if (emailEl) emailEl.textContent = user.email;
+		if (phoneEl) phoneEl.textContent = user.phone;
+	}
+
+	// History: budgets of the signed-in user when the role is client.
+	if (user && session?.role === "client") {
+		const budgets = listBudgets(user.id);
+		if (historySection) historySection.classList.remove("hidden");
+		if (historyList) {
+			if (budgets.length === 0) {
+				historyList.innerHTML = `<p class="font-body-md text-body-md text-on-surface-variant">—</p>`;
+			} else {
+				historyList.innerHTML = budgets
+					.map((b) => {
+						const meta = statusMeta(b.status, ui.statusLabels);
+						return `
+						<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+							<div class="flex-1 min-w-0">
+								<p class="font-headline-md text-headline-md font-bold text-deep-navy truncate">${escapeHtml(reasonLabel(b.reasonId))}</p>
+								<p class="font-body-md text-body-md text-on-surface-variant">
+									${b.departureCity && b.arrivalCity && b.departureCity !== b.arrivalCity ? `${escapeHtml(b.departureCity)} → ${escapeHtml(b.arrivalCity)} · ` : ""}
+									${escapeHtml(fmtDay(b.departureDay || b.createdAt.slice(0, 10), ui.locale))}
+								</p>
+							</div>
+							<span class="${meta.chipClass}"><span class="material-symbols-outlined text-[16px]">${meta.icon}</span>${escapeHtml(meta.label)}</span>
+						</div>`;
+					})
+					.join("");
+			}
+		}
+	}
+
+	// Demo role switch.
+	document.querySelectorAll<HTMLButtonElement>(".js-role-switch").forEach((button) => {
+		button.addEventListener("click", () => {
+			const nextRole = (button.dataset.roleSwitch ?? "client") as "client" | "worker" | "admin";
+			setSessionRole(nextRole);
+			window.location.href = nextRole === "client" ? "/dashboard/cliente/" : "/dashboard/trabajador/";
+		});
+	});
+
+	// Logout.
+	document.getElementById("logout-btn")?.addEventListener("click", () => {
+		logout();
+		window.location.href = "/dashboard/";
+	});
+</script>

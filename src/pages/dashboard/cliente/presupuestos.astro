@@ -1,0 +1,320 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { QUOTE_FORM } from "@/data";
+import { getLocale, getDictionary } from "@/config/i18n";
+import type { Locale } from "@/interfaces/common";
+
+const locale = getLocale(Astro.url.searchParams.get("lang")) as Locale;
+const dict = getDictionary(locale);
+const a = dict.app;
+
+const contactFields = QUOTE_FORM.fields.filter((f) => f.group === "contact");
+const serviceFields = QUOTE_FORM.fields.filter((f) => f.group === "service");
+const labels = (f: (typeof QUOTE_FORM.fields)[number]) => f.labels[locale];
+const reasonPlaceholder = QUOTE_FORM.fields.find((f) => f.id === "reason")?.placeholder?.[locale] ?? "";
+
+const inputClass =
+	"w-full rounded border border-outline-variant bg-surface-container-lowest px-3.5 py-2.5 font-body-md text-body-md focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors";
+
+const ui = {
+	locale,
+	title: a.client.myBudgets,
+	newBudget: a.client.newBudget,
+	budgetTitle: a.client.budgetTitle,
+	budgetSubtitle: a.client.budgetSubtitle,
+	noBudgets: a.client.noBudgets,
+	noBudgetsDesc: a.client.noBudgetsDesc,
+	sentOn: a.client.sentOn,
+	updatedOn: a.client.updatedOn,
+	details: a.client.details,
+	hide: a.client.hide,
+	trip: a.client.trip,
+	sentOk: a.client.sentOk,
+	sentOkDesc: a.client.sentOkDesc,
+	goBudgets: a.client.goBudgets,
+	contactSection: QUOTE_FORM.sections.contact[locale],
+	serviceSection: QUOTE_FORM.sections.service[locale],
+	statusLabel: a.status.label,
+	statusLabels: a.status,
+	save: a.misc.save,
+	cancel: a.misc.cancel,
+	people: QUOTE_FORM.fields.find((f) => f.id === "people")?.labels[locale] ?? "",
+};
+
+const uiJson = JSON.stringify(ui);
+---
+
+<AppLayout title={a.nav.budgets} description={a.tagline} active="budgets" role="client">
+	<div class="flex flex-col gap-stack-md">
+		<div class="flex flex-wrap items-center justify-between gap-3">
+			<div>
+				<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{ui.title}</h1>
+				<p class="font-body-md text-body-md text-on-surface-variant mt-1">{a.client.quickBudgets}</p>
+			</div>
+			<button
+				id="toggle-form"
+				type="button"
+				class="inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-5 py-3 min-h-[48px] hover:opacity-90 transition-opacity"
+			>
+				<span class="material-symbols-outlined text-[20px]">add</span>
+				<span data-role="toggle-label">{ui.newBudget}</span>
+			</button>
+		</div>
+
+		<!-- New budget form (collapsible) -->
+		<section id="budget-form-wrap" class="hidden">
+			<div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-stack-md md:p-6">
+				<h2 class="font-headline-md text-headline-md font-bold text-deep-navy mb-1">{ui.budgetTitle}</h2>
+				<p class="font-body-md text-body-md text-on-surface-variant mb-stack-md">{ui.budgetSubtitle}</p>
+				<form id="budget-form" class="flex flex-col gap-stack-md">
+					<fieldset class="flex flex-col gap-3">
+						<legend class="font-label-md text-label-md uppercase tracking-widest text-coastal-teal mb-1">{ui.contactSection}</legend>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+							{contactFields.map((f) => (
+								<div class={f.id === "company" ? "sm:col-span-2 flex flex-col gap-1" : "flex flex-col gap-1"}>
+									<label class="font-label-md text-label-md text-on-surface" for={`f-${f.id}`}>
+										{labels(f)}{f.required && <span class="text-energetic-orange"> *</span>}
+									</label>
+									<input id={`f-${f.id}`} name={f.id} type={f.type} required={f.required} class={inputClass} />
+								</div>
+							))}
+						</div>
+					</fieldset>
+					<fieldset class="flex flex-col gap-3">
+						<legend class="font-label-md text-label-md uppercase tracking-widest text-coastal-teal mb-1">{ui.serviceSection}</legend>
+						<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+							{serviceFields.map((f) => {
+								const wide = f.type === "textarea" || f.id === "description";
+								return (
+									<div class:list={[wide ? "sm:col-span-2 lg:col-span-3 flex flex-col gap-1" : "flex flex-col gap-1", f.id === "reason" && "lg:col-span-1"]}>
+										<label class="font-label-md text-label-md text-on-surface" for={`f-${f.id}`}>
+											{labels(f)}{f.required && <span class="text-energetic-orange"> *</span>}
+										</label>
+										{f.type === "select" ? (
+											<select id={`f-${f.id}`} name={f.id} required={f.required} class={inputClass}>
+												<option value="">{reasonPlaceholder}</option>
+												{QUOTE_FORM.reasons.map((reason) => (
+													<option value={reason.id}>{reason.labels[locale]}</option>
+												))}
+											</select>
+										) : f.type === "textarea" ? (
+											<textarea id={`f-${f.id}`} name={f.id} required={f.required} class={`${inputClass} min-h-24`}></textarea>
+										) : (
+											<input id={`f-${f.id}`} name={f.id} type={f.type} required={f.required} class={inputClass} />
+										)}
+									</div>
+								);
+							})}
+						</div>
+					</fieldset>
+					<div class="flex flex-wrap justify-end gap-2">
+						<button
+							type="button"
+							id="cancel-form"
+							class="rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface font-button text-button px-5 py-3 min-h-[48px] hover:border-deep-navy hover:text-deep-navy transition-colors"
+						>
+							{ui.cancel}
+						</button>
+						<button
+							type="submit"
+							class="rounded-lg bg-energetic-orange text-on-primary font-button text-button px-6 py-3 min-h-[48px] hover:opacity-90 transition-opacity inline-flex items-center gap-2"
+						>
+							<span class="material-symbols-outlined">send</span>
+							{QUOTE_FORM.submit[locale]}
+						</button>
+					</div>
+				</form>
+			</div>
+		</section>
+
+		<!-- My budgets -->
+		<section>
+			<div class="flex items-center justify-between mb-stack-sm">
+				<h2 class="font-headline-md text-headline-md font-bold text-on-surface">{ui.title}</h2>
+			</div>
+			<div id="budget-list" class="flex flex-col gap-2">
+				<!-- rendered client-side -->
+			</div>
+		</section>
+	</div>
+
+	<!-- Toast -->
+	<div
+		id="app-toast"
+		class="hidden fixed inset-x-0 bottom-24 lg:bottom-6 z-50 flex justify-center px-margin-mobile pointer-events-none"
+		role="status"
+	></div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { getSession, getCurrentUser, listBudgets, saveBudget } from "@/lib/app-store";
+	import { fmtDay, escapeHtml, statusMeta } from "@/lib/app-format";
+	import { QUOTE_FORM } from "@/data";
+	import type { AppBudget } from "@/interfaces/app";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+
+	const session = getSession();
+	const user = getCurrentUser();
+	const listEl = document.getElementById("budget-list");
+	const formWrap = document.getElementById("budget-form-wrap");
+	const toggleForm = document.getElementById("toggle-form");
+	const cancelForm = document.getElementById("cancel-form");
+	const form = document.getElementById("budget-form") as HTMLFormElement | null;
+	const toast = document.getElementById("app-toast");
+	const toggleLabel = document.querySelector<HTMLElement>('[data-role="toggle-label"]');
+
+	const reasonLabel = (id: string) =>
+		QUOTE_FORM.reasons.find((r) => r.id === id)?.labels[ui.locale as "es" | "ca" | "en"] ?? id;
+
+	let formOpen = new URLSearchParams(window.location.search).has("nuevo");
+
+	function showToast(html: string) {
+		if (!toast) return;
+		toast.innerHTML = html;
+		toast.classList.remove("hidden");
+		setTimeout(() => toast.classList.add("hidden"), 4000);
+	}
+
+	function openForm(open: boolean) {
+		formOpen = open;
+		formWrap?.classList.toggle("hidden", !open);
+		if (toggleLabel) toggleLabel.textContent = open ? ui.cancel : ui.newBudget;
+		const icon = toggleForm?.querySelector(".material-symbols-outlined");
+		if (icon) icon.textContent = open ? "close" : "add";
+		if (open) formWrap?.scrollIntoView({ behavior: "smooth", block: "start" });
+	}
+
+	toggleForm?.addEventListener("click", () => openForm(!formOpen));
+	cancelForm?.addEventListener("click", () => openForm(false));
+
+	// Prefill contact fields with the signed-in user profile.
+	if (user) {
+		const prefill: Record<string, string> = {
+			name: user.fullName,
+			email: user.email,
+			phone: user.phone,
+		};
+		for (const [id, value] of Object.entries(prefill)) {
+			const input = document.getElementById(`f-${id}`) as HTMLInputElement | null;
+			if (input && !input.value) input.value = value;
+		}
+	}
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+		if (!session || !user) return;
+		const data = new FormData(form);
+		const val = (id: string) => String(data.get(id) ?? "").trim();
+		saveBudget({
+			userId: user.id,
+			clientName: val("name"),
+			email: val("email"),
+			phone: val("phone"),
+			company: val("company"),
+			reasonId: val("reason"),
+			description: val("description"),
+			departureCity: val("departureCity"),
+			departureDay: val("departureDay"),
+			departureTime: val("departureTime"),
+			arrivalCity: val("arrivalCity"),
+			arrivalDay: val("arrivalDay"),
+			arrivalTime: val("arrivalTime"),
+			people: val("people"),
+		});
+		form.reset();
+		openForm(false);
+		renderList();
+		showToast(`
+			<div class="pointer-events-auto bg-surface-container-lowest border border-coastal-teal/40 shadow-ambient-lg rounded-xl px-5 py-4 flex items-center gap-3 max-w-md">
+				<span class="material-symbols-outlined text-coastal-teal icon-filled">check_circle</span>
+				<div>
+					<p class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(ui.sentOk)}</p>
+					<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.sentOkDesc)}</p>
+				</div>
+			</div>`);
+	});
+
+	function card(b: AppBudget) {
+		const meta = statusMeta(b.status, ui.statusLabels);
+		const tripShown = b.departureCity && b.arrivalCity && b.departureCity !== b.arrivalCity;
+		return `
+		<article class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient overflow-hidden">
+			<div class="p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+				<div class="flex-1 min-w-0">
+					<div class="flex flex-wrap items-center gap-2">
+						<h3 class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(reasonLabel(b.reasonId))}</h3>
+						<span class="${meta.chipClass}"><span class="material-symbols-outlined text-[16px]">${meta.icon}</span>${escapeHtml(meta.label)}</span>
+					</div>
+					<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+						${escapeHtml(ui.sentOn)} ${escapeHtml(fmtDay(b.createdAt.slice(0, 10), ui.locale))}
+						${b.departureDay ? ` · ${escapeHtml(fmtDay(b.departureDay, ui.locale))} ${escapeHtml(b.departureTime)}` : ""}
+					</p>
+				</div>
+				<details class="group shrink-0">
+					<summary class="cursor-pointer list-none font-label-md text-label-md text-coastal-teal hover:text-deep-navy transition-colors flex items-center gap-1 py-1">
+						<span data-role="details-label">${escapeHtml(ui.details)}</span>
+						<span class="material-symbols-outlined text-[18px] transition-transform group-open:rotate-180">expand_more</span>
+					</summary>
+				</details>
+			</div>
+			<div class="hidden" data-role="budget-detail">
+				<div class="border-t border-surface-variant px-4 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3 bg-surface-container-low/40 font-body-md text-body-md">
+					${b.description ? `<div class="sm:col-span-2 lg:col-span-3"><p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-1">${escapeHtml(reasonLabel(b.reasonId))}</p><p class="text-on-surface">${escapeHtml(b.description)}</p></div>` : ""}
+					${tripShown ? `
+						<div>
+							<p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-1">${escapeHtml(ui.trip)}</p>
+							<p class="text-on-surface">${escapeHtml(b.departureCity)} → ${escapeHtml(b.arrivalCity)}</p>
+							${b.departureDay ? `<p class="text-on-surface-variant">${escapeHtml(fmtDay(b.departureDay, ui.locale))} · ${escapeHtml(b.departureTime)} → ${b.arrivalDay ? escapeHtml(fmtDay(b.arrivalDay, ui.locale)) : ""} ${escapeHtml(b.arrivalTime)}</p>` : ""}
+						</div>` : ""}
+					${b.people ? `
+						<div>
+							<p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-1">${escapeHtml(ui.people)}</p>
+							<p class="text-on-surface">${escapeHtml(b.people)}</p>
+						</div>` : ""}
+					<div>
+						<p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-1">${escapeHtml(ui.statusLabel)}</p>
+						<p class="text-on-surface-variant">${escapeHtml(ui.updatedOn)} ${escapeHtml(fmtDay(b.updatedAt.slice(0, 10), ui.locale))}</p>
+					</div>
+				</div>
+			</div>
+		</article>`;
+	}
+
+	function renderList() {
+		if (!listEl || !user) return;
+		const budgets = listBudgets(user.id);
+		if (budgets.length === 0) {
+			listEl.innerHTML = `
+				<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-8 text-center flex flex-col items-center gap-2">
+					<span class="material-symbols-outlined text-[44px] text-outline">inbox</span>
+					<p class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(ui.noBudgets)}</p>
+					<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.noBudgetsDesc)}</p>
+					<button type="button" class="js-open-new mt-3 inline-flex items-center gap-1.5 rounded-lg bg-deep-navy text-on-primary font-button text-button px-5 py-3 hover:opacity-90 transition-opacity">
+						${escapeHtml(ui.newBudget)}
+					</button>
+				</div>`;
+			listEl.querySelector(".js-open-new")?.addEventListener("click", () => openForm(true));
+		} else {
+			listEl.innerHTML = budgets.map(card).join("");
+		}
+		wireDetails();
+	}
+
+	function wireDetails() {
+		listEl?.querySelectorAll("details").forEach((details) => {
+			const label = details.querySelector<HTMLElement>('[data-role="details-label"]');
+			const body = details.querySelector<HTMLElement>('[data-role="budget-detail"]');
+			details.addEventListener("toggle", () => {
+				if (!label || !body) return;
+				const isOpen = (details as HTMLDetailsElement).open;
+				label.textContent = isOpen ? ui.hide : ui.details;
+				body.classList.toggle("hidden", !isOpen);
+			});
+		});
+	}
+
+	renderList();
+	if (formOpen || (user && listBudgets(user.id).length === 0)) openForm(true);
+</script>

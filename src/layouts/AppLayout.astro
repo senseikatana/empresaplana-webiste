@@ -1,0 +1,271 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getLocale, getDictionary, LOCALES } from "@/config/i18n";
+
+type NavKey =
+	| "home"
+	| "routes"
+	| "budgets"
+	| "requests"
+	| "lines"
+	| "reports"
+	| "profile"
+	| "panel"
+	| "map"
+	| "buses"
+	| "stops"
+	| "schedules"
+	| "drivers"
+	| "notifications"
+	| "integrations";
+
+interface Props {
+	title: string;
+	description?: string;
+	/** Which nav item is active on this page. */
+	active: NavKey;
+	/**
+	 * Role this page belongs to. "both" is used for shared pages (profile):
+	 * the session guard shows the nav matching the signed-in role.
+	 * "management" pages are admin-only (the bosses' dashboard).
+	 */
+	role: "client" | "worker" | "both" | "management";
+	bodyClass?: string;
+}
+
+const { title, description = "", active, role, bodyClass = "" } = Astro.props;
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const c = dict.common;
+
+const pathname = Astro.url.pathname;
+
+const langHref = (lang: string) => {
+	const url = new URL(pathname, Astro.url.origin);
+	for (const [key, value] of Astro.url.searchParams.entries()) {
+		if (key !== "lang") url.searchParams.set(key, value);
+	}
+	url.searchParams.set("lang", lang);
+	return `${url.pathname}${url.search}`;
+};
+
+type NavItem = { key: NavKey; href: string; icon: string; label: string; roles: string };
+
+const clientNav: NavItem[] = [
+	{ key: "home", href: "/dashboard/cliente/", icon: "home", label: a.nav.home, roles: "client" },
+	{ key: "routes", href: "/dashboard/cliente/rutas", icon: "route", label: a.nav.routes, roles: "client" },
+	{ key: "budgets", href: "/dashboard/cliente/presupuestos", icon: "request_quote", label: a.nav.budgets, roles: "client" },
+	{ key: "profile", href: "/dashboard/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
+];
+
+const workerNav: NavItem[] = [
+	{ key: "home", href: "/dashboard/trabajador/", icon: "directions_bus", label: a.nav.fleet, roles: "worker" },
+	{ key: "incidents", href: "/dashboard/trabajador/incidencias", icon: "notifications", label: a.worker.incidents, roles: "worker" },
+	{ key: "requests", href: "/dashboard/trabajador/solicitudes", icon: "assignment", label: a.nav.requests, roles: "worker" },
+	{ key: "lines", href: "/dashboard/trabajador/lineas", icon: "route", label: a.nav.lines, roles: "worker" },
+	{ key: "reports", href: "/dashboard/trabajador/reportes", icon: "fact_check", label: a.nav.reports, roles: "worker" },
+	{ key: "profile", href: "/dashboard/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
+];
+
+const g = dict.app.gestion;
+
+const managementNav: NavItem[] = [
+	{ key: "panel", href: "/dashboard/gestion/", icon: "space_dashboard", label: g.nav.panel, roles: "admin" },
+	{ key: "map", href: "/dashboard/gestion/mapa", icon: "map", label: g.nav.map, roles: "admin" },
+	{ key: "routes", href: "/dashboard/gestion/rutas", icon: "route", label: g.nav.routes, roles: "admin" },
+	{ key: "buses", href: "/dashboard/gestion/autobuses", icon: "directions_bus", label: g.nav.buses, roles: "admin" },
+	{ key: "stops", href: "/dashboard/gestion/paradas", icon: "location_on", label: g.nav.stops, roles: "admin" },
+	{ key: "schedules", href: "/dashboard/gestion/horarios", icon: "schedule", label: g.nav.schedules, roles: "admin" },
+	{ key: "drivers", href: "/dashboard/gestion/conductores", icon: "badge", label: g.nav.drivers, roles: "admin" },
+	{ key: "notifications", href: "/dashboard/gestion/notificaciones", icon: "notifications", label: g.nav.notifications, roles: "admin" },
+	{ key: "reports", href: "/dashboard/gestion/reportes", icon: "bar_chart", label: g.nav.reports, roles: "admin" },
+	{ key: "integrations", href: "/dashboard/gestion/integraciones", icon: "hub", label: g.nav.integrations, roles: "admin" },
+	{ key: "profile", href: "/dashboard/perfil", icon: "person", label: a.nav.profile, roles: "client,worker,admin" },
+];
+
+/** Every item, used by shared pages ("both") whose script filters by role. */
+const navAll = [...clientNav, ...workerNav, ...managementNav];
+
+/** Desktop sidebar items (shared pages render the union, filtered by script). */
+const nav =
+	role === "client" ? clientNav : role === "worker" ? workerNav : role === "both" ? navAll : managementNav;
+
+/** Mobile bottom-nav items (management keeps a compact subset). */
+const navMobile =
+	role === "management"
+		? managementNav.filter((item) => ["panel", "map", "notifications", "profile"].includes(item.key))
+		: role === "both"
+			? navAll
+			: nav;
+const uiJson = JSON.stringify({ requiredRole: role });
+
+const defaultBodyClass =
+	"bg-background text-on-surface font-body-md antialiased overflow-x-hidden min-h-screen";
+---
+
+<BaseLayout
+	title={`${title} - ${a.title}`}
+	description={description}
+	lang={locale}
+	themeColor="#013990"
+	bodyClass={`${defaultBodyClass} ${bodyClass}`}
+	showHeader={false}
+	showFooter={false}
+>
+	<!-- PWA meta + icon links -->
+	<link rel="manifest" href="/manifest.webmanifest" />
+	<meta name="theme-color" content="#013990" />
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+	<meta name="apple-mobile-web-app-title" content="Empresa Plana" />
+	<link rel="apple-touch-icon" href="/app-icons/apple-touch-icon.png" />
+	<link rel="icon" type="image/svg+xml" href="/app-icons/icon.svg" />
+
+	<div class="mx-auto w-full max-w-6xl">
+		<!-- App bar -->
+		<header class="sticky top-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md border-b border-surface-variant">
+			<div class="flex items-center justify-between gap-4 px-margin-mobile md:px-margin-desktop h-16">
+				<div class="flex items-center gap-3">
+					<a
+						href={role === "client" ? "/dashboard/cliente/" : role === "worker" ? "/dashboard/trabajador/" : role === "management" ? "/dashboard/gestion/" : "/dashboard/"}
+						class="flex items-center gap-2.5"
+					>
+						<img src="/app-icons/logo.svg" alt="" class="h-9 w-9" />
+						<span class="font-headline-md text-headline-md font-bold text-deep-navy leading-none">{c.brand}</span>
+						<span class="rounded bg-coastal-teal/15 px-1.5 py-0.5 font-label-md text-label-md text-on-secondary-container hidden sm:inline">App</span>
+					</a>
+				</div>
+				<div class="flex items-center gap-4">
+					<!-- Language switcher -->
+					<nav class="flex items-center gap-2 font-label-md text-label-md" aria-label={a.misc.language}>
+						{LOCALES.map((lang) => (
+							<a
+								class={`transition-colors ${lang === locale ? "font-bold text-deep-navy" : "text-on-surface-variant hover:text-deep-navy"}`}
+								href={langHref(lang)}
+								hreflang={lang}
+							>
+								{c.lang[lang]}
+							</a>
+						))}
+					</nav>
+					<a href="/dashboard/perfil" class="text-on-surface-variant hover:text-deep-navy transition-colors" aria-label={a.nav.profile}>
+						<span class="material-symbols-outlined text-[26px]">account_circle</span>
+					</a>
+				</div>
+			</div>
+		</header>
+
+		<div class="flex">
+			<!-- Sidebar (desktop) -->
+			<aside class="hidden lg:block w-64 shrink-0 border-r border-surface-variant">
+				<nav class="sticky top-16 py-stack-lg pr-3" aria-label="Dashboard">
+					<ul class="flex flex-col gap-1.5">
+						{nav.map((item) => (
+							<li data-roles={item.roles}>
+								<a
+									class={`flex items-center gap-3 rounded-lg px-4 py-3.5 font-label-md text-label-md transition-colors ${
+										active === item.key
+											? "bg-deep-navy text-on-primary shadow-sm"
+											: "text-on-surface-variant hover:bg-surface-container-low hover:text-deep-navy"
+									}`}
+									href={item.href}
+									aria-current={active === item.key ? "page" : undefined}
+								>
+									<span class="material-symbols-outlined text-[22px]">{item.icon}</span>
+									{item.label}
+								</a>
+							</li>
+						))}
+					</ul>
+					<p class="px-4 pt-6 text-xs text-outline leading-relaxed">{a.misc.demoNote}</p>
+				</nav>
+			</aside>
+
+			<!-- Page content -->
+			<div class="app-content min-w-0 flex-1 px-margin-mobile md:px-margin-desktop py-stack-lg pb-28 lg:pb-20">
+				<slot />
+			</div>
+		</div>
+	</div>
+
+	<!-- Bottom navigation (mobile) -->
+	<nav class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-surface-container-lowest border-t border-surface-variant shadow-ambient" aria-label="Dashboard">
+		<div class="mx-auto max-w-6xl px-2 py-1.5 flex justify-between items-center">
+			{navMobile.map((item) => (
+				<a
+					data-roles={item.roles}
+					class={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 min-w-[64px] transition-colors ${
+						active === item.key ? "text-deep-navy" : "text-on-surface-variant hover:text-deep-navy"
+					}`}
+					href={item.href}
+					aria-current={active === item.key ? "page" : undefined}
+				>
+					<span class={`material-symbols-outlined text-[24px] ${active === item.key ? "icon-filled" : ""}`}>{item.icon}</span>
+					<span class="text-[10px] font-label-md leading-none">{item.label}</span>
+				</a>
+			))}
+		</div>
+	</nav>
+</BaseLayout>
+
+<div id="layout-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	// Session guard: hide content until we know the session fits this page.
+	const content = document.querySelector(".app-content");
+	const ui = JSON.parse(document.getElementById("layout-ui")?.dataset.ui ?? "{}");
+	const requiredRole: string = ui.requiredRole ?? "client";
+
+	async function routeByRole() {
+		const { seedIfEmpty, getSession } = await import("@/lib/app-store");
+		seedIfEmpty();
+		if (requiredRole === "management") {
+			const { seedFleetIfEmpty } = await import("@/lib/fleet-store");
+			seedFleetIfEmpty();
+		}
+		const session = getSession();
+		if (!session) {
+			window.location.replace("/dashboard/");
+			return;
+		}
+		if (requiredRole === "both") {
+			// Shared pages: show only the nav items of the signed-in role.
+			const allowed =
+				session.role === "client"
+					? "client"
+					: session.role === "worker"
+						? "worker"
+						: "admin";
+			document.querySelectorAll<HTMLElement>("[data-roles]").forEach((el) => {
+				const roles = el.dataset.roles ?? "";
+				el.classList.toggle("hidden", !roles.split(",").some((r) => allowed.split(",").includes(r)));
+			});
+		} else if (session.role !== requiredRole && session.role !== "admin") {
+			window.location.replace(session.role === "client" ? "/dashboard/cliente/" : "/dashboard/trabajador/");
+			return;
+		}
+		content?.classList.add("app-content-ready");
+	}
+	routeByRole();
+
+	// Register the service worker (production builds only).
+	if (import.meta.env.PROD && "serviceWorker" in navigator) {
+		window.addEventListener("load", () => {
+			navigator.serviceWorker.register("/sw.js").catch(() => {
+				/* SW unavailable: the app still works online */
+			});
+		});
+	}
+</script>
+
+<style>
+	.app-content {
+		opacity: 0;
+		transition: opacity 0.2s ease;
+	}
+	.app-content-ready {
+		opacity: 1;
+	}
+</style>

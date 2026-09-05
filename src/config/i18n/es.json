@@ -22,7 +22,11 @@
 			"fleet": "Flota",
 			"sitemap": "Mapa del sitio",
 			"copyright": "© 2024 Empresa Plana. Todos los derechos reservados. Movilidad eficiente para el Mediterráneo."
-		}
+		},
+		"confirmationTitle": "Solicitud confirmada",
+		"confirmationHeading": "¡Solicitud enviada!",
+		"confirmationDesc": "Gracias por tu solicitud. Nos pondremos en contacto contigo a la brevedad.",
+		"backHome": "Volver al inicio"
 	},
 	"home": {
 		"title": "Empresa Plana - Pantallas",
@@ -59,6 +63,386 @@
 			"tracking": {
 				"label": "Seguimiento del autobús",
 				"desc": "Reporta si tu autobús pasa a la hora"
+			}
+		}
+	},
+	"homeContent": {
+		"valueProps": {
+			"title": "¿QUÉ TE OFRECE EMPRESA PLANA?",
+			"items": {
+				"routes": {
+					"title": "Rutas y horarios adaptados a ti",
+					"desc": "Líneas regulares y horarios pensados para tus desplazamientos diarios y tus vacaciones en la Costa Daurada."
+				},
+				"accessibility": {
+					"title": "Accesibilidad de movilidades reducidas",
+					"desc": "Autobuses y autocares adaptados para personas con movilidad reducida (P. M. R.)."
+				},
+				"fleet": {
+					"title": "Flota moderna en constante renovación",
+					"desc": "Más de 60 años de experiencia y una flota de más de 600 autocares con la última tecnología."
+				},
+				"personalized": {
+					"title": "Servicios personalizados",
+					"desc": "Transfers, excursiones y alquiler de autocares con conductor a medida de cada grupo."
+				}
+			}
+		},
+		"airportPromo": {
+			"tag": "Aeropuerto de Barcelona",
+			"title": "VIAJA AL AEROPUERTO DE BARCELONA",
+			"subtitle": "Traslados directos desde Tarragona, La Pineda, Salou y Cambrils. Compra tu traslado aquí.",
+			"cta": "COMPRAR TRASLADO"
+		},
+		"coachRental": {
+			"title": "ALQUILER AUTOCARES",
+			"subtitle": "Más de 60 años en el sector. Solicita tu presupuesto sin compromiso y viaja con la seguridad de Empresa Plana.",
+			"quoteCta": "SOLICITAR PRESUPUESTO"
+		},
+		"fundedBy": {
+			"title": "Financiado por",
+			"items": [
+				"Unión Europea - NextGenerationEU",
+				"Plan de Recuperación, Transformación y Resiliencia",
+				"Generalitat de Catalunya"
+			]
+		}
+	},
+	"app": {
+		"title": "App Empresa Plana",
+		"tagline": "Transporte público y discrecional en la Costa Daurada",
+		"auth": {
+			"welcome": "App Empresa Plana",
+			"subtitle": "Consulta rutas y horarios, solicita presupuestos o gestiona la flota. Todo en un mismo sitio.",
+			"username": "Usuario",
+			"passkey": "Contraseña",
+			"login": "Entrar",
+			"demoHint": "Demo: entra con un rol de prueba",
+			"asClient": "Entrar como Cliente",
+			"asWorker": "Entrar como Trabajador",
+			"asBoss": "Entrar como Jefe",
+			"invalid": "Usuario o contraseña no válidos."
+		},
+		"role": {
+			"client": "Cliente",
+			"worker": "Trabajador",
+			"admin": "Administrador"
+		},
+		"status": {
+			"label": "Estado",
+			"received": "Recibida",
+			"review": "En revisión",
+			"answered": "Respondida",
+			"contracted": "Contratada"
+		},
+		"nav": {
+			"home": "Inicio",
+			"routes": "Rutas",
+			"budgets": "Presupuestos",
+			"profile": "Perfil",
+			"fleet": "Flota",
+			"requests": "Solicitudes",
+			"lines": "Líneas",
+			"reports": "Reportes",
+			"logout": "Cerrar sesión",
+			"switchRole": "Cambiar rol"
+		},
+		"client": {
+			"greeting": "Hola, {name}",
+			"nextService": "Próximo servicio",
+			"noNextService": "No tienes servicios próximos. Solicita un presupuesto o consulta las rutas.",
+			"quickAccess": "Acceso rápido",
+			"quickRoutes": "Busca tu línea y descarga el horario en PDF",
+			"quickBudgets": "Solicita un presupuesto y sigue su estado",
+			"quickProfile": "Tu perfil, historial y rol",
+			"myBudgets": "Mis presupuestos",
+			"newBudget": "Nuevo presupuesto",
+			"budgetTitle": "Solicitar presupuesto",
+			"budgetSubtitle": "Cuéntanos tu servicio y te enviaremos una propuesta sin compromiso.",
+			"noBudgets": "Todavía no has enviado ninguna solicitud.",
+			"noBudgetsDesc": "Cuando solicites un presupuesto podrás seguir aquí su estado.",
+			"sentOn": "Enviado el",
+			"updatedOn": "Actualizado el",
+			"details": "Ver detalles",
+			"hide": "Ocultar detalles",
+			"trip": "Trayecto",
+			"sentOk": "¡Presupuesto enviado!",
+			"sentOkDesc": "Lo hemos recibido y lo revisaremos en breve. Puedes seguir su estado aquí.",
+			"goBudgets": "Ver mis presupuestos",
+			"historyTitle": "Historial",
+			"historyDesc": "Tus presupuestos y servicios contratados con Empresa Plana."
+		},
+		"worker": {
+			"linesTitle": "Líneas y horarios",
+			"linesDesc": "Las líneas que opera Empresa Plana, con sus horarios en PDF.",
+			"kpiLines": "Líneas activas",
+			"kpiOnTime": "Puntualidad",
+			"kpiReports": "Reportes hoy",
+			"kpiRequests": "Solicitudes abiertas",
+			"lineStatusTitle": "Estado de las líneas",
+			"lineStatusDesc": "Resumen de puntualidad por línea según los reportes de hoy.",
+			"noLineData": "Sin reportes todavía",
+			"negativeToday": "incidencias hoy",
+			"statReports": "Reportes",
+			"statRate": "% Puntualidad",
+			"statNegative": "Incidencias",
+			"requestsTitle": "Solicitudes de presupuesto",
+			"requestsDesc": "Presupuestos recibidos de clientes. Revisa, responde y cierra el ciclo.",
+			"filterAll": "Todas",
+			"noRequests": "No hay solicitudes con este filtro.",
+			"noRequestsDesc": "Las nuevas solicitudes de los clientes aparecerán aquí.",
+			"actReview": "Iniciar revisión",
+			"actAnswer": "Marcar como respondida",
+			"actContract": "Marcar como contratada",
+			"reportsTitle": "Reportes de puntualidad",
+			"reportsDesc": "Registra incidencias por línea y consulta los reportes del día.",
+			"chooseLine": "Elige una línea",
+			"noReports": "Sin reportes hoy en esta línea.",
+			"today": "Hoy",
+			"addReport": "Registrar reporte",
+			"reportOk": "Reporte registrado. ¡Gracias!",
+			"myService": "Mi servicio",
+			"myBus": "Mi autobús",
+			"myRoute": "Mi ruta",
+			"myShift": "Mi turno",
+			"noDriverAssigned": "No tienes un conductor asignado",
+			"activeDrivers": "Conductores activos",
+			"driverBus": "Autobús",
+			"driverRoute": "Ruta",
+			"driverShift": "Turno",
+			"noAssignment": "Sin asignar",
+			"incidents": "Incidencias",
+			"incidentsDesc": "Incidencias y alertas de la operación",
+			"viewAll": "Ver todas",
+			"noIncidents": "No hay incidencias"
+		},
+		"misc": {
+			"demoNote": "Modo demo: los datos se guardan solo en este dispositivo.",
+			"cancel": "Cancelar",
+			"save": "Guardar",
+			"close": "Cerrar",
+			"language": "Idioma"
+		},
+		"gestion": {
+			"nav": {
+				"panel": "Panel",
+				"map": "Mapa en vivo",
+				"routes": "Rutas",
+				"buses": "Autobuses",
+				"stops": "Paradas",
+				"schedules": "Horarios",
+				"drivers": "Conductores",
+				"notifications": "Notificaciones",
+				"reports": "Reportes",
+				"integrations": "Integraciones"
+			},
+			"common": {
+				"add": "Añadir",
+				"edit": "Editar",
+				"delete": "Eliminar",
+				"save": "Guardar",
+				"cancel": "Cancelar",
+				"search": "Buscar",
+				"actions": "Acciones",
+				"empty": "Sin registros",
+				"confirmDelete": "¿Seguro que quieres eliminar este registro?",
+				"all": "Todos",
+				"newEntity": "Añadir {entity}",
+				"editEntity": "Editar {entity}",
+				"statusLabel": "Estado",
+				"back": "Volver",
+				"updated": "Registro actualizado",
+				"created": "Registro creado",
+				"deleted": "Registro eliminado"
+			},
+			"states": {
+				"active": "Activa",
+				"inactive": "Inactiva",
+				"delayed": "Con retraso",
+				"maintenance": "En taller",
+				"online": "En línea",
+				"offline": "Desconectado",
+				"enRoute": "En marcha"
+			},
+			"dashboard": {
+				"title": "Panel de gestión",
+				"subtitle": "Vista general de la operación de Empresa Plana",
+				"kpiBuses": "Autobuses activos",
+				"kpiRoutes": "Rutas operativas",
+				"kpiStops": "Paradas",
+				"kpiDrivers": "Conductores",
+				"kpiAlerts": "Alertas sin leer",
+				"upcomingTitle": "Próximas salidas",
+				"noUpcoming": "No hay salidas programadas",
+				"linesTitle": "Estado de las líneas",
+				"linesDesc": "Situación de cada línea según su servicio",
+				"notifTitle": "Últimas notificaciones",
+				"quickTitle": "Gestión rápida",
+				"openMap": "Abrir mapa en vivo",
+				"activityTitle": "Actividad reciente"
+			},
+			"map": {
+				"title": "Mapa en vivo",
+				"subtitle": "Seguimiento GPS de la flota en tiempo real",
+				"live": "GPS en vivo · {n} autobuses",
+				"searchPlaceholder": "Busca una localidad o dirección…",
+				"legendTitle": "Leyenda",
+				"legendActive": "Servicio activo",
+				"legendDelayed": "Con retraso",
+				"legendInactive": "Sin servicio",
+				"legendStop": "Parada",
+				"locate": "Tu ubicación",
+				"notFound": "No se pudo obtener la ubicación"
+			},
+			"entities": {
+				"route": {
+					"label": "Ruta",
+					"fields": {
+						"code": "Código",
+						"name": "Nombre",
+						"origin": "Origen",
+						"destination": "Destino",
+						"driver": "Conductor",
+						"route": "Ruta"
+					}
+				},
+				"bus": {
+					"label": "Autobús",
+					"fields": {
+						"number": "Número",
+						"plate": "Matrícula",
+						"company": "Empresa",
+						"capacity": "Capacidad",
+						"route": "Ruta"
+					}
+				},
+				"stop": {
+					"label": "Parada",
+					"fields": {
+						"name": "Nombre",
+						"address": "Dirección",
+						"lat": "Latitud",
+						"lng": "Longitud",
+						"routes": "Rutas"
+					}
+				},
+				"schedule": {
+					"label": "Horario",
+					"fields": {
+						"route": "Ruta",
+						"departure": "Salida",
+						"arrival": "Llegada",
+						"frequency": "Frecuencia",
+						"days": "Días"
+					}
+				},
+				"driver": {
+					"label": "Conductor",
+					"fields": {
+						"name": "Nombre",
+						"phone": "Teléfono",
+						"license": "Licencia",
+						"bus": "Autobús"
+					}
+				}
+			},
+			"notifications": {
+				"title": "Notificaciones",
+				"subtitle": "Alertas y comunicaciones de la operación",
+				"markAll": "Marcar todas como leídas",
+				"newNotif": "Nueva notificación",
+				"types": {
+					"delay": "Retraso",
+					"accident": "Accidente",
+					"detour": "Desvío",
+					"info": "Aviso"
+				},
+				"unread": "Sin leer",
+				"noResults": "No hay notificaciones con este filtro.",
+				"entityLabel": "Notificación",
+				"fieldType": "Tipo",
+				"fieldTitle": "Título",
+				"fieldDesc": "Descripción",
+				"fieldRoute": "Ruta",
+				"created": "Notificación creada",
+				"deleted": "Notificación eliminada",
+				"markedRead": "Notificaciones marcadas como leídas"
+			},
+			"reports": {
+				"title": "Reportes",
+				"subtitle": "Estadísticas y análisis de la operación",
+				"kpiPassengers": "Pasajeros hoy",
+				"kpiPunctuality": "Puntualidad",
+				"kpiKm": "Km recorridos",
+				"kpiFuel": "Combustible",
+				"passengersByRoute": "Pasajeros por ruta",
+				"occupancyByRoute": "Ocupación por ruta",
+				"weeklyPunctuality": "Puntualidad semanal",
+				"satisfaction": "Satisfacción de los usuarios",
+				"satisfactionNames": {
+					"punctuality": "Puntualidad",
+					"cleanliness": "Limpieza",
+					"comfort": "Confort",
+					"information": "Información",
+					"attention": "Atención"
+				}
+			},
+			"integrations": {
+				"title": "Integraciones",
+				"subtitle": "Servicios conectados con la operación (demo)",
+				"connected": "Activo",
+				"motis": {
+					"title": "MOTIS · planificador de rutas",
+					"desc": "Servicio de cálculo de rutas y horarios sobre datos GTFS.",
+					"url": "URL del servicio",
+					"port": "Puerto API",
+					"gtfsFile": "Archivo GTFS",
+					"region": "Región",
+					"regionOptions": [
+						"Cataluña",
+						"España",
+						"Europa"
+					],
+					"test": "Probar conexión",
+					"importGtfs": "Importar GTFS",
+					"docs": "Documentación"
+				},
+				"traccar": {
+					"title": "Traccar · GPS de flota",
+					"desc": "Recepción de señales GPS de los autobuses en tiempo real.",
+					"url": "URL del servidor",
+					"apiKey": "API Key",
+					"protocol": "Protocolo",
+					"test": "Probar conexión",
+					"sync": "Sincronizar dispositivos",
+					"devicesTitle": "Dispositivos GPS",
+					"bus": "Autobús",
+					"device": "Dispositivo",
+					"lastPos": "Última posición",
+					"speed": "Velocidad",
+					"battery": "Batería"
+				},
+				"gtfs": {
+					"title": "GTFS · exportación estándar",
+					"desc": "Genera el paquete GTFS de rutas, horarios y paradas para MOTIS.",
+					"agency": "Agencia",
+					"timezone": "Zona horaria",
+					"generate": "Generar GTFS",
+					"download": "Descargar ZIP"
+				},
+				"data": {
+					"title": "Datos y copia de seguridad",
+					"desc": "Exporta o importa todo el estado de la flota en formato JSON.",
+					"export": "Exportar JSON",
+					"import": "Importar JSON",
+					"activityTitle": "Registro de actividad"
+				},
+				"stepLabels": [
+					"Excel / Directus",
+					"Conversión",
+					"ZIP GTFS",
+					"MOTIS"
+				]
 			}
 		}
 	},

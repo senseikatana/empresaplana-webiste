@@ -1,5 +1,119 @@
 ---
+import BaseLayout from "@/layouts/BaseLayout.astro";
 import QuoteForm from "@/components/QuoteForm.astro";
+export const prerender = true;
+import { getLocale, getDictionary } from "@/config/i18n";
+import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
+import contact from "@/data/contact.json";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const c = dict.common;
+const a = dict.about;
+const dcta = dict.discretionary.cta;
+const langParam = `?lang=${locale}`;
+
+const siteInfo = getSiteInfo({
+	title: `${dict.discretionary.hero.cta} - ${c.brand}`,
+	description: a.contactCta,
+	lang: locale,
+	canonicalUrl: getCanonicalUrl(Astro.url.pathname),
+});
+
+const contactCards = [
+	{
+		icon: "call",
+		label: c.phone,
+		href: `tel:${contact.generalPhone.replace(/\s/g, "")}`,
+		sublabel: a.phoneHours,
+	},
+	...contact.phones.map((p) => ({
+		icon: "location_city",
+		label: p.phone,
+		href: `tel:${p.phone.replace(/\s/g, "")}`,
+		sublabel: p.area[locale as keyof typeof p.area],
+	})),
+	{
+		icon: "mail",
+		label: "info@empresaplana.cat",
+		href: "mailto:info@empresaplana.cat",
+		sublabel: c.footer.contact,
+	},
+	{
+		icon: "chat",
+		label: "WhatsApp",
+		href: contact.whatsapp,
+		sublabel: "+34 620 201 632",
+	},
+];
+
+const baseKeys = Object.keys(dict.locations.delegations.bases) as Array<keyof typeof dict.locations.delegations.bases>;
 ---
 
-<QuoteForm />
+<BaseLayout {...siteInfo} bodyClass="bg-background text-on-surface font-body-md antialiased flex flex-col min-h-screen">
+<main class="flex-grow">
+	<!-- Hero -->
+	<section class="bg-deep-navy text-on-primary relative overflow-hidden">
+		<div class="absolute -top-24 -right-24 w-96 h-96 bg-surface-tint rounded-full blur-3xl opacity-40 pointer-events-none"></div>
+		<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-16 relative">
+			<p class="font-label-md text-label-md uppercase tracking-widest text-secondary-fixed mb-2">{dcta.areaTarragona}</p>
+			<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg font-bold mb-3">{dict.discretionary.hero.cta}</h1>
+			<p class="font-body-lg text-body-lg text-on-primary/85 max-w-2xl">{a.contactCta}</p>
+		</div>
+	</section>
+
+	<!-- Contact info cards -->
+	<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop -mt-8 relative z-10 mb-stack-lg">
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+			{contactCards.map((card) => (
+				<a
+					href={card.href}
+					target={card.href.startsWith("http") ? "_blank" : undefined}
+					rel={card.href.startsWith("http") ? "noopener noreferrer" : undefined}
+					class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5 flex items-start gap-4 hover:-translate-y-0.5 hover:shadow-ambient-lg transition-all"
+				>
+					<span class="w-11 h-11 rounded-full bg-primary-fixed text-primary-container flex items-center justify-center flex-shrink-0">
+						<span class="material-symbols-outlined icon-filled text-[22px]">{card.icon}</span>
+					</span>
+					<div class="min-w-0">
+						<p class="font-headline-md text-headline-md font-bold text-deep-navy break-all">{card.label}</p>
+						<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">{card.sublabel}</p>
+					</div>
+				</a>
+			))}
+		</div>
+	</section>
+
+	<!-- Delegations -->
+	<section class="bg-surface-gray w-full mb-stack-lg">
+		<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg">
+			<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy mb-8">{dict.locations.delegations.title}</h2>
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+				{baseKeys.map((key, i) => {
+					const base = dict.locations.delegations.bases[key];
+					return (
+						<div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5 flex flex-col gap-2">
+							<div class="flex items-center gap-2">
+								<span class="w-9 h-9 rounded-full bg-primary-fixed text-primary-container flex items-center justify-center flex-shrink-0">
+									<span class="material-symbols-outlined text-[18px]">business</span>
+								</span>
+								<div>
+									<p class="font-label-md text-label-md text-coastal-teal uppercase tracking-wider">{dict.locations.delegations.label.replace("{n}", String(i + 1))}</p>
+									<p class="font-headline-md text-headline-md font-bold text-deep-navy">{base.name}</p>
+								</div>
+							</div>
+							<p class="font-body-md text-body-md text-on-surface-variant">{base.address}</p>
+							<p class="font-body-md text-body-md font-semibold text-on-surface">{base.city}</p>
+						</div>
+					);
+				})}
+			</div>
+		</div>
+	</section>
+
+	<!-- Quote form -->
+	<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pb-stack-lg">
+		<QuoteForm />
+	</div>
+</main>
+</BaseLayout>

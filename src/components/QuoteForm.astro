@@ -1,43 +1,44 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
 import { QUOTE_FORM } from "@/data";
+import { getLocale } from "@/config/i18n";
+import type { Locale } from "@/interfaces/common";
 
-const locale = "es";
+const locale = getLocale(Astro.url.searchParams.get("lang")) as Locale;
 const contactFields = QUOTE_FORM.fields.filter((field) => field.group === "contact");
 const serviceFields = QUOTE_FORM.fields.filter((field) => field.group === "service");
+const reasonField = QUOTE_FORM.fields.find((f) => f.id === "reason");
+const reasonPlaceholder = reasonField?.placeholder?.[locale] ?? "";
+const langParam = `?lang=${locale}`;
 ---
 
-<BaseLayout title="Solicitud de Presupuesto - Empresa Plana" description={QUOTE_FORM.title[locale]}>
-	<main class="mx-auto w-full max-w-container px-margin-mobile py-stack-lg md:px-margin-desktop">
-		<section class="mx-auto max-w-3xl rounded-xl border border-outline-variant bg-surface-container-lowest p-stack-md shadow-ambient md:p-stack-lg">
-			<h1 class="mb-stack-sm text-display-lg font-bold text-deep-navy">{QUOTE_FORM.title[locale]}</h1>
-			<p class="mb-stack-lg text-body-md text-on-surface-variant">Completa el formulario y nos pondremos en contacto contigo a la brevedad.</p>
-			<form action="/solicitud-confirmada" class="space-y-stack-md">
-				<fieldset class="space-y-stack-sm">
-					<legend class="mb-stack-sm text-headline-md font-bold text-deep-navy">{QUOTE_FORM.sections.contact[locale]}</legend>
-					<div class="grid gap-stack-sm md:grid-cols-2">
-						{contactFields.map((field) => (
-							<label class="space-y-1 text-label-md font-semibold text-on-surface">
-								<span>{field.labels[locale]}{field.required && " *"}</span>
-								<input class="w-full rounded border border-outline-variant bg-surface px-stack-sm py-2" name={field.id} type={field.type === "textarea" || field.type === "select" ? "text" : field.type} required={field.required} />
-							</label>
-						))}
-					</div>
-				</fieldset>
-				<fieldset class="space-y-stack-sm">
-					<legend class="mb-stack-sm text-headline-md font-bold text-deep-navy">{QUOTE_FORM.sections.service[locale]}</legend>
-					<div class="grid gap-stack-sm md:grid-cols-2">
-						{serviceFields.map((field) => (
-							<label class:list={["space-y-1 text-label-md font-semibold text-on-surface", field.type === "textarea" && "md:col-span-2"]}>
-								<span>{field.labels[locale]}{field.required && " *"}</span>
-								{field.type === "textarea" ? <textarea class="min-h-32 w-full rounded border border-outline-variant bg-surface px-stack-sm py-2" name={field.id} required={field.required} /> : field.type === "select" ? <select class="w-full rounded border border-outline-variant bg-surface px-stack-sm py-2" name={field.id} required={field.required}><option value="">Seleccione un motivo</option>{QUOTE_FORM.reasons.map((reason) => <option value={reason.id}>{reason.labels[locale]}</option>)}</select> : <input class="w-full rounded border border-outline-variant bg-surface px-stack-sm py-2" name={field.id} type={field.type} required={field.required} />}
-							</label>
-						))}
-					</div>
-				</fieldset>
-				<label class="flex gap-2 text-body-sm text-on-surface-variant"><input type="checkbox" required /> <span>{QUOTE_FORM.consent[locale]}</span></label>
-				<button class="rounded bg-energetic-orange px-stack-md py-stack-sm font-semibold text-white" type="submit">{QUOTE_FORM.submit[locale]}</button>
-			</form>
-		</section>
-	</main>
-</BaseLayout>
+<section class="mx-auto max-w-3xl rounded-xl border border-outline-variant bg-surface-container-lowest p-stack-md shadow-ambient md:p-stack-lg">
+	<h2 class="mb-stack-sm font-headline-lg text-headline-lg font-bold text-deep-navy" data-i18n="discretionary.hero.cta">{QUOTE_FORM.title[locale]}</h2>
+	<p class="mb-stack-lg text-body-md text-on-surface-variant">{QUOTE_FORM.sections.service[locale]}</p>
+	<form action={`/solicitud-confirmada${langParam}`} method="get" class="space-y-stack-md">
+		<input type="hidden" name="lang" value={locale} />
+		<fieldset class="space-y-stack-sm">
+			<legend class="mb-stack-sm font-headline-md text-headline-md font-bold text-deep-navy">{QUOTE_FORM.sections.contact[locale]}</legend>
+			<div class="grid gap-stack-sm md:grid-cols-2">
+				{contactFields.map((field) => (
+					<label class="space-y-1 text-label-md font-semibold text-on-surface">
+						<span>{field.labels[locale]}{field.required && " *"}</span>
+						<input class="w-full rounded border border-outline-variant bg-surface px-stack-sm py-2 focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors" name={field.id} type={field.type === "textarea" || field.type === "select" ? "text" : field.type} required={field.required} placeholder={field.placeholder?.[locale] ?? ""} />
+					</label>
+				))}
+			</div>
+		</fieldset>
+		<fieldset class="space-y-stack-sm">
+			<legend class="mb-stack-sm font-headline-md text-headline-md font-bold text-deep-navy">{QUOTE_FORM.sections.service[locale]}</legend>
+			<div class="grid gap-stack-sm md:grid-cols-2">
+				{serviceFields.map((field) => (
+					<label class:list={["space-y-1 text-label-md font-semibold text-on-surface", field.type === "textarea" && "md:col-span-2"]}>
+						<span>{field.labels[locale]}{field.required && " *"}</span>
+						{field.type === "textarea" ? <textarea class="min-h-32 w-full rounded border border-outline-variant bg-surface px-stack-sm py-2 focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors" name={field.id} required={field.required} /> : field.type === "select" ? <select class="w-full rounded border border-outline-variant bg-surface px-stack-sm py-2 focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors" name={field.id} required={field.required}><option value="">{reasonPlaceholder}</option>{QUOTE_FORM.reasons.map((reason) => <option value={reason.id}>{reason.labels[locale]}</option>)}</select> : <input class="w-full rounded border border-outline-variant bg-surface px-stack-sm py-2 focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors" name={field.id} type={field.type} required={field.required} />}
+					</label>
+				))}
+			</div>
+		</fieldset>
+		<label class="flex gap-2 text-body-md text-on-surface-variant"><input type="checkbox" required /> <span>{QUOTE_FORM.consent[locale]}</span></label>
+		<button class="rounded bg-energetic-orange px-stack-md py-stack-sm font-semibold text-white min-h-[48px] hover:opacity-90 transition-opacity" type="submit">{QUOTE_FORM.submit[locale]}</button>
+	</form>
+</section>

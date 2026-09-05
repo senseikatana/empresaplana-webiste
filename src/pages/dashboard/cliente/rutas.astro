@@ -1,0 +1,205 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const s = dict.routes.search;
+const l = dict.routes.lines;
+
+const ui = {
+	navRoutes: a.nav.routes,
+	originLabel: s.originLabel,
+	destinationLabel: s.destinationLabel,
+	anyTime: s.anyTime,
+	submit: s.submit,
+	disclaimer: s.disclaimer,
+	downloadPdf: l.downloadPdf,
+	noResults: dict.routes.results.emptyTitle,
+	noResultsHint: dict.routes.results.emptyHint,
+	originPlaceholder: s.originPlaceholder,
+	destinationPlaceholder: s.destinationPlaceholder,
+	locale,
+};
+
+const uiJson = JSON.stringify(ui);
+---
+
+<AppLayout title={a.nav.routes} description={a.tagline} active="routes" role="client">
+	<div class="flex flex-col gap-stack-md">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{a.nav.routes}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{a.client.quickRoutes}</p>
+		</div>
+
+		<!-- Search card -->
+		<form id="route-search" class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-stack-md">
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<div class="flex flex-col gap-1.5">
+					<label class="font-label-md text-label-md text-on-surface" for="r-origin">{ui.originLabel}</label>
+					<div class="relative">
+						<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px] pointer-events-none">location_on</span>
+						<select
+							id="r-origin"
+							class="w-full appearance-none rounded border border-outline-variant bg-surface-container-lowest pl-10 pr-8 py-2.5 font-body-md text-body-md focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors"
+						>
+							<option value="">{ui.originPlaceholder}</option>
+						</select>
+						<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline text-[20px] pointer-events-none">expand_more</span>
+					</div>
+				</div>
+				<div class="flex flex-col gap-1.5">
+					<label class="font-label-md text-label-md text-on-surface" for="r-destination">{ui.destinationLabel}</label>
+					<div class="relative">
+						<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px] pointer-events-none">pin_drop</span>
+						<select
+							id="r-destination"
+							class="w-full appearance-none rounded border border-outline-variant bg-surface-container-lowest pl-10 pr-8 py-2.5 font-body-md text-body-md focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors"
+						>
+							<option value="">{ui.destinationPlaceholder}</option>
+						</select>
+						<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline text-[20px] pointer-events-none">expand_more</span>
+					</div>
+				</div>
+			</div>
+			<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-stack-md">
+				<p class="font-label-md text-label-md text-outline">{s.disclaimer}</p>
+				<button
+					type="submit"
+					class="inline-flex items-center justify-center gap-2 rounded-lg bg-energetic-orange text-on-primary font-button text-button px-6 py-3 min-h-[48px] hover:opacity-90 transition-opacity"
+				>
+					<span class="material-symbols-outlined">search</span>
+					{ui.submit}
+				</button>
+			</div>
+		</form>
+
+		<!-- Results -->
+		<section>
+			<div class="flex items-center justify-between mb-stack-sm">
+				<h2 class="font-headline-md text-headline-md font-bold text-on-surface" data-role="title">{l.title}</h2>
+			</div>
+			<div id="line-results" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+				<!-- populated client-side -->
+			</div>
+		</section>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { escapeHtml } from "@/lib/app-format";
+	import popularLines from "@/data/popular-lines.json";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+
+	type Line = {
+		id: string;
+		name: string;
+		origin: string;
+		destination: string;
+		pdfUrls?: Partial<Record<string, string>>;
+	};
+	const lines = popularLines.lines as Line[];
+
+	const iconByLine: Record<string, string> = {
+		barcelonaAirport: "flight_takeoff",
+		tarragonaBarcelona: "location_city",
+		costaDorada: "beach_access",
+		penedes: "map",
+		estacioCamp: "train",
+		ametllaTortosa: "alt_route",
+		reusSalou: "directions_bus",
+		tarragonaVilasecaSalou: "tour",
+	};
+
+	const pdfFor = (line: Line) =>
+		line.pdfUrls?.[ui.locale as "es" | "ca" | "en"] ?? line.pdfUrls?.es ?? "";
+
+	const originSelect = document.getElementById("r-origin") as HTMLSelectElement | null;
+	const destinationSelect = document.getElementById("r-destination") as HTMLSelectElement | null;
+	const resultsEl = document.getElementById("line-results");
+	const form = document.getElementById("route-search");
+
+	// Towns that actually appear on the lines, so the search is meaningful.
+	const popTowns = Array.from(
+		new Set(
+			lines.flatMap((l) =>
+				[...l.origin.split("-"), ...l.destination.split("-")].map((t) => t.trim()),
+			),
+		),
+	)
+		.filter((t) => t.length > 2)
+		.sort((x, y) => x.localeCompare(y));
+
+	const placeholder = (label: string) =>
+		`<option value="">${escapeHtml(label)}</option>`;
+
+	function fillSelect(select: HTMLSelectElement | null, placeholderLabel: string) {
+		if (!select) return;
+		select.innerHTML =
+			placeholder(placeholderLabel) +
+			popTowns.map((town) => `<option value="${escapeHtml(town)}">${escapeHtml(town)}</option>`).join("");
+	}
+
+	fillSelect(originSelect, ui.originPlaceholder);
+	fillSelect(destinationSelect, ui.destinationPlaceholder);
+
+	function renderResults(filtered: Line[]) {
+		if (!resultsEl) return;
+		if (filtered.length === 0) {
+			resultsEl.innerHTML = `
+				<div class="col-span-full bg-surface-container-lowest rounded-xl border border-surface-variant p-10 text-center flex flex-col items-center gap-2">
+					<span class="material-symbols-outlined text-[44px] text-outline">search_off</span>
+					<p class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(ui.noResults)}</p>
+					<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.noResultsHint)}</p>
+				</div>`;
+			return;
+		}
+		resultsEl.innerHTML = filtered
+			.map((line) => {
+				const pdf = pdfFor(line);
+				return `
+				<article class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5 flex flex-col gap-3">
+					<div class="flex items-start gap-3">
+						<span class="w-11 h-11 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center flex-shrink-0">
+							<span class="material-symbols-outlined icon-filled">${iconByLine[line.id] ?? "directions_bus"}</span>
+						</span>
+						<div class="min-w-0">
+							<h3 class="font-headline-md text-headline-md font-bold text-deep-navy leading-tight">${escapeHtml(line.name)}</h3>
+							<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+								<span class="material-symbols-outlined text-[16px]">trip_origin</span>${escapeHtml(line.origin)}
+							</p>
+							<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+								<span class="material-symbols-outlined text-[16px]">location_on</span>${escapeHtml(line.destination)}
+							</p>
+						</div>
+					</div>
+					${
+						pdf
+							? `<a href="${pdf}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 hover:bg-surface-container-low hover:border-deep-navy transition-colors">
+								<span class="material-symbols-outlined text-[20px]">download</span>${escapeHtml(ui.downloadPdf)}
+							</a>`
+							: ""
+					}
+				</article>`;
+			})
+			.join("");
+	}
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const origin = (originSelect?.value ?? "").trim().toLowerCase();
+		const destination = (destinationSelect?.value ?? "").trim().toLowerCase();
+		const filtered = lines.filter((line) => {
+			const originMatch = !origin || line.origin.toLowerCase().includes(origin);
+			const destinationMatch =
+				!destination || line.destination.toLowerCase().includes(destination);
+			return originMatch && destinationMatch;
+		});
+		renderResults(filtered);
+	});
+
+	renderResults(lines);
+</script>

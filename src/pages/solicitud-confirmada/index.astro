@@ -1,25 +1,28 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getSiteInfo, getCanonicalUrl } from "@/config/site-info";
+export const prerender = true;
 import { getLocale, getDictionary } from "@/config/i18n";
 
 const locale = getLocale(Astro.url.searchParams.get("lang"));
 const dict = getDictionary(locale);
+const c = dict.common;
 const siteInfo = getSiteInfo({
-	title: "Solicitud confirmada - Empresa Plana",
-	description: "Tu solicitud de presupuesto ha sido enviada correctamente.",
+	title: c.confirmationTitle,
+	description: c.confirmationDesc,
 	lang: locale,
 	canonicalUrl: getCanonicalUrl(Astro.url.pathname),
 });
+const langParam = `?lang=${locale}`;
 ---
 
 <BaseLayout {...siteInfo} bodyClass="bg-background text-on-surface min-h-screen flex flex-col">
 	<main class="flex-grow flex items-center justify-center px-margin-mobile md:px-margin-desktop">
 		<div class="max-w-2xl text-center py-stack-lg">
 			<span class="material-symbols-outlined text-6xl text-coastal-teal mb-6">check_circle</span>
-			<h1 class="font-headline-lg text-headline-lg font-bold text-primary mb-4">Mensaje enviado correctamente</h1>
-			<p class="font-body-lg text-body-lg text-on-surface-variant mb-8">Gracias por tu solicitud. Nos pondremos en contacto contigo a la brevedad.</p>
-			<a href="/" class="inline-block bg-primary text-on-primary font-button text-button px-8 py-3 rounded hover:opacity-90 transition-opacity">Volver al inicio</a>
+			<h1 class="font-headline-lg text-headline-lg font-bold text-deep-navy mb-4" data-i18n="common.confirmationHeading">{c.confirmationHeading}</h1>
+			<p class="font-body-lg text-body-lg text-on-surface-variant mb-8" data-i18n="common.confirmationDesc">{c.confirmationDesc}</p>
+			<a href={`/${langParam}`} class="inline-flex items-center justify-center bg-deep-navy text-on-primary font-button text-button px-8 py-3 rounded hover:opacity-90 transition-opacity min-h-[48px]" data-i18n="common.backHome">{c.backHome}</a>
 		</div>
 	</main>
 </BaseLayout>

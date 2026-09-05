@@ -1,0 +1,137 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+import "leaflet/dist/leaflet.css";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const g = dict.app.gestion;
+const m = g.map;
+const a = dict.app;
+
+const uiJson = JSON.stringify({
+	locale,
+	liveLabel: m.live,
+	searchPlaceholder: m.searchPlaceholder,
+	legendTitle: m.legendTitle,
+	legendItems: [
+		{ color: "#013990", label: m.legendActive },
+		{ color: "#EB8E02", label: m.legendDelayed },
+		{ color: "#E1E3E4", label: m.legendInactive },
+		{ color: "#13AEB8", circle: true, label: m.legendStop },
+	],
+	locateLabel: m.locate,
+	notFound: m.notFound,
+});
+---
+
+<AppLayout title={m.title} description={a.tagline} active="map" role="management">
+	<div class="flex flex-col gap-stack-md h-full">
+		<div class="flex flex-wrap items-center justify-between gap-3">
+			<div>
+				<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{m.title}</h1>
+				<p class="font-body-md text-body-md text-on-surface-variant mt-1">{m.subtitle}</p>
+			</div>
+			<span id="live-badge" class="inline-flex items-center gap-2 rounded-full bg-coastal-teal/15 text-on-secondary-container px-3.5 py-1.5 font-label-md text-label-md">
+				<span class="w-2 h-2 rounded-full bg-coastal-teal animate-pulse"></span>
+				<span data-live></span>
+			</span>
+		</div>
+
+		<!-- Map card -->
+		<section class="relative bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient overflow-hidden flex-1 min-h-[480px]">
+			<div id="live-map" class="absolute inset-0"></div>
+
+			<!-- Toolbar -->
+			<div class="absolute top-3 left-3 right-3 z-[500] flex gap-2 flex-wrap pointer-events-none">
+				<div class="pointer-events-auto flex-1 min-w-[200px] bg-surface-container-lowest/95 backdrop-blur-sm rounded-lg shadow-ambient px-3.5 py-2.5 flex items-center gap-2 border border-surface-variant">
+					<span class="material-symbols-outlined text-outline text-[20px]">search</span>
+					<input
+						id="map-search"
+						type="text"
+						placeholder={m.searchPlaceholder}
+						class="flex-1 min-w-0 bg-transparent outline-none font-body-md text-body-md text-on-surface placeholder:text-outline"
+					/>
+				</div>
+				<button
+					id="locate-btn"
+					title={m.locate}
+					class="pointer-events-auto w-11 h-11 rounded-lg bg-surface-container-lowest/95 backdrop-blur-sm shadow-ambient border border-surface-variant text-deep-navy hover:bg-surface-container-low transition-colors flex items-center justify-center"
+				>
+					<span class="material-symbols-outlined">my_location</span>
+				</button>
+			</div>
+
+			<!-- Legend -->
+			<div class="absolute bottom-4 left-3 z-[500] bg-surface-container-lowest/95 backdrop-blur-sm rounded-lg shadow-ambient border border-surface-variant px-4 py-3">
+				<p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-2">{m.legendTitle}</p>
+				<div data-legend class="flex flex-col gap-1.5 font-body-md text-body-md text-on-surface-variant"></div>
+			</div>
+		</section>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { getFleet, seedFleetIfEmpty } from "@/lib/fleet-store";
+	import { escapeHtml } from "@/lib/fleet-ui";
+	import { initFleetMap } from "@/lib/fleet-map";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+	seedFleetIfEmpty();
+
+	// Legend
+	const legend = document.querySelector<HTMLElement>("[data-legend]");
+	if (legend) {
+		legend.innerHTML = (ui.legendItems as { color: string; circle?: boolean; label: string }[])
+			.map(
+				(item) => `<span class="flex items-center gap-2">
+					<span class="w-3.5 h-3.5 inline-block flex-shrink-0 ${item.circle ? "rounded-full" : "rounded-[3px]"}" style="background:${item.color}"></span>
+					${escapeHtml(item.label)}
+				</span>`,
+			)
+			.join("");
+	}
+
+	const liveEl = document.querySelector<HTMLElement>("[data-live]");
+	const liveMapEl = document.getElementById("live-map");
+	if (!liveMapEl) throw new Error("map container missing");
+
+	const { map } = initFleetMap(liveMapEl, { animate: true });
+
+	// Live bus counter (refreshes from the store every 5 s).
+	function refreshLive() {
+		const online = getFleet().buses.filter((b) => b.status === "active" && b.gps.online).length;
+		if (liveEl) liveEl.textContent = ui.liveLabel.replace("{n}", String(online));
+	}
+	refreshLive();
+	window.setInterval(refreshLive, 5000);
+
+	// Geocode search (Nominatim; silent failure offline).
+	const searchInput = document.getElementById("map-search") as HTMLInputElement | null;
+	searchInput?.addEventListener("keydown", async (event) => {
+		if (event.key !== "Enter" || !searchInput.value.trim()) return;
+		try {
+			const res = await fetch(
+				`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchInput.value.trim())}&countrycodes=es&limit=1`,
+			);
+			const results = (await res.json()) as { lat: string; lon: string; display_name: string }[];
+			if (results.length > 0) {
+				map.flyTo([Number(results[0].lat), Number(results[0].lon)], 13);
+			}
+		} catch {
+			/* offline or blocked: ignore */
+		}
+	});
+
+	// Geolocate button.
+	document.getElementById("locate-btn")?.addEventListener("click", () => {
+		if (!navigator.geolocation) return;
+		navigator.geolocation.getCurrentPosition(
+			(pos) => map.flyTo([pos.coords.latitude, pos.coords.longitude], 14),
+			() => {
+				map.flyTo([41.1189, 1.2445], 12);
+			},
+		);
+	});
+</script>

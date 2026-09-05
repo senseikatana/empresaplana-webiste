@@ -1,0 +1,126 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const w = a.worker;
+const g = dict.app.gestion;
+const gc = dict.common;
+
+const uiJson = JSON.stringify({
+	locale,
+	incidents: w.incidents,
+	incidentsDesc: w.incidentsDesc,
+	noIncidents: w.noIncidents,
+	filterAll: gc.all,
+	types: g.notifications.types,
+});
+---
+
+<AppLayout title={w.incidents} description={w.incidentsDesc} active="incidents" role="worker">
+	<div class="flex flex-col gap-stack-md">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{w.incidents}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{w.incidentsDesc}</p>
+		</div>
+
+		<!-- Type filters -->
+		<div id="type-filters" class="flex flex-wrap gap-2"></div>
+
+		<!-- List -->
+		<div id="incident-list" class="flex flex-col gap-2">
+			<!-- rendered client-side -->
+		</div>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { getFleet, seedFleetIfEmpty, setNotificationRead } from "@/lib/fleet-store";
+	import { escapeHtml, timeAgo } from "@/lib/fleet-ui";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+	seedFleetIfEmpty();
+
+	let filter = "all";
+
+	const ICONS: Record<string, { icon: string; cls: string }> = {
+		delay: { icon: "schedule", cls: "bg-tertiary-fixed text-on-tertiary-fixed" },
+		accident: { icon: "warning", cls: "bg-error-container text-on-error-container" },
+		detour: { icon: "alt_route", cls: "bg-primary-fixed text-on-primary-fixed" },
+		info: { icon: "info", cls: "bg-coastal-teal/15 text-on-secondary-container" },
+	};
+
+	const filtersEl = document.getElementById("type-filters");
+	const listEl = document.getElementById("incident-list");
+
+	function renderFilters() {
+		if (!filtersEl) return;
+		const chips: [string, string][] = [["all", ui.filterAll], ...Object.entries(ui.types as Record<string, string>)];
+		filtersEl.innerHTML = chips
+			.map(
+				([key, label]) => `
+				<button type="button" data-filter="${key}" class="rounded-full px-4 py-2 font-label-md text-label-md transition-colors ${
+					filter === key ? "bg-deep-navy text-on-primary shadow-sm" : "text-on-surface-variant hover:bg-surface-container-low hover:text-deep-navy"
+				}">${escapeHtml(label)}</button>`,
+			)
+			.join("");
+		filtersEl.querySelectorAll<HTMLButtonElement>("[data-filter]").forEach((button) => {
+			button.addEventListener("click", () => {
+				filter = button.dataset.filter ?? "all";
+				renderFilters();
+				renderList();
+			});
+		});
+	}
+
+	function renderList() {
+		if (!listEl) return;
+		const items = getFleet().notifications.filter((n) => filter === "all" || n.type === filter);
+		if (items.length === 0) {
+			listEl.innerHTML = `
+				<div class="bg-surface-container-lowest rounded-xl border border-surface-variant p-10 text-center flex flex-col items-center gap-2">
+					<span class="material-symbols-outlined text-[44px] text-outline">notifications_off</span>
+					<p class="font-body-md text-body-md text-on-surface-variant">${escapeHtml(ui.noIncidents)}</p>
+				</div>`;
+			return;
+		}
+		listEl.innerHTML = items
+			.map((item) => {
+				const meta = ICONS[item.type] ?? ICONS.info;
+				return `
+				<article class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-4 flex items-start gap-3 ${item.read ? "" : "border-l-4 border-l-deep-navy"}">
+					<span class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${meta.cls}">
+						<span class="material-symbols-outlined icon-filled text-[20px]">${meta.icon}</span>
+					</span>
+					<div class="min-w-0 flex-1">
+						<div class="flex flex-wrap items-center gap-2">
+							<p class="font-headline-md text-headline-md font-bold text-deep-navy">${escapeHtml(item.title)}</p>
+							${item.read ? "" : `<span class="rounded-full bg-error-container text-on-error-container px-2 py-0.5 font-label-md text-label-md">Nueva</span>`}
+						</div>
+						<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">${escapeHtml(item.desc)}</p>
+						<p class="font-label-md text-label-md text-outline mt-1.5">
+							${escapeHtml((ui.types as Record<string, string>)[item.type] ?? item.type)}
+							· ${escapeHtml(timeAgo(item.createdAt, ui.locale))}
+						</p>
+					</div>
+					${item.read ? "" : `
+					<button data-read="${item.id}" title="Marcar como leída" class="w-9 h-9 rounded-lg bg-coastal-teal/15 text-on-secondary-container hover:bg-coastal-teal hover:text-on-primary transition-colors inline-flex items-center justify-center flex-shrink-0">
+						<span class="material-symbols-outlined text-[19px]">check</span>
+					</button>`}
+				</article>`;
+			})
+			.join("");
+		listEl.querySelectorAll<HTMLButtonElement>("[data-read]").forEach((button) => {
+			button.addEventListener("click", () => {
+				setNotificationRead(Number(button.dataset.read), true);
+				renderList();
+			});
+		});
+	}
+
+	renderFilters();
+	renderList();
+</script>
