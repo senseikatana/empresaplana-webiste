@@ -26,7 +26,7 @@
 	},
 	"home": {
 		"title": "Empresa Plana - Pantalles",
-		"subtitle": "Pantalles generades des del projecte Stitch «Dashboard Empresa Plana».",
+		"subtitle": "Pantalles generades des del projecte Stitch «Dashboard'Empresa Plana».",
 		"screens": {
 			"routes": {
 				"label": "Rutes i Horaris",
@@ -102,6 +102,322 @@
 				"Pla de Recuperació, Transformació i Resiliència",
 				"Generalitat de Catalunya"
 			]
+		}
+	},
+	"app": {
+		"title": "App Empresa Plana",
+		"tagline": "Transport públic i discrecional a la Costa Daurada",
+		"auth": {
+			"welcome": "App Empresa Plana",
+			"subtitle": "Consulta rutes i horaris, sol·licita pressupostos o gestiona la flota. Tot en un mateix lloc.",
+			"username": "Usuari",
+			"passkey": "Contrasenya",
+			"login": "Entra",
+			"demoHint": "Demo: entra amb un rol de prova",
+			"asClient": "Entra com a Client",
+			"asWorker": "Entra com a Treballador",
+			"asBoss": "Entra com a Cap",
+			"invalid": "Usuari o contrasenya no vàlids."
+		},
+		"role": {
+			"client": "Client",
+			"worker": "Treballador",
+			"admin": "Administrador"
+		},
+		"status": {
+			"label": "Estat",
+			"received": "Rebuda",
+			"review": "En revisió",
+			"answered": "Resposta",
+			"contracted": "Contractada"
+		},
+		"nav": {
+			"home": "Inici",
+			"routes": "Rutes",
+			"budgets": "Pressupostos",
+			"profile": "Perfil",
+			"fleet": "Flota",
+			"requests": "Sol·licituds",
+			"lines": "Línies",
+			"reports": "Reportes",
+			"logout": "Tanca la sessió",
+			"switchRole": "Canvia de rol"
+		},
+		"client": {
+			"greeting": "Hola, {name}",
+			"nextService": "Proper servei",
+			"noNextService": "No tens serveis propers. Sol·licita un pressupost o consulta les rutes.",
+			"quickAccess": "Accés ràpid",
+			"quickRoutes": "Busca la teva línia i descarrega l'horari en PDF",
+			"quickBudgets": "Sol·licita un pressupost i segueix-ne l'estat",
+			"quickProfile": "El teu perfil, historial i rol",
+			"myBudgets": "Els meus pressupostos",
+			"newBudget": "Nou pressupost",
+			"budgetTitle": "Sol·licitar pressupost",
+			"budgetSubtitle": "Explica'ns el teu servei i t'enviarem una proposta sense compromís.",
+			"noBudgets": "Encara no has enviat cap sol·licitud.",
+			"noBudgetsDesc": "Quan sol·licitis un pressupost podràs seguir-ne l'estat aquí.",
+			"sentOn": "Enviat el",
+			"updatedOn": "Actualitzat el",
+			"details": "Veure detalls",
+			"hide": "Amagar detalls",
+			"trip": "Trajecte",
+			"sentOk": "Pressupost enviat!",
+			"sentOkDesc": "L'hem rebut i el revisarem ben aviat. Pots seguir-ne l'estat aquí.",
+			"goBudgets": "Veure els meus pressupostos",
+			"historyTitle": "Historial",
+			"historyDesc": "Els teus pressupostos i serveis contractats amb Empresa Plana."
+		},
+		"worker": {
+			"linesTitle": "Línies i horaris",
+			"linesDesc": "Les línies que opera Empresa Plana, amb els seus horaris en PDF.",
+			"kpiLines": "Línies actives",
+			"kpiOnTime": "Puntualitat",
+			"kpiReports": "Reportes avui",
+			"kpiRequests": "Sol·licituds obertes",
+			"lineStatusTitle": "Estat de les línies",
+			"lineStatusDesc": "Resum de puntualitat per línia segons els reportes d'avui.",
+			"noLineData": "Sense reportes encara",
+			"negativeToday": "incidències avui",
+			"statReports": "Reportes",
+			"statRate": "% Puntualitat",
+			"statNegative": "Incidències",
+			"requestsTitle": "Sol·licituds de pressupost",
+			"requestsDesc": "Pressupostos rebuts de clients. Revisa, respon i tanca el cicle.",
+			"filterAll": "Totes",
+			"noRequests": "No hi ha sol·licituds amb aquest filtre.",
+			"noRequestsDesc": "Les noves sol·licituds dels clients apareixeran aquí.",
+			"actReview": "Inicia la revisió",
+			"actAnswer": "Marca com a resposta",
+			"actContract": "Marca com a contractada",
+			"reportsTitle": "Reportes de puntualitat",
+			"reportsDesc": "Registra incidències per línia i consulta els reportes del dia.",
+			"chooseLine": "Tria una línia",
+			"noReports": "Sense reportes avui en aquesta línia.",
+			"today": "Avui",
+			"addReport": "Registra reporte",
+			"reportOk": "Reporte registrat. Gràcies!"
+		},
+		"misc": {
+			"demoNote": "Mode demo: les dades es desen només en aquest dispositiu.",
+			"cancel": "Cancel·la",
+			"save": "Desa",
+			"close": "Tanca",
+			"language": "Idioma"
+		},
+		"gestion": {
+			"nav": {
+				"panel": "Panell",
+				"map": "Mapa en viu",
+				"routes": "Rutes",
+				"buses": "Autobusos",
+				"stops": "Parades",
+				"schedules": "Horaris",
+				"drivers": "Conductors",
+				"notifications": "Notificacions",
+				"reports": "Reportes",
+				"integrations": "Integracions"
+			},
+			"common": {
+				"add": "Afegeix",
+				"edit": "Edita",
+				"delete": "Elimina",
+				"save": "Desa",
+				"cancel": "Cancel·la",
+				"search": "Cerca",
+				"actions": "Accions",
+				"empty": "Sense registres",
+				"confirmDelete": "Segur que vols eliminar aquest registre?",
+				"all": "Tots",
+				"newEntity": "Afegeix {entity}",
+				"editEntity": "Edita {entity}",
+				"statusLabel": "Estat",
+				"back": "Torna",
+				"updated": "Registre actualitzat",
+				"created": "Registre creat",
+				"deleted": "Registre eliminat"
+			},
+			"states": {
+				"active": "Activa",
+				"inactive": "Inactiva",
+				"delayed": "Amb retard",
+				"maintenance": "Al taller",
+				"online": "En línia",
+				"offline": "Desconnectat",
+				"enRoute": "En marxa"
+			},
+			"dashboard": {
+				"title": "Panell de gestió",
+				"subtitle": "Vista general de l'operació d'Empresa Plana",
+				"kpiBuses": "Autobusos actius",
+				"kpiRoutes": "Rutes operatives",
+				"kpiStops": "Parades",
+				"kpiDrivers": "Conductors",
+				"kpiAlerts": "Alertes sense llegir",
+				"upcomingTitle": "Properes sortides",
+				"noUpcoming": "No hi ha sortides programades",
+				"linesTitle": "Estat de les línies",
+				"linesDesc": "Situació de cada línia segons el seu servei",
+				"notifTitle": "Últimes notificacions",
+				"quickTitle": "Gestió ràpida",
+				"openMap": "Obre el mapa en viu",
+				"activityTitle": "Activitat recent"
+			},
+			"map": {
+				"title": "Mapa en viu",
+				"subtitle": "Seguiment GPS de la flota en temps real",
+				"live": "GPS en viu · {n} autobusos",
+				"searchPlaceholder": "Cerca una localitat o adreça…",
+				"legendTitle": "Llegenda",
+				"legendActive": "Servei actiu",
+				"legendDelayed": "Amb retard",
+				"legendInactive": "Sense servei",
+				"legendStop": "Parada",
+				"locate": "La teva ubicació",
+				"notFound": "No s'ha pogut obtenir la ubicació"
+			},
+			"entities": {
+				"route": {
+					"label": "Ruta",
+					"fields": {
+						"code": "Codi",
+						"name": "Nom",
+						"origin": "Origen",
+						"destination": "Destí",
+						"driver": "Conductor",
+						"route": "Ruta"
+					}
+				},
+				"bus": {
+					"label": "Autobús",
+					"fields": {
+						"number": "Número",
+						"plate": "Matrícula",
+						"company": "Empresa",
+						"capacity": "Capacitat",
+						"route": "Ruta"
+					}
+				},
+				"stop": {
+					"label": "Parada",
+					"fields": {
+						"name": "Nom",
+						"address": "Adreça",
+						"lat": "Latitud",
+						"lng": "Longitud",
+						"routes": "Rutes"
+					}
+				},
+				"schedule": {
+					"label": "Horari",
+					"fields": {
+						"route": "Ruta",
+						"departure": "Sortida",
+						"arrival": "Arribada",
+						"frequency": "Freqüència",
+						"days": "Dies"
+					}
+				},
+				"driver": {
+					"label": "Conductor",
+					"fields": {
+						"name": "Nom",
+						"phone": "Telèfon",
+						"license": "Llicència",
+						"bus": "Autobús"
+					}
+				}
+			},
+			"notifications": {
+				"title": "Notificacions",
+				"subtitle": "Alertes i comunicacions de l'operació",
+				"markAll": "Marca totes com a llegides",
+				"newNotif": "Nova notificació",
+				"types": {
+					"delay": "Retard",
+					"accident": "Accident",
+					"detour": "Desviament",
+					"info": "Avís"
+				},
+				"unread": "Sense llegir",
+				"noResults": "No hi ha notificacions amb aquest filtre."
+			},
+			"reports": {
+				"title": "Reportes",
+				"subtitle": "Estadístiques i anàlisi de l'operació",
+				"kpiPassengers": "Passatgers avui",
+				"kpiPunctuality": "Puntualitat",
+				"kpiKm": "Km recorreguts",
+				"kpiFuel": "Combustible",
+				"passengersByRoute": "Passatgers per ruta",
+				"occupancyByRoute": "Ocupació per ruta",
+				"weeklyPunctuality": "Puntualitat setmanal",
+				"satisfaction": "Satisfacció dels usuaris",
+				"satisfactionNames": {
+					"punctuality": "Puntualitat",
+					"cleanliness": "Neteja",
+					"comfort": "Confort",
+					"information": "Informació",
+					"attention": "Atenció"
+				}
+			},
+			"integrations": {
+				"title": "Integracions",
+				"subtitle": "Serveis connectats amb l'operació (demo)",
+				"connected": "Actiu",
+				"motis": {
+					"title": "MOTIS · planificador de rutes",
+					"desc": "Servei de càlcul de rutes i horaris sobre dades GTFS.",
+					"url": "URL del servei",
+					"port": "Port API",
+					"gtfsFile": "Fitxer GTFS",
+					"region": "Regió",
+					"regionOptions": [
+						"Catalunya",
+						"Espanya",
+						"Europa"
+					],
+					"test": "Prova la connexió",
+					"importGtfs": "Importa GTFS",
+					"docs": "Documentació"
+				},
+				"traccar": {
+					"title": "Traccar · GPS de flota",
+					"desc": "Recepció de senyals GPS dels autobusos en temps real.",
+					"url": "URL del servidor",
+					"apiKey": "API Key",
+					"protocol": "Protocol",
+					"test": "Prova la connexió",
+					"sync": "Sincronitza dispositius",
+					"devicesTitle": "Dispositius GPS",
+					"bus": "Autobús",
+					"device": "Dispositiu",
+					"lastPos": "Última posició",
+					"speed": "Velocitat",
+					"battery": "Bateria"
+				},
+				"gtfs": {
+					"title": "GTFS · exportació estàndard",
+					"desc": "Genera el paquet GTFS de rutes, horaris i parades per a MOTIS.",
+					"agency": "Agència",
+					"timezone": "Zona horària",
+					"generate": "Genera GTFS",
+					"download": "Descarrega ZIP"
+				},
+				"data": {
+					"title": "Dades i còpia de seguretat",
+					"desc": "Exporta o importa tot l'estat de la flota en format JSON.",
+					"export": "Exporta JSON",
+					"import": "Importa JSON",
+					"activityTitle": "Registre d'activitat"
+				},
+				"stepLabels": [
+					"Excel / Directus",
+					"Conversió",
+					"ZIP GTFS",
+					"MOTIS"
+				]
+			}
 		}
 	},
 	"routes": {

@@ -1,0 +1,178 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const c = dict.common;
+const uiJson = JSON.stringify({ invalid: a.auth.invalid });
+---
+
+<BaseLayout
+	title={a.title}
+	description={a.tagline}
+	lang={locale}
+	themeColor="#013990"
+	bodyClass="bg-background text-on-surface font-body-md antialiased min-h-screen"
+	showHeader={false}
+	showFooter={false}
+>
+	<link rel="manifest" href="/manifest.webmanifest" />
+	<meta name="theme-color" content="#013990" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-title" content="Empresa Plana" />
+	<link rel="apple-touch-icon" href="/app-icons/apple-touch-icon.png" />
+	<link rel="icon" type="image/svg+xml" href="/app-icons/icon.svg" />
+
+	<main class="min-h-screen flex items-stretch">
+		<!-- Brand panel (desktop) -->
+		<section class="hidden lg:flex w-1/2 bg-deep-navy text-on-primary relative overflow-hidden flex-col justify-center px-16">
+			<div class="absolute -top-24 -right-24 w-96 h-96 bg-surface-tint rounded-full blur-3xl opacity-40 pointer-events-none"></div>
+			<div class="absolute -bottom-32 -left-16 w-80 h-80 bg-primary-container rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+			<div class="relative flex flex-col gap-6">
+				<div class="flex items-center gap-3">
+					<img src="/app-icons/icon.svg" alt="" class="h-14 w-14 rounded-xl bg-on-primary/10 p-2" />
+					<div>
+						<p class="font-headline-lg text-headline-lg font-bold leading-none">{c.brand}</p>
+						<p class="font-label-md text-label-md text-secondary-fixed mt-1 uppercase tracking-widest">App</p>
+					</div>
+				</div>
+				<h1 class="font-display-lg text-display-lg font-bold max-w-md mt-4">{a.auth.welcome}</h1>
+				<p class="font-body-lg text-body-lg text-on-primary/85 max-w-md">{a.auth.subtitle}</p>
+				<div class="flex flex-wrap gap-2 mt-2">
+					<span class="material-symbols-outlined text-secondary-fixed icon-filled">route</span>
+					<span class="font-label-md text-label-md text-on-primary/80">• {a.nav.routes}</span>
+					<span class="material-symbols-outlined text-secondary-fixed icon-filled">request_quote</span>
+					<span class="font-label-md text-label-md text-on-primary/80">• {a.nav.budgets}</span>
+					<span class="material-symbols-outlined text-secondary-fixed icon-filled">directions_bus</span>
+					<span class="font-label-md text-label-md text-on-primary/80">• {a.nav.fleet}</span>
+				</div>
+			</div>
+		</section>
+
+		<!-- Login panel -->
+		<section class="w-full lg:w-1/2 flex items-center justify-center px-margin-mobile md:px-margin-desktop py-12">
+			<div class="w-full max-w-md flex flex-col gap-6">
+				<!-- Mobile brand -->
+				<div class="lg:hidden flex flex-col items-center gap-3 text-center">
+					<img src="/app-icons/icon.svg" alt="" class="h-16 w-16" />
+					<h1 class="font-headline-lg text-headline-lg font-bold text-deep-navy">{a.auth.welcome}</h1>
+					<p class="font-body-md text-body-md text-on-surface-variant">{a.auth.subtitle}</p>
+				</div>
+
+				<div class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-stack-md md:p-stack-lg">
+					<form id="login-form" class="flex flex-col gap-stack-md">
+						<div class="flex flex-col gap-1.5">
+							<label class="font-label-md text-label-md text-on-surface" for="login-username">{a.auth.username}</label>
+							<input
+								id="login-username"
+								name="username"
+								type="text"
+								autocomplete="username"
+								class="w-full rounded border border-outline-variant bg-surface-container-lowest px-4 py-3 font-body-md text-body-md focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors"
+								required
+							/>
+						</div>
+						<div class="flex flex-col gap-1.5">
+							<label class="font-label-md text-label-md text-on-surface" for="login-passkey">{a.auth.passkey}</label>
+							<input
+								id="login-passkey"
+								name="passkey"
+								type="password"
+								autocomplete="current-password"
+								class="w-full rounded border border-outline-variant bg-surface-container-lowest px-4 py-3 font-body-md text-body-md focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none transition-colors"
+								required
+							/>
+						</div>
+						<p id="login-error" class="hidden bg-error-container text-on-error-container rounded-lg px-4 py-3 font-body-md text-body-md"></p>
+						<button
+							type="submit"
+							class="w-full rounded bg-deep-navy text-on-primary font-button text-button px-6 py-3.5 min-h-[48px] flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+						>
+							<span class="material-symbols-outlined">login</span>
+							{a.auth.login}
+						</button>
+					</form>
+
+					<div class="mt-stack-md pt-stack-md border-t border-surface-variant">
+						<p class="font-label-md text-label-md uppercase tracking-wider text-outline mb-stack-sm">{a.auth.demoHint}</p>
+						<div class="flex flex-col gap-2">
+							<button
+								type="button"
+								class="js-demo-login flex items-center justify-between rounded-lg border border-surface-variant bg-surface-container-low px-4 py-3 hover:border-deep-navy hover:bg-surface-container-lowest transition-colors text-left"
+								data-username="cliente"
+								data-passkey="12345678"
+							>
+								<span class="flex items-center gap-3">
+									<span class="material-symbols-outlined text-coastal-teal icon-filled">person</span>
+									<span class="font-body-md text-body-md text-on-surface">{a.auth.asClient}</span>
+								</span>
+								<span class="font-label-md text-label-md text-outline">cliente / 12345678</span>
+							</button>
+							<button
+								type="button"
+								class="js-demo-login flex items-center justify-between rounded-lg border border-surface-variant bg-surface-container-low px-4 py-3 hover:border-deep-navy hover:bg-surface-container-lowest transition-colors text-left"
+								data-username="trabajador"
+								data-passkey="12345678"
+							>
+								<span class="flex items-center gap-3">
+									<span class="material-symbols-outlined text-energetic-orange icon-filled">badge</span>
+									<span class="font-body-md text-body-md text-on-surface">{a.auth.asWorker}</span>
+								</span>
+								<span class="font-label-md text-label-md text-outline">trabajador / 12345678</span>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<p class="text-center font-label-md text-label-md text-outline">{a.misc.demoNote}</p>
+			</div>
+		</section>
+	</main>
+</BaseLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { seedIfEmpty, getSession, login } from "@/lib/app-store";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+
+	const homeFor = (role: string) => (role === "client" ? "/app/cliente/" : "/app/trabajador/");
+
+	function redirectToSession() {
+		const session = getSession();
+		if (session) window.location.replace(homeFor(session.role));
+	}
+
+	seedIfEmpty();
+	redirectToSession();
+
+	const form = document.getElementById("login-form");
+	const errorBox = document.getElementById("login-error");
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const data = new FormData(form as HTMLFormElement);
+		const username = String(data.get("username") ?? "");
+		const passkey = String(data.get("passkey") ?? "");
+		const user = login(username, passkey);
+		if (!user) {
+			if (errorBox) {
+				errorBox.textContent = ui.invalid ?? "";
+				errorBox.classList.remove("hidden");
+			}
+			return;
+		}
+		window.location.href = homeFor(user.role);
+	});
+
+	document.querySelectorAll<HTMLButtonElement>(".js-demo-login").forEach((button) => {
+		button.addEventListener("click", () => {
+			const username = button.dataset.username ?? "";
+			const passkey = button.dataset.passkey ?? "";
+			const user = login(username, passkey);
+			if (user) window.location.href = homeFor(user.role);
+		});
+	});
+</script>

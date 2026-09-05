@@ -1,0 +1,78 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+import popularLines from "@/data/popular-lines.json";
+import type { Locale } from "@/interfaces/common";
+
+const locale = getLocale(Astro.url.searchParams.get("lang")) as Locale;
+const dict = getDictionary(locale);
+const a = dict.app;
+const w = a.worker;
+const l = dict.routes.lines;
+
+type Line = {
+	id: string;
+	name: string;
+	origin: string;
+	destination: string;
+	pdfUrls?: Partial<Record<string, string>>;
+};
+const lines = popularLines.lines as Line[];
+
+const icons: Record<string, string> = {
+	barcelonaAirport: "flight_takeoff",
+	tarragonaBarcelona: "location_city",
+	costaDorada: "beach_access",
+	penedes: "map",
+	estacioCamp: "train",
+	ametllaTortosa: "alt_route",
+	reusSalou: "directions_bus",
+	tarragonaVilasecaSalou: "tour",
+};
+---
+
+<AppLayout title={a.nav.lines} description={a.tagline} active="lines" role="worker">
+	<div class="flex flex-col gap-stack-md">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{w.linesTitle}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{w.linesDesc}</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+			{lines.map((line) => {
+				const pdf = line.pdfUrls?.[locale] ?? line.pdfUrls?.es ?? "";
+				return (
+					<article class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-5 flex flex-col gap-3">
+						<div class="flex items-start gap-3">
+							<span class="w-11 h-11 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center flex-shrink-0">
+								<span class="material-symbols-outlined icon-filled">{icons[line.id] ?? "directions_bus"}</span>
+							</span>
+							<div class="min-w-0">
+								<h2 class="font-headline-md text-headline-md font-bold text-deep-navy leading-tight">{line.name}</h2>
+								<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+									<span class="material-symbols-outlined text-[16px]">trip_origin</span>
+									{line.origin}
+								</p>
+								<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+									<span class="material-symbols-outlined text-[16px]">location_on</span>
+									{line.destination}
+								</p>
+							</div>
+						</div>
+						{pdf && (
+							<a
+								class="inline-flex items-center justify-center gap-2 rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2.5 hover:bg-surface-container-low hover:border-deep-navy transition-colors"
+								href={pdf}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<span class="material-symbols-outlined text-[20px]">download</span>
+								{l.downloadPdf}
+							</a>
+						)}
+					</article>
+				);
+			})}
+		</div>
+	</div>
+</AppLayout>

@@ -1,4 +1,6 @@
 export * from "@/interfaces/about";
+export * from "@/interfaces/app";
+export * from "@/interfaces/app-i18n";
 export * from "@/interfaces/auth";
 export * from "@/interfaces/booking";
 export * from "@/interfaces/bus-tracking";

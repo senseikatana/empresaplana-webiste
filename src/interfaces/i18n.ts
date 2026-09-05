@@ -1,4 +1,5 @@
 import type { About } from "@/interfaces/about";
+import type { AppDictionary } from "@/interfaces/app-i18n";
 import type { HomeVariant1, HomeVariant2 } from "@/interfaces/booking";
 import type { BusTracking } from "@/interfaces/bus-tracking";
 import type { Common, Locale } from "@/interfaces/common";
@@ -13,6 +14,7 @@ export interface I18nDictionary {
 	common: Common;
 	home: Home;
 	homeContent: HomeContent;
+	app: AppDictionary;
 	routes: Routes;
 	mobileApp: MobileApp;
 	locations: Locations;

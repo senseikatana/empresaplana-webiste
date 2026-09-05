@@ -1,0 +1,136 @@
+---
+import AppLayout from "@/layouts/AppLayout.astro";
+import KpiCard from "@/components/app/KpiCard.astro";
+import { getLocale, getDictionary } from "@/config/i18n";
+
+const locale = getLocale(Astro.url.searchParams.get("lang"));
+const dict = getDictionary(locale);
+const a = dict.app;
+const w = a.worker;
+
+const ui = {
+	kpiLines: w.kpiLines,
+	kpiOnTime: w.kpiOnTime,
+	kpiReports: w.kpiReports,
+	kpiRequests: w.kpiRequests,
+	lineStatusTitle: w.lineStatusTitle,
+	lineStatusDesc: w.lineStatusDesc,
+	noLineData: w.noLineData,
+	negativeToday: w.negativeToday,
+	reports: a.nav.reports,
+	locale,
+};
+
+const uiJson = JSON.stringify(ui);
+---
+
+<AppLayout title={w.lineStatusTitle} description={a.tagline} active="home" role="worker">
+	<div class="flex flex-col gap-stack-lg">
+		<div>
+			<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{a.nav.fleet}</h1>
+			<p class="font-body-md text-body-md text-on-surface-variant mt-1">{w.lineStatusDesc}</p>
+		</div>
+
+		<!-- KPIs -->
+		<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+			<KpiCard kpiKey="lines" icon="directions_bus" label={ui.kpiLines} value="" tone="navy" />
+			<KpiCard kpiKey="onTime" icon="schedule" label={ui.kpiOnTime} value="" tone="teal" />
+			<KpiCard kpiKey="reports" icon="fact_check" label={ui.kpiReports} value="" tone="orange" />
+			<KpiCard kpiKey="requests" icon="request_quote" label={ui.kpiRequests} value="" tone="navy" />
+		</div>
+
+		<!-- Lines status -->
+		<section>
+			<h2 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">{ui.lineStatusTitle}</h2>
+			<p class="font-body-md text-body-md text-on-surface-variant mb-stack-sm">{ui.lineStatusDesc}</p>
+			<div id="line-cards" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+				<!-- rendered client-side -->
+			</div>
+		</section>
+	</div>
+</AppLayout>
+
+<div id="app-ui" class="hidden" data-ui={uiJson}></div>
+<script>
+	import { listBudgets, listReports, lineStats } from "@/lib/app-store";
+	import { escapeHtml, isToday } from "@/lib/app-format";
+	import popularLines from "@/data/popular-lines.json";
+
+	const ui = JSON.parse(document.getElementById("app-ui")?.dataset.ui ?? "{}");
+
+	type Line = { id: string; name: string; origin: string; destination: string };
+	const lines = popularLines.lines as Line[];
+
+	// KPIs
+	const linesWithReports = lines.filter((l) => listReports(l.id).some((r) => isToday(r.createdAt)));
+	const avgRate = linesWithReports.length
+		? Math.round(linesWithReports.reduce((acc, l) => acc + lineStats(l.id).onTimeRate, 0) / linesWithReports.length)
+		: 100;
+	const reportsToday = lines.reduce((acc, l) => acc + listReports(l.id).filter((r) => isToday(r.createdAt)).length, 0);
+	const openBudgets = listBudgets().filter((b) => b.status === "received" || b.status === "review").length;
+
+	const kpiValues: Record<string, string> = {
+		lines: String(lines.length),
+		onTime: `${avgRate}%`,
+		reports: String(reportsToday),
+		requests: String(openBudgets),
+	};
+	document.querySelectorAll<HTMLElement>("[data-kpi]").forEach((el) => {
+		const key = el.dataset.kpi ?? "";
+		if (kpiValues[key]) el.textContent = kpiValues[key];
+	});
+
+	// Per-line cards
+	const container = document.getElementById("line-cards");
+	if (container) {
+		container.innerHTML = lines
+			.map((line) => {
+				const stats = lineStats(line.id);
+				const todays = listReports(line.id).filter((r) => isToday(r.createdAt));
+				const barColor =
+					stats.total === 0
+						? "bg-surface-variant"
+						: stats.onTimeRate >= 90
+							? "bg-coastal-teal"
+							: stats.onTimeRate >= 70
+								? "bg-energetic-orange"
+								: "bg-error";
+				const statusDot =
+					stats.total === 0
+						? '<span class="material-symbols-outlined text-outline text-[20px]">remove_circle_outline</span>'
+						: stats.onTimeRate >= 90
+							? '<span class="material-symbols-outlined text-coastal-teal text-[20px] icon-filled">check_circle</span>'
+							: stats.onTimeRate >= 70
+								? '<span class="material-symbols-outlined text-energetic-orange text-[20px] icon-filled">warning</span>'
+								: '<span class="material-symbols-outlined text-error text-[20px] icon-filled">error</span>';
+				return `
+				<article class="bg-surface-container-lowest rounded-xl border border-surface-variant shadow-ambient p-4 flex flex-col gap-3">
+					<div class="flex items-center gap-3">
+						<span class="flex-shrink-0">${statusDot}</span>
+						<div class="min-w-0 flex-1">
+							<h3 class="font-headline-md text-headline-md font-bold text-deep-navy leading-tight truncate">${escapeHtml(line.name)}</h3>
+							<p class="font-body-md text-body-md text-on-surface-variant truncate">${escapeHtml(line.origin)} → ${escapeHtml(line.destination)}</p>
+						</div>
+						<span class="font-label-md text-label-md text-on-surface-variant flex-shrink-0">
+							${stats.total} ${escapeHtml(ui.reports)} · ${stats.onTimeRate}%
+						</span>
+					</div>
+					<div class="h-2 rounded-full bg-surface-container overflow-hidden">
+						<div class="h-full rounded-full ${barColor} transition-all" style="width: ${stats.total === 0 ? 0 : stats.onTimeRate}%"></div>
+					</div>
+					${
+						stats.total > 0
+							? `<p class="font-body-md text-body-md text-on-surface-variant text-sm">
+									<span class="text-energetic-orange font-semibold">${stats.negative}</span> ${escapeHtml(ui.negativeToday)}
+								</p>`
+							: `<p class="font-body-md text-body-md text-outline text-sm">${escapeHtml(ui.noLineData)}</p>`
+					}
+					<a href="/app/trabajador/reportes?linea=${encodeURIComponent(line.id)}" class="inline-flex items-center gap-1.5 self-start rounded-lg border border-outline-variant text-deep-navy font-button text-button px-4 py-2 hover:bg-surface-container-low hover:border-deep-navy transition-colors">
+						<span class="material-symbols-outlined text-[18px]">fact_check</span>
+						${escapeHtml(ui.reports)}
+					</a>
+				</article>`;
+			})
+			.join("");
+	}
+</script>

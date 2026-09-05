@@ -1,0 +1,32 @@
+---
+import type { BudgetStatus } from "@/interfaces/app";
+
+interface Props {
+	status: BudgetStatus;
+	/** Labels for the status (dict.app.status). */
+	labels: Record<BudgetStatus, string>;
+}
+
+const { status, labels } = Astro.props;
+
+const styles: Record<BudgetStatus, string> = {
+	received: "bg-primary-fixed text-on-primary-fixed",
+	review: "bg-tertiary-fixed text-on-tertiary-fixed",
+	answered: "bg-secondary-fixed text-on-secondary-fixed",
+	contracted: "bg-deep-navy text-on-primary",
+};
+
+const icons: Record<BudgetStatus, string> = {
+	received: "mail",
+	review: "visibility",
+	answered: "reply",
+	contracted: "verified",
+};
+---
+
+<span
+	class={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-label-md text-label-md ${styles[status]}`}
+>
+	<span class="material-symbols-outlined text-[16px]">{icons[status]}</span>
+	{labels[status]}
+</span>
