@@ -1,9 +1,8 @@
-import type { AppUser } from "@/interfaces/app";
+import type { AppUser } from "./types";
 
 /**
- * Demo seed for the PWA. Everything lives in localStorage under `plana-app:*`
- * (see src/lib/app-store.ts) — swap that layer for a real backend later.
- * Passkeys are plaintext and intentionally weak: this is a UI demo.
+ * Demo seed for the dashboard. Passkeys are plaintext and intentionally weak:
+ * this is a UI demo.
  */
 export const DEMO_USERS: AppUser[] = [
 	{
@@ -70,7 +69,8 @@ export const DEMO_BUDGETS = [
 		phone: "+34 600 111 222",
 		company: "",
 		reasonId: "conventions",
-		description: "Traslado diario de 15 personas para la feria de Tarragona durante 3 días.",
+		description:
+			"Traslado diario de 15 personas para la feria de Tarragona durante 3 días.",
 		departureCity: "Reus",
 		departureDay: "2026-09-20",
 		departureTime: "08:00",
@@ -90,7 +90,8 @@ export const DEMO_BUDGETS = [
 		phone: "+34 977 523 111",
 		company: "Institut Constantí",
 		reasonId: "endOfYearTrip",
-		description: "Viaje de fin de curso de 2º de bachillerato a PortAventura (2 autobuses).",
+		description:
+			"Viaje de fin de curso de 2º de bachillerato a PortAventura (2 autobuses).",
 		departureCity: "Constantí",
 		departureDay: "2026-06-05",
 		departureTime: "08:30",
@@ -110,7 +111,8 @@ export const DEMO_BUDGETS = [
 		phone: "+34 977 612 888",
 		company: "CB Valls Bàsquet",
 		reasonId: "sportsDisplacements",
-		description: "Desplazamiento del equipo cadete a Barcelona para el partido del sábado.",
+		description:
+			"Desplazamiento del equipo cadete a Barcelona para el partido del sábado.",
 		departureCity: "Valls",
 		departureDay: "2026-09-12",
 		departureTime: "14:00",

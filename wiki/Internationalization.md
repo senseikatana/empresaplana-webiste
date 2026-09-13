@@ -2,17 +2,20 @@
 
 ## Visión general
 
-El sitio soporta **3 idiomas**: catalán (CA), español (ES) e inglés (EN). El idioma por defecto es **catalán**.
+El sitio soporta **4 idiomas**: catalán (CA), español (ES), inglés (EN) y francés (FR). El idioma por defecto es **catalán**.
 
 ## Arquitectura
 
 ```
-src/config/i18n/
-├── ca.json          # Diccionario catalán (575 claves)
-├── es.json          # Diccionario español (575 claves)
-├── en.json          # Diccionario inglés (575 claves)
-└── index.ts         # Motor de i18n (getDictionary, t, getLocale)
+i18n/locales/
+├── ca.json          # Diccionario catalán
+├── es.json          # Diccionario español
+├── en.json          # Diccionario inglés
+└── fr.json          # Diccionario francés
 ```
+
+Motor: `@nuxtjs/i18n` con estrategia `prefix_except_default` (ca en raíz, `/es`,
+`/en`, `/fr` con prefijo).
 
 ## Uso en páginas
 
@@ -70,11 +73,11 @@ serviciosDiscretionales.title   → "Serveis discrecionals"
 
 ## Añadir un nuevo idioma
 
-1. Crear `src/config/i18n/xx.json` copiando `ca.json` como plantilla.
+1. Crear `i18n/locales/xx.json` copiando `ca.json` como plantilla.
 2. Traducir todas las claves manteniendo la estructura.
-3. Añadir `"xx"` al array `LOCALES` en `index.ts`.
-4. Añadir la clave `common.lang.xx` en los 3 diccionarios existentes.
-5. Verificar que `getDictionary` y `t` funcionan con el nuevo locale.
+3. Registrar el locale en el array `i18n.locales` de `nuxt.config.ts`.
+4. Añadir la clave `common.lang.xx` en los diccionarios existentes.
+5. Verificar que `useI18n()` y `useLocalePath()` funcionan con el nuevo locale.
 
 ## Añadir una nueva clave
 

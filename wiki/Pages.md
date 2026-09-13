@@ -1,5 +1,8 @@
 # Páginas
 
+> **Documento histórico.** Describe el sitio legacy en Astro (`src/`), ya
+> eliminado. Las rutas actuales viven en `app/pages/` (Nuxt 4).
+
 ## Mapa de rutas
 
 El sitio tiene **29 páginas** compiladas como HTML estático. Todas las rutas incluyen el prefijo `/empresaplana-website/`.

@@ -39,5 +39,5 @@ lo prohíbe (`Wasm code generation disallowed by embedder`). No hay compat flag.
 ## Desarrollo local
 
 ```bash
-pnpm run nuxt:dev   # http://localhost:3000 (DB Docker en 127.0.0.1:54329)
+pnpm run dev   # http://localhost:3000 (DB Docker en 127.0.0.1:54329)
 ```

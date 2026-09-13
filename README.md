@@ -38,9 +38,9 @@ pnpm run db:create-user admin 12345678 admin   # create first admin user
 
 | Command                  | Description                                        |
 | ------------------------ | -------------------------------------------------- |
-| `pnpm run nuxt:dev`       | Dev server at `http://localhost:3000`              |
-| `pnpm run nuxt:build`     | Production build (Node `node_server`) → `.output/` |
-| `pnpm run nuxt:preview`   | Serve the production build locally                 |
+| `pnpm run dev`           | Dev server at `http://localhost:3000`              |
+| `pnpm run build`         | Production build (Node `node_server`) → `.output/` |
+| `pnpm run preview`       | Serve the production build locally                 |
 | `pnpm run render:build`   | Explicit Node build for Render                     |
 | `pnpm run cf:build`       | Build Cloudflare Pages preset (blocked, see Gotchas) |
 | `pnpm run cf:dev`         | Build + `wrangler pages dev` preview               |
@@ -63,10 +63,9 @@ app/               # Nuxt srcDir — pages, components, layouts, middleware
   assets/css/      # main.css — Tailwind v4 @theme design tokens (source of truth)
   data/            # real contact data (phones, social, WhatsApp)
 server/            # Nitro API — server/api/*, server/utils/* (auth, prisma, passkey)
-i18n/locales/      # real ca/es/en dictionaries (exported content, do not invent)
-prisma/            # schema.prisma, seed
+i18n/locales/      # real ca/es/en/fr dictionaries (exported content, do not invent)
+prisma/            # schema.prisma, seed + seed-data/
 generated/prisma/  # generated Prisma client (git-ignored, do not edit)
-src/               # LEGACY Astro (being migrated; reference only)
 render.yaml        # Render blueprint (IaC)
 wrangler.jsonc     # Cloudflare config (reversible target)
 ```

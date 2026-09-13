@@ -62,26 +62,27 @@ git push origin v1.2.0
 ### TypeScript
 
 - Usar tipos explícitos en props de componentes.
-- Los interfaces van en `src/interfaces/`.
-- Usar `@/` para imports absolutos.
+- Los tipos compartidos van junto al módulo que los usa, o en `shared/` si los
+  consumen app y servidor.
+- Auto-imports de Nuxt para composables/utils; `~/` apunta a `app/`.
 
-### Astro
+### Nuxt / Vue
 
-- Los componentes usan `<script define:vars>` para interactividad (no React).
-- Los datos estáticos van en `src/data/` como JSON.
-- Los tokens de diseño van en `src/styles/global.css` (nunca `bg-[#...]` ad-hoc).
+- Componentes Vue con `<script setup lang="ts">`.
+- Los datos estáticos van en `app/data/` como JSON/TS.
+- Los tokens de diseño van en `app/assets/css/main.css` (nunca `bg-[#...]` ad-hoc).
 
 ### CSS
 
 - Usar clases de Tailwind del sistema de diseño.
-- Los tokens de color, espaciado y tipografía están en `global.css`.
+- Los tokens de color, espaciado y tipografía están en `main.css` (`@theme`).
 - No hardcodear colores; usar las variables CSS del `@theme`.
 
 ### i18n
 
-- Todo el texto visible va en los diccionarios `src/config/i18n/*.json`.
-- Añadir claves en los 3 idiomas (CA, ES, EN).
-- Usar `getLocale()` y `getDictionary()` en las páginas.
+- Todo el texto visible va en los diccionarios `i18n/locales/*.json`.
+- Añadir claves en los 4 idiomas (CA, ES, EN, FR).
+- Usar `useI18n()` y `useLocalePath()` en las páginas.
 
 ## Estructura de commits
 

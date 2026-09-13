@@ -1,3 +1,5 @@
+import type { UsuarioRole } from "../../server/utils/auth";
+
 /** Fleet-management entities for the /dashboard/gestion area (admin/bosses). */
 
 export type FleetStatus = "active" | "inactive" | "delayed" | "maintenance";
@@ -110,14 +112,16 @@ export interface FleetData {
 	};
 }
 
-export const FLEET_COLLECTIONS = [
-	"routes",
-	"buses",
-	"stops",
-	"schedules",
-	"drivers",
-	"notifications",
-	"activity",
-] as const;
-
-export type FleetCollection = (typeof FLEET_COLLECTIONS)[number];
+/** Demo user. `passkey` is plaintext on purpose: demo only. */
+export interface AppUser {
+	id: number;
+	username: string;
+	passkey: string;
+	name: string;
+	fullName: string;
+	email: string;
+	phone: string;
+	role: UsuarioRole;
+	/** Links the user to a fleet driver record (for workers). */
+	driverId?: number;
+}

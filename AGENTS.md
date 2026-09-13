@@ -5,9 +5,9 @@ Redesign + panel administrativo (CMS). Target: `https://empresaplana.cat`.
 
 ## Estado de la migración
 
-- **Activo:** Nuxt 4 (`app/`, `server/`, `i18n/`) — esta es la app que se desarrolla.
-- **Legacy:** Astro 7 en `src/` (en proceso de migración; no tocar salvo referencia).
-- Rama de trabajo: `feat/nuxt-4-migration`. Astro se elimina al finalizar la migración.
+- La app es **Nuxt 4** (`app/`, `server/`, `i18n/`). El legado Astro (`src/`) se
+  eliminó por completo (rama `chore/remove-astro-legacy`).
+- Integración: `dev`; releases: `main`.
 
 ## Stack (Nuxt 4)
 
@@ -23,9 +23,9 @@ Redesign + panel administrativo (CMS). Target: `https://empresaplana.cat`.
 ## Commands
 
 - `pnpm install`
-- `pnpm run nuxt:dev` — dev server (puerto 3000)
-- `pnpm run nuxt:build` — build Node (`node_server`) → `.output/`
-- `pnpm run nuxt:preview` — sirve el build
+- `pnpm run dev` — dev server (puerto 3000)
+- `pnpm run build` — build Node (`node_server`) → `.output/`
+- `pnpm run preview` — sirve el build
 - `pnpm run render:build` — build para Render (`node_server`, explícito)
 - `pnpm run cf:build` / `pnpm run cf:dev` — build/previz Cloudflare Pages (ver Gotchas)
 - `pnpm run db:generate` / `db:push` / `db:migrate` / `db:studio` / `db:create-user`
@@ -42,25 +42,23 @@ Redesign + panel administrativo (CMS). Target: `https://empresaplana.cat`.
 ## i18n
 
 - Locale por defecto: **ca** (raíz `/`); `es` y `en` con prefijo (`/es`, `/en`).
-- Diccionarios: `i18n/locales/{ca,es,en}.json` (copiados del contenido real
-  exportado; fuente original: `src/config/i18n/`).
+- Diccionarios: `i18n/locales/{ca,es,en,fr}.json` (contenido real exportado del
+  sitio original).
 
 ## Contenido real (fuentes, no inventar)
 
-- `i18n/locales/*.json` — todo el copy de la web y del panel (ca/es/en).
-- `src/config/*.md` — extracciones Firecrawl del sitio original empresaplana.cat.
+- `i18n/locales/*.json` — todo el copy de la web y del panel (ca/es/en/fr).
 - `docs/empresa-plana-contenido-web.docx` — documentación completa del contenido.
 - `wiki/Legacy-Content.md` — inventario (teléfonos, 129 localidades, 8 líneas, ISO, etc.).
-- `app/data/contact.ts` — teléfonos/redes reales (de `src/data/contact.json`).
+- `app/data/contact.ts` — teléfonos/redes reales (extraídos del sitio original).
 
 ## Estructura
 
 - `app/` — páginas, componentes, layouts, middleware (Nuxt 4 srcDir)
 - `app/pages/` — sitio público (`/`, `/rutas-horarios`, `/dashboard/...`)
 - `server/` — API REST (`server/api/`), utils (`auth`, `prisma`, `passkey`)
-- `i18n/locales/` — diccionarios ca/es/en
-- `prisma/` — schema, seed; `generated/prisma/` — client generado (no editar)
-- `src/` — LEGACY Astro (en migración)
+- `i18n/locales/` — diccionarios ca/es/en/fr
+- `prisma/` — schema, seed + `seed-data/`; `generated/prisma/` — client generado (no editar)
 
 ## Gotchas
 
