@@ -1,5 +1,8 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth", layout: "dashboard" });
+definePageMeta({
+	layout: "dashboard",
+	capability: "users:manage",
+});
 
 const { t } = useI18n();
 
