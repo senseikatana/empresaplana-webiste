@@ -1,12 +1,14 @@
 import type { H3Event } from "h3";
 import { deleteCookie, getCookie, setCookie } from "h3";
 import { jwtVerify, SignJWT } from "jose";
+import { isRole, type Role } from "#shared/acl";
 
 const SESSION_COOKIE = "ep_session";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 const ISSUER = "empresaplana";
 
-export type UsuarioRole = "client" | "worker" | "admin";
+// Alias de compatibilidad: la fuente de verdad del rol es shared/acl.ts
+export type UsuarioRole = Role;
 
 export interface SessionUser {
 	id: number;
@@ -44,10 +46,11 @@ export async function getSessionUser(
 		const id = Number(payload.sub);
 		if (!Number.isInteger(id) || typeof payload.username !== "string")
 			return null;
+		if (!isRole(payload.role)) return null;
 		return {
 			id,
 			username: payload.username,
-			role: payload.role as UsuarioRole,
+			role: payload.role,
 		};
 	} catch {
 		return null;

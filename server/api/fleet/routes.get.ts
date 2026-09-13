@@ -1,14 +1,7 @@
-import { getSessionUser } from "../../utils/auth";
-import { isStaffRole } from "../../utils/chat";
+import { requireCapability } from "../../utils/acl";
 
 export default defineEventHandler(async (event) => {
-	const session = await getSessionUser(event);
-	if (!session) {
-		throw createError({ statusCode: 401, statusMessage: "No autenticat" });
-	}
-	if (!isStaffRole(session.role)) {
-		throw createError({ statusCode: 403, statusMessage: "Sense accés" });
-	}
+	await requireCapability(event, "fleet:view");
 
 	const routes = await prisma().route.findMany({ orderBy: { code: "asc" } });
 	return routes.map((r) => ({

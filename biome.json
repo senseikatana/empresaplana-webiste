@@ -5,6 +5,7 @@
 			"app/**/*.ts",
 			"app/**/*.vue",
 			"server/**/*.ts",
+			"shared/**/*.ts",
 			"scripts/create-user.ts",
 			"prisma/**/*.ts",
 			"nuxt.config.ts",

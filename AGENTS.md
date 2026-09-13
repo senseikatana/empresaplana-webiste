@@ -17,6 +17,9 @@ Redesign + panel administrativo (CMS). Target: `https://empresaplana.cat`.
   `@prisma/adapter-pg` + `pg`. Fuente de verdad: **Postgres** (Prisma Postgres).
 - Auth: **jose** HS256 JWT en cookie `ep_session` (httpOnly, 7d) + scrypt
   (`server/utils/passkey.ts`). Roles: `client | worker | admin`.
+- Autorización: **ACL estilo WordPress** (roles → capabilities) en
+  `shared/acl.ts`; guards de endpoint con `requireCapability()` en
+  `server/utils/acl.ts`. Nada de checks `role === "..."` inline.
 - Diseño: tokens en `app/assets/css/main.css` (`@theme`, espejo de `DESIGN.md`),
   tema Nuxt UI en `app/app.config.ts`. Geist + Material Symbols.
 

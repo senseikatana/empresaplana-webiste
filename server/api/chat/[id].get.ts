@@ -1,10 +1,8 @@
-import { getSessionUser } from "../../utils/auth";
+import { hasCapability } from "#shared/acl";
+import { requireCapability } from "../../utils/acl";
 
 export default defineEventHandler(async (event) => {
-	const session = await getSessionUser(event);
-	if (!session) {
-		throw createError({ statusCode: 401, statusMessage: "No autenticat" });
-	}
+	const session = await requireCapability(event, "chat:access");
 
 	const id = Number(event.context.params?.id);
 	if (!Number.isInteger(id)) {
@@ -23,8 +21,7 @@ export default defineEventHandler(async (event) => {
 	}
 
 	const isParticipant = conv.participants.some((p) => p.userId === session.id);
-	const isStaff = session.role === "admin" || session.role === "worker";
-	if (!isParticipant && !isStaff) {
+	if (!isParticipant && !hasCapability(session.role, "chat:staff")) {
 		throw createError({ statusCode: 403, statusMessage: "Sense accés" });
 	}
 

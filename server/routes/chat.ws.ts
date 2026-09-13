@@ -1,4 +1,5 @@
 import { jwtVerify } from "jose";
+import { isRole } from "#shared/acl";
 import type { ChatSession } from "../utils/chat";
 import {
 	canAccessConversation,
@@ -29,7 +30,8 @@ async function sessionFromUpgrade(
 		const id = Number(payload.sub);
 		if (!Number.isInteger(id) || typeof payload.username !== "string")
 			return null;
-		return { id, username: payload.username, role: String(payload.role) };
+		if (!isRole(payload.role)) return null;
+		return { id, username: payload.username, role: payload.role };
 	} catch {
 		return null;
 	}
