@@ -5,7 +5,10 @@ const dashboardPathPattern = /^\/(?:es|en|fr)?\/dashboard(?:\/|$)/;
 const publicAuthPaths = ["/dashboard/login", "/dashboard/register"];
 
 function isPublicAuthPath(path: string): boolean {
-	return publicAuthPaths.some((p) => path === p || p === path.replace(/^\/(?:es|en|fr)(?=\/dashboard)/, ""));
+	return publicAuthPaths.some(
+		(p) =>
+			path === p || p === path.replace(/^\/(?:es|en|fr)(?=\/dashboard)/, ""),
+	);
 }
 
 export default defineNuxtRouteMiddleware(async (to) => {

@@ -21,7 +21,10 @@ useHead({
 	meta: [{ name: "robots", content: "noindex, nofollow" }],
 });
 
-async function submit(usernameValue = username.value, passkeyValue = passkey.value) {
+async function submit(
+	usernameValue = username.value,
+	passkeyValue = passkey.value,
+) {
 	error.value = null;
 	pending.value = true;
 	try {
