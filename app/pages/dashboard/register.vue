@@ -10,7 +10,10 @@ const password = ref("");
 const error = ref<string | null>(null);
 const pending = ref(false);
 
-useHead({ title: t("app.register.title") });
+useHead({
+	title: t("app.register.title"),
+	meta: [{ name: "robots", content: "noindex, nofollow" }],
+});
 
 async function submit() {
 	error.value = null;

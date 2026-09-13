@@ -1,4 +1,8 @@
 {
+	"meta": {
+		"title": "Empresa Plana | Transport públic de viatgers",
+		"description": "Empresa Plana ofereix serveis de transport públic de viatgers a la Costa Daurada. Consulta horaris, línies i rutes d'autobús."
+	},
 	"common": {
 		"brand": "Empresa Plana",
 		"nav": {
@@ -485,7 +489,10 @@
 			"quotesEmpty": "You have no quotes.",
 			"messagesSubtitle": "Talk to the company and drivers.",
 			"whatsapp": "You can also message us on WhatsApp",
-			"phone": "Phone"
+			"phone": "Phone",
+			"conversations": "Conversations",
+			"selectConversation": "Select a conversation",
+			"send": "Send"
 		}
 	},
 	"routes": {

@@ -2,10 +2,9 @@
 const { t } = useI18n();
 const localePath = useLocalePath();
 
-useHead({
-	title: t("homeVariant2.title"),
-	meta: [{ name: "description", content: t("home.screens.variant2.desc") }],
-});
+// meta.title ya incluye la marca; %s evita duplicarla en el titleTemplate
+useHead({ title: t("meta.title"), titleTemplate: "%s" });
+useSeoMeta({ description: () => t("meta.description") });
 
 const b = computed(() => ({
 	tabs: {
@@ -201,7 +200,7 @@ const inputClass =
 				class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-ambient hover:shadow-ambient-lg border border-surface-variant flex flex-col group hover:-translate-y-1 transition-all duration-300"
 			>
 				<div class="h-48 relative overflow-hidden">
-					<img :alt="route.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" :src="route.image" />
+					<img :alt="route.name" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" :src="route.image" />
 				</div>
 				<div class="p-6 flex flex-col flex-grow">
 					<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-2">{{ route.name }}</h3>

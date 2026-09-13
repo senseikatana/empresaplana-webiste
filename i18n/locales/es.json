@@ -1,4 +1,8 @@
 {
+	"meta": {
+		"title": "Empresa Plana - Autocares y movilidad para la Costa Dorada",
+		"description": "Empresa Plana: horarios de autobús, rutas, traslados al aeropuerto y servicios discrecionales en la Costa Dorada, Camp de Tarragona y Barcelona."
+	},
 	"common": {
 		"brand": "Empresa Plana",
 		"nav": {
@@ -485,7 +489,10 @@
 			"quotesEmpty": "No tienes ningún presupuesto.",
 			"messagesSubtitle": "Habla con la empresa y los conductores.",
 			"whatsapp": "También puedes escribirnos por WhatsApp",
-			"phone": "Teléfono"
+			"phone": "Teléfono",
+			"conversations": "Conversaciones",
+			"selectConversation": "Selecciona una conversación",
+			"send": "Enviar"
 		}
 	},
 	"routes": {
