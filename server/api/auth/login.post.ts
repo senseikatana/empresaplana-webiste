@@ -1,21 +1,26 @@
+import { z } from "zod";
+import { isRole } from "#shared/acl";
 import { setSessionCookie, signSessionToken } from "../../utils/auth";
 import { verifyPasskey } from "../../utils/passkey";
 
+const loginSchema = z.object({
+	username: z.string().min(1).max(60),
+	passkey: z.string().min(1).max(128),
+});
+
 export default defineEventHandler(async (event) => {
-	const body = await readBody<{
-		username?: string;
-		passkey?: string;
-	}>(event).catch(() => ({}));
+	rateLimit(event, { limit: 10, windowMs: 15 * 60_000 });
 
-	const username = String(body?.username ?? "").trim();
-	const passkey = String(body?.passkey ?? "");
-
-	if (!username || !passkey) {
+	const parsed = loginSchema.safeParse(await readBody(event).catch(() => ({})));
+	if (!parsed.success) {
 		throw createError({ statusCode: 400, statusMessage: "Falten credencials" });
 	}
 
+	const { username, passkey } = parsed.data;
+
 	const user = await prisma().user.findUnique({ where: { username } });
-	if (!user || !verifyPasskey(passkey, user.passkey)) {
+	// Fantasmas anónimos (passkey "") y roles corruptos nunca autentican.
+	if (!user || !isRole(user.role) || !verifyPasskey(passkey, user.passkey)) {
 		throw createError({
 			statusCode: 401,
 			statusMessage: "Credencials invàlides",
@@ -25,7 +30,7 @@ export default defineEventHandler(async (event) => {
 	const token = await signSessionToken({
 		id: user.id,
 		username: user.username,
-		role: user.role as "client" | "worker" | "admin",
+		role: user.role,
 	});
 	setSessionCookie(event, token);
 
