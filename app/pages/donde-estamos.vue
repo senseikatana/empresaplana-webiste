@@ -3,6 +3,7 @@ import { contact } from "~/data/contact";
 
 const { t } = useI18n();
 useHead({ title: () => t("locations.title") });
+useSeoMeta({ description: () => t("locations.hero.subtitle") });
 
 const { data: offices } = await useFetch("/api/offices");
 
@@ -33,7 +34,7 @@ const baseKeys = [
 		<section class="relative max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop -mt-20 z-20 mb-stack-lg">
 			<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
 				<div class="lg:col-span-8 bg-surface-container-lowest rounded-xl shadow-ambient overflow-hidden relative h-[400px] lg:h-auto min-h-[400px] border border-surface-variant">
-					<img class="w-full h-full object-cover" alt="Red de oficinas Empresa Plana" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZHw_XR0BwP0YOlStJLT07Jp0AG0k95rXPHKX6xj5y2k6DpQQm7lZnNdJQNNCyfdPbE884aNXiIDDN-R0vAa3soUdwrcnQ8A3Fg7yo-mZQXceLw95zwH_EbIrM-41WkGrMHKuyR-mZKRIxHmEHzwmAaVeD5DXGMkFKcowjofQSMKi8Ohj5Y5jukSTt2rB3r4iGIBuiEPQJgMO5mouwQQAu5PBjcust9EW3xg5Ivk4vhHK2VyWO4eXD" />
+					<img loading="lazy" decoding="async" class="w-full h-full object-cover" alt="Red de oficinas Empresa Plana" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZHw_XR0BwP0YOlStJLT07Jp0AG0k95rXPHKX6xj5y2k6DpQQm7lZnNdJQNNCyfdPbE884aNXiIDDN-R0vAa3soUdwrcnQ8A3Fg7yo-mZQXceLw95zwH_EbIrM-41WkGrMHKuyR-mZKRIxHmEHzwmAaVeD5DXGMkFKcowjofQSMKi8Ohj5Y5jukSTt2rB3r4iGIBuiEPQJgMO5mouwQQAu5PBjcust9EW3xg5Ivk4vhHK2VyWO4eXD" />
 					<div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-md px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
 						<span class="material-symbols-outlined text-energetic-orange text-sm">my_location</span>
 						<span class="font-label-md text-label-md text-deep-navy">{{ t("locations.mapBadge") }}</span>

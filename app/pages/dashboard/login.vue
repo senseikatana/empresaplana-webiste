@@ -8,7 +8,10 @@ const passkey = ref("");
 const error = ref<string | null>(null);
 const pending = ref(false);
 
-useHead({ title: t("app.auth.welcome") });
+useHead({
+	title: t("app.auth.welcome"),
+	meta: [{ name: "robots", content: "noindex, nofollow" }],
+});
 
 async function submit() {
 	error.value = null;

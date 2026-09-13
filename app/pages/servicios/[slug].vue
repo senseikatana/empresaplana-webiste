@@ -24,6 +24,7 @@ const loc = computed(() => {
 
 const content = computed(() => service.locales[loc.value]);
 useHead({ title: () => content.value?.title ?? "" });
+useSeoMeta({ description: () => content.value?.tagline ?? "" });
 
 const professionalsBullets = computed(() => [
 	t("discretionary.professionals.bullets.0"),

@@ -3,6 +3,7 @@ const { t } = useI18n();
 const localePath = useLocalePath();
 
 useHead({ title: () => t("discretionary.title") });
+useSeoMeta({ description: () => t("discretionary.intro.subtitle") });
 
 // Servicios con detalle en services.json (slug). El resto de cards enlazan
 // al presupuesto porque no tienen página de detalle en el contenido real.
@@ -91,8 +92,8 @@ function hrefFor(key: string): string {
 					</ul>
 				</div>
 				<div class="md:w-1/2 grid grid-cols-2 gap-4">
-					<img class="rounded-xl w-full h-48 object-cover shadow-sm" alt="Conductor profesional Empresa Plana" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4QJAB9ThJJ-3VbdbjWh1XWcNkLHxQl0XGi05aNrkcQv5Ez16YVgDw9wYLg8PIiFwPbLgfXdYGDbR8qLiJKhcA90wuRXijW9xBcAx7ji68SEA689ISdGrB3CQTC7eUtyK8i8pXwCIlSz94s9PCSHLtHDRsSEe2XHYjxnEDDeM1RD5OG5QuAe0YJpnYRNYcEmmnIqSOBxf9_CD3DDqfoPywYVpPlA_FpHF17VpSq3EFrITMdEcQGYsc" />
-					<img class="rounded-xl w-full h-48 object-cover shadow-sm mt-8" alt="Interior de autocar Empresa Plana" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9BGFDiq-ALhzllY4TcOk-GaWMOovbPUyLl1-pFpxeWbv1Cqj2fFFZOY8QnAJNNw6djscnTCL1I_i1S8D13Gyr0wSzeaKK7PH9Qn37XFTgUoxjoTD2Nxp2Kw8BuNl4AEcS2dynlBXxY68PUtDPATnZRYRa0XKvMNhPDpJVwEeg1rwQRV44zzBPvhA5u2j8po-XNimNQTrBZzEFFOSvgghERs1WdmPha6kZCT_IhWxd74v2E0U_02NZ" />
+					<img loading="lazy" decoding="async" class="rounded-xl w-full h-48 object-cover shadow-sm" alt="Conductor profesional Empresa Plana" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4QJAB9ThJJ-3VbdbjWh1XWcNkLHxQl0XGi05aNrkcQv5Ez16YVgDw9wYLg8PIiFwPbLgfXdYGDbR8qLiJKhcA90wuRXijW9xBcAx7ji68SEA689ISdGrB3CQTC7eUtyK8i8pXwCIlSz94s9PCSHLtHDRsSEe2XHYjxnEDDeM1RD5OG5QuAe0YJpnYRNYcEmmnIqSOBxf9_CD3DDqfoPywYVpPlA_FpHF17VpSq3EFrITMdEcQGYsc" />
+					<img loading="lazy" decoding="async" class="rounded-xl w-full h-48 object-cover shadow-sm mt-8" alt="Interior de autocar Empresa Plana" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9BGFDiq-ALhzllY4TcOk-GaWMOovbPUyLl1-pFpxeWbv1Cqj2fFFZOY8QnAJNNw6djscnTCL1I_i1S8D13Gyr0wSzeaKK7PH9Qn37XFTgUoxjoTD2Nxp2Kw8BuNl4AEcS2dynlBXxY68PUtDPATnZRYRa0XKvMNhPDpJVwEeg1rwQRV44zzBPvhA5u2j8po-XNimNQTrBZzEFFOSvgghERs1WdmPha6kZCT_IhWxd74v2E0U_02NZ" />
 				</div>
 			</div>
 		</section>

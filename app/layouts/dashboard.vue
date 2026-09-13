@@ -8,6 +8,9 @@ const { data } = await useFetch<{
 	user: { id: number; username: string; role: string };
 }>("/api/me", { headers: useRequestHeaders(["cookie"]) });
 
+// El panel es privado: no debe indexarse
+useHead({ meta: [{ name: "robots", content: "noindex, nofollow" }] });
+
 const role = computed(() => data.value?.user?.role ?? "client");
 
 const locales = computed(() =>

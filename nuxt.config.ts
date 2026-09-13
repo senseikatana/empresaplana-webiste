@@ -12,10 +12,19 @@ export default defineNuxtConfig({
 		head: {
 			meta: [{ name: "theme-color", content: "#013990" }],
 			link: [
+				// Preconnect a los origenes de fuentes/imagenes remotas
+				{ rel: "preconnect", href: "https://fonts.googleapis.com" },
+				{
+					rel: "preconnect",
+					href: "https://fonts.gstatic.com",
+					crossorigin: "",
+				},
+				{ rel: "preconnect", href: "https://lh3.googleusercontent.com" },
 				{
 					rel: "stylesheet",
-					href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
+					href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap",
 				},
+				{ rel: "manifest", href: "/manifest.webmanifest" },
 			],
 		},
 	},

@@ -6,6 +6,7 @@ const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
 useHead({ title: () => t("routes.title") });
+useSeoMeta({ description: () => t("routes.hero.subtitle") });
 
 const towns = stopsData.stops;
 const timeRanges = [
