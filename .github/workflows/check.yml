@@ -11,6 +11,9 @@ permissions:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      # Dummy: prisma.config.ts la exige al cargar, aunque lint no toca la DB
+      DATABASE_URL: postgresql://empresaplana:empresaplana@localhost:5432/empresaplana
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,6 +35,9 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    env:
+      # Dummy: prisma generate no conecta, pero prisma.config.ts la exige al cargar
+      DATABASE_URL: postgresql://empresaplana:empresaplana@localhost:5432/empresaplana
     steps:
       - name: Checkout
         uses: actions/checkout@v4
