@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-09-13
+
+### Added
+- Migración a **Nuxt 4** (Nitro 2, presets `node_server`): app full-stack SSR con Nuxt UI v4, Tailwind v4 y estructura `app/`, `server/`, `i18n/`.
+- API REST + CMS con **Prisma 7** sobre Postgres: modelos y seed de datos reales de rutas, buses, horarios, paradas y conductores; endpoints de presupuestos, favoritas, chat, oficinas y búsqueda de rutas.
+- Panel dashboard por rol (cliente/trabajador/admin) con navegación por capabilities (`hasCapability()`).
+- Chat WebSocket entre clientes y personal.
+- SEO técnico: meta/OG traducidos, hreflang, `robots.txt` y `sitemap.xml`.
+- Idioma francés (`fr`) en los diccionarios i18n (ca/es/en/fr).
+- Login demo y middleware global de auth + guards de ruta por capability.
+- Deploy en **InsForge** (Prisma Postgres + Compute + Dockerfile) y documentación (`docs/DEPLOYMENT.md`, `docs/INSFORGE.md`).
+
+### Changed
+- Eliminado el legacy **Astro** (`src/`, Keystatic y dependencias).
+- Gestor de paquetes **bun → pnpm** (pnpm-lock, workspaces, workflows CI).
+- Auth migrada a **JWT HS256 (jose)** en cookie `ep_session` (7 días) con passkeys hasheadas con **scrypt**.
+- Autorización bajo **ACL estilo WordPress** (roles → capabilities) en endpoints y UI, sin checks de rol inline.
+- Hardening de la API: **rate-limit** por IP (ventana fija en memoria) y sesión obligatoria en endpoints sensibles.
+
+### Fixed
+- CI: `prisma generate` en postinstall con `DATABASE_URL` dummy y `nuxt prepare` previo.
+- Endpoints sensibles (presupuestos, favoritas, chat, cuenta) que no exigían sesión autenticada.
+
+---
+
 ## [0.1.0] - 2026-09-03
 
 ### Added
