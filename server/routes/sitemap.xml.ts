@@ -2,7 +2,7 @@ import services from "../../app/data/services.json";
 
 const BASE_URL = "https://empresaplana.cat";
 // ca sin prefijo (strategy: prefix_except_default); es/en con prefijo
-const LOCALES = ["ca", "es", "en"] as const;
+const LOCALES = ["ca", "es", "en", "fr"] as const;
 
 const STATIC_PATHS = [
 	"/",

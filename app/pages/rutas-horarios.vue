@@ -33,7 +33,7 @@ const popularCards = popularLines.lines.map((line) => ({
 	destination: line.destination,
 	icon: lineIcons[line.id] ?? "directions_bus",
 	pdfUrl:
-		line.pdfUrls[locale.value as "ca" | "es" | "en"] ??
+		line.pdfUrls[locale.value as "ca" | "es" | "en" | "fr"] ??
 		line.pdfUrls.es ??
 		line.pdfUrls.en ??
 		line.pdfUrls.ca,

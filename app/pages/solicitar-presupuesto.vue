@@ -5,7 +5,7 @@ import presupuesto from "~/data/presupuesto.json";
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
 
-const loc = computed(() => locale.value as "ca" | "es" | "en");
+const loc = computed(() => locale.value as "ca" | "es" | "en" | "fr");
 
 useHead({ title: () => t("discretionary.hero.cta") });
 useSeoMeta({ description: () => t("discretionary.cta.subtitle") });

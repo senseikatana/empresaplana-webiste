@@ -14,7 +14,7 @@ useHead({ meta: [{ name: "robots", content: "noindex, nofollow" }] });
 const role = computed(() => data.value?.user?.role ?? "client");
 
 const locales = computed(() =>
-	(["ca", "es", "en"] as const).map((code) => ({
+	(["ca", "es", "en", "fr"] as const).map((code) => ({
 		code,
 		label: t(`common.lang.${code}`),
 		href: switchLocalePath(code),
