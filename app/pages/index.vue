@@ -1,0 +1,315 @@
+<script setup lang="ts">
+const { t } = useI18n();
+const localePath = useLocalePath();
+
+useHead({
+	title: t("homeVariant2.title"),
+	meta: [{ name: "description", content: t("home.screens.variant2.desc") }],
+});
+
+const b = computed(() => ({
+	tabs: {
+		booking: t("homeVariant2.booking.tabs.booking"),
+		destination: t("homeVariant2.booking.tabs.destination"),
+		passengers: t("homeVariant2.booking.tabs.passengers"),
+	},
+	origin: t("homeVariant2.booking.origin"),
+	destination: t("homeVariant2.booking.destination"),
+	date: t("homeVariant2.booking.date"),
+	passengers: t("homeVariant2.booking.passengers"),
+	originPlaceholder: t("homeVariant2.booking.originPlaceholder"),
+	destinationPlaceholder: t("homeVariant2.booking.destinationPlaceholder"),
+	datePlaceholder: t("homeVariant2.booking.datePlaceholder"),
+	oneAdult: t("homeVariant2.booking.oneAdult"),
+	twoAdults: t("homeVariant2.booking.twoAdults"),
+	search: t("homeVariant2.booking.search"),
+}));
+
+const r = computed(() => ({
+	title: t("homeVariant2.routes.title"),
+	startingFrom: t("homeVariant2.routes.startingFrom"),
+	price: t("homeVariant2.routes.price"),
+	cards: {
+		barcelona: {
+			name: t("homeVariant2.routes.cards.barcelona.name"),
+			desc: t("homeVariant2.routes.cards.barcelona.desc"),
+		},
+		salou: {
+			name: t("homeVariant2.routes.cards.salou.name"),
+			desc: t("homeVariant2.routes.cards.salou.desc"),
+		},
+		tarragona: {
+			name: t("homeVariant2.routes.cards.tarragona.name"),
+			desc: t("homeVariant2.routes.cards.tarragona.desc"),
+		},
+	},
+}));
+
+const hc = computed(() => ({
+	valueProps: {
+		title: t("homeContent.valueProps.title"),
+		items: [
+			{
+				icon: "route",
+				title: t("homeContent.valueProps.items.routes.title"),
+				desc: t("homeContent.valueProps.items.routes.desc"),
+			},
+			{
+				icon: "accessible",
+				title: t("homeContent.valueProps.items.accessibility.title"),
+				desc: t("homeContent.valueProps.items.accessibility.desc"),
+			},
+			{
+				icon: "directions_bus",
+				title: t("homeContent.valueProps.items.fleet.title"),
+				desc: t("homeContent.valueProps.items.fleet.desc"),
+			},
+			{
+				icon: "support_agent",
+				title: t("homeContent.valueProps.items.personalized.title"),
+				desc: t("homeContent.valueProps.items.personalized.desc"),
+			},
+		],
+	},
+	airportPromo: {
+		tag: t("homeContent.airportPromo.tag"),
+		title: t("homeContent.airportPromo.title"),
+		subtitle: t("homeContent.airportPromo.subtitle"),
+		cta: t("homeContent.airportPromo.cta"),
+	},
+	coachRental: {
+		title: t("homeContent.coachRental.title"),
+		subtitle: t("homeContent.coachRental.subtitle"),
+		quoteCta: t("homeContent.coachRental.quoteCta"),
+	},
+	fundedBy: {
+		title: t("about.fundedBy"),
+		items: [
+			t("homeContent.fundedBy.items.0"),
+			t("homeContent.fundedBy.items.1"),
+			t("homeContent.fundedBy.items.2"),
+		],
+	},
+}));
+
+const rentalPhones = computed(() => [
+	{
+		icon: "location_city",
+		area: t("discretionary.cta.areaTarragona"),
+		phone: t("discretionary.cta.phoneTarragona"),
+	},
+	{
+		icon: "apartment",
+		area: t("discretionary.cta.areaBarcelona"),
+		phone: t("discretionary.cta.phoneBarcelona"),
+	},
+]);
+
+const routes = computed(() => [
+	{
+		name: r.value.cards.barcelona.name,
+		desc: r.value.cards.barcelona.desc,
+		image:
+			"https://lh3.googleusercontent.com/aida-public/AB6AXuDc0qKrqJ33N7LG5LORztZfMfQwjUjfqP2_tOcwbTF8KTqO5nBvQCnpRnNc5JMt5DYnqOXS0hd1GVYpEE_WJH-4a7nvfDcQErAIi4f9FOKmnwn8nENXanEMg-QRpUoFLt4E--dnlAnQ70o59DA9Y55PDD6Y2RCWGG_1WWeRv9-GhaDpPi8XW72l4SXj6gNeYx5nbU46NCa1LRGiigltuCIN5NYIUO4x1p6KFRy52hoT8iS6q69qPOhE",
+	},
+	{
+		name: r.value.cards.salou.name,
+		desc: r.value.cards.salou.desc,
+		image:
+			"https://lh3.googleusercontent.com/aida-public/AB6AXuCS_Y9gPdjXrImUXZ65N5l76nPP7REWGf_VX9OfqxkeKHgxetcQcDGLUDD6Iv9niiV9-dXPcKnQHZiTPpQhExB1wXFH-bWHEY3OMeMmLo14k9d8hJ4lHs3eKUyCvAuFH2Ij0nsCgDXQhmrd3TTLkR_KzXlKD1mk3cY9al0ZH2P38b640MFuQPzVHPSGSFBd4svdCX-nM1TXb0t-JQdkq8BuyuOHxeoVSscAtXtPvDkCsZmcwpfKurFM",
+	},
+	{
+		name: r.value.cards.tarragona.name,
+		desc: r.value.cards.tarragona.desc,
+		image:
+			"https://lh3.googleusercontent.com/aida-public/AB6AXuALCTStN1KjKoERi_amy7j_4oDqH_zKta9y-6njpzTeQLcnGGa9bHoIIBTHSl83I8IvImB6EklI4mcgtLkc9PomRpMBzjilrxBjOd2dM67-vTc44k49lIWtM7l0GLP8o_8h0YsnBsskph1Pm5tUw28j2Z9BLwwonwsKcJiTroFWeQ-PqNy6bbchWNmnCMsKOlphHAljt3BmAoelIhxN3DvyuYMyAZCc5Y8xfMUSSqatmt9eOzSAnhhI",
+	},
+]);
+
+const inputClass =
+	"w-full pl-10 pr-4 py-3 rounded border border-surface-variant focus:border-coastal-teal focus:ring-1 focus:ring-coastal-teal outline-none font-body-md text-on-surface transition-colors bg-surface-container-lowest";
+</script>
+
+<template>
+	<!-- Split Hero Section -->
+	<section class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg">
+		<div class="flex flex-col md:flex-row gap-gutter bg-surface-container-lowest rounded-xl overflow-hidden shadow-ambient">
+			<!-- Booking Widget (Left) -->
+			<div class="w-full md:w-5/12 p-8 flex flex-col justify-center">
+				<div class="flex gap-4 mb-8 border-b border-surface-variant">
+					<button class="pb-2 border-b-2 border-deep-navy text-deep-navy font-label-md text-label-md font-bold">{{ b.tabs.booking }}</button>
+					<button class="pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-deep-navy font-label-md text-label-md">{{ b.tabs.destination }}</button>
+					<button class="pb-2 border-b-2 border-transparent text-on-surface-variant hover:text-deep-navy font-label-md text-label-md">{{ b.tabs.passengers }}</button>
+				</div>
+				<form class="flex flex-col gap-stack-md" :action="`${localePath('/rutas-horarios')}#results`" method="get">
+					<div class="flex flex-col gap-2">
+						<label class="font-label-md text-label-md text-on-surface-variant" for="home-origin">{{ b.origin }}</label>
+						<div class="relative">
+							<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">location_on</span>
+							<input id="home-origin" :class="inputClass" :placeholder="b.originPlaceholder" type="text" name="origin" />
+						</div>
+					</div>
+					<div class="flex flex-col gap-2">
+						<label class="font-label-md text-label-md text-on-surface-variant" for="home-destination">{{ b.destination }}</label>
+						<div class="relative">
+							<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">location_on</span>
+							<input id="home-destination" :class="inputClass" :placeholder="b.destinationPlaceholder" type="text" name="destination" />
+						</div>
+					</div>
+					<div class="flex gap-4">
+						<div class="flex flex-col gap-2 w-1/2">
+							<label class="font-label-md text-label-md text-on-surface-variant" for="home-date">{{ b.date }}</label>
+							<div class="relative">
+								<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">calendar_month</span>
+								<input id="home-date" :class="inputClass" :placeholder="b.datePlaceholder" type="text" name="date" />
+							</div>
+						</div>
+						<div class="flex flex-col gap-2 w-1/2">
+							<label class="font-label-md text-label-md text-on-surface-variant" for="home-passengers">{{ b.passengers }}</label>
+							<div class="relative">
+								<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">person</span>
+								<select id="home-passengers" :class="`${inputClass} appearance-none`">
+									<option>{{ b.oneAdult }}</option>
+									<option>{{ b.twoAdults }}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<a
+						class="w-full bg-energetic-orange text-on-primary font-button text-button py-4 rounded hover:opacity-90 transition-opacity mt-4 shadow-sm flex items-center justify-center min-h-[48px]"
+						:href="localePath('/rutas-horarios')"
+					>
+						{{ b.search }}
+					</a>
+				</form>
+			</div>
+			<!-- Hero Image (Right) -->
+			<div class="w-full md:w-7/12 h-64 md:h-auto min-h-[400px] relative">
+				<img alt="Empresa Plana Bus" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLuR0px2Ux0FRFwHGZhcyWf4jP8-thYfkTg-Qa9-C0NDlDE89WqHVKUW_V7Hg0Bhyu5wtCeB06RMgrQyVKqq9ea9G47HaWea0cqUfbVlTGjpDLvAL5TSZmlkqRBc6_XcGL6oIVa__QtUFgQWl9QRlaiHrS-THbWgvgczz8HBIZp_u9020eaPbdx9cOZskITDjTlhM7nTQo4K8yGXI5sMX2v9rNQ_xIdJpHM1N4OLNBcL3rg0QdCJt2GmyIk" />
+				<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent pointer-events-none"></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Popular Routes Section -->
+	<section class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg">
+		<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy mb-8 uppercase tracking-wide">{{ r.title }}</h2>
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+			<div
+				v-for="route in routes"
+				:key="route.name"
+				class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-ambient hover:shadow-ambient-lg border border-surface-variant flex flex-col group hover:-translate-y-1 transition-all duration-300"
+			>
+				<div class="h-48 relative overflow-hidden">
+					<img :alt="route.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" :src="route.image" />
+				</div>
+				<div class="p-6 flex flex-col flex-grow">
+					<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-2">{{ route.name }}</h3>
+					<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3">{{ route.desc }}</p>
+					<div class="mt-auto flex justify-between items-end border-t border-surface-variant pt-4">
+						<span class="font-label-md text-label-md text-outline">{{ r.startingFrom }}</span>
+						<span class="font-headline-md text-headline-md font-bold text-deep-navy">{{ r.price }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Value Props Section -->
+	<section class="bg-surface-gray w-full">
+		<div class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg md:py-20">
+			<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy mb-10 text-center uppercase tracking-wide">{{ hc.valueProps.title }}</h2>
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+				<div
+					v-for="item in hc.valueProps.items"
+					:key="item.icon"
+					class="bg-surface-container-lowest rounded-xl shadow-ambient border border-surface-variant p-6 flex flex-col items-start gap-4"
+				>
+					<div class="w-12 h-12 rounded-full bg-primary-fixed text-primary-container flex items-center justify-center">
+						<span class="material-symbols-outlined icon-filled">{{ item.icon }}</span>
+					</div>
+					<h3 class="font-label-md text-label-md uppercase tracking-wide text-deep-navy">{{ item.title }}</h3>
+					<p class="font-body-md text-body-md text-on-surface-variant">{{ item.desc }}</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Airport Transfer Promo -->
+	<section class="w-full bg-deep-navy text-on-primary relative overflow-hidden">
+		<div class="absolute top-0 right-0 w-64 h-64 bg-surface-tint rounded-full blur-3xl opacity-40 -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+		<div class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg md:py-16 relative flex flex-col md:flex-row items-start md:items-center justify-between gap-stack-lg">
+			<div class="flex items-start gap-5">
+				<div class="w-14 h-14 rounded-full bg-on-primary/10 border border-on-primary/20 flex items-center justify-center flex-shrink-0">
+					<span class="material-symbols-outlined text-secondary-fixed text-[28px]">flight_takeoff</span>
+				</div>
+				<div>
+					<p class="font-label-md text-label-md uppercase tracking-widest text-secondary-fixed mb-2">{{ hc.airportPromo.tag }}</p>
+					<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold mb-2">{{ hc.airportPromo.title }}</h2>
+					<p class="font-body-md text-body-md text-on-primary/80 max-w-xl">{{ hc.airportPromo.subtitle }}</p>
+				</div>
+			</div>
+			<a
+				class="inline-flex items-center justify-center gap-2 bg-energetic-orange text-on-primary font-button text-button px-8 py-4 rounded min-h-[48px] hover:opacity-90 transition-opacity flex-shrink-0"
+				href="https://www.busplana.com/"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				{{ hc.airportPromo.cta }}
+				<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+			</a>
+		</div>
+	</section>
+
+	<!-- Coach Rental Section -->
+	<section class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-lg md:py-20">
+		<div class="bg-surface-container-lowest rounded-xl shadow-ambient border border-surface-variant overflow-hidden flex flex-col lg:flex-row">
+			<div class="lg:w-1/2 p-8 md:p-12 flex flex-col justify-center gap-5">
+				<div class="w-12 h-12 rounded-full bg-primary-fixed text-primary-container flex items-center justify-center">
+					<span class="material-symbols-outlined icon-filled">event_seat</span>
+				</div>
+				<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-deep-navy">{{ hc.coachRental.title }}</h2>
+				<p class="font-body-lg text-body-lg text-on-surface-variant">{{ hc.coachRental.subtitle }}</p>
+				<a
+					class="inline-flex items-center justify-center gap-2 self-start bg-energetic-orange text-on-primary font-button text-button px-8 py-4 rounded min-h-[48px] hover:opacity-90 transition-opacity"
+					:href="localePath('/solicitar-presupuesto')"
+				>
+					{{ hc.coachRental.quoteCta }}
+					<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+				</a>
+			</div>
+			<div class="lg:w-1/2 bg-surface-gray p-8 md:p-12 flex flex-col justify-center gap-4">
+				<div
+					v-for="item in rentalPhones"
+					:key="item.phone"
+					class="bg-surface-container-lowest rounded-lg border border-surface-variant p-6 flex items-center gap-4 shadow-sm"
+				>
+					<div class="w-11 h-11 rounded-full bg-primary-fixed text-primary-container flex items-center justify-center flex-shrink-0">
+						<span class="material-symbols-outlined">{{ item.icon }}</span>
+					</div>
+					<div>
+						<p class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">{{ item.area }}</p>
+						<a class="font-headline-md text-headline-md font-bold text-deep-navy hover:text-coastal-teal transition-colors" :href="`tel:${item.phone.replace(/\s/g, '')}`">{{ item.phone }}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Funded by strip -->
+	<section class="w-full border-t border-surface-variant bg-surface-container-lowest">
+		<div class="max-w-container-max mx-auto md:px-margin-desktop px-margin-mobile py-stack-md flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+			<span class="font-label-md text-label-md uppercase tracking-widest text-outline">{{ hc.fundedBy.title }}</span>
+			<div class="flex flex-wrap justify-center gap-3">
+				<span
+					v-for="(item, i) in hc.fundedBy.items"
+					:key="i"
+					class="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container-low px-4 py-1.5 font-label-md text-label-md text-on-surface-variant"
+				>
+					<span class="material-symbols-outlined text-[16px] text-coastal-teal">verified</span>
+					{{ item }}
+				</span>
+			</div>
+		</div>
+	</section>
+</template>
