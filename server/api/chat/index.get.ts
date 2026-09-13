@@ -1,20 +1,18 @@
-import { getSessionUser } from "../../utils/auth";
+import { hasCapability } from "#shared/acl";
+import { requireCapability } from "../../utils/acl";
 
 export default defineEventHandler(async (event) => {
-	const session = await getSessionUser(event);
-	if (!session) {
-		throw createError({ statusCode: 401, statusMessage: "No autenticat" });
-	}
+	const session = await requireCapability(event, "chat:access");
 
+	// El staff (chat:staff) ve todas las conversaciones; el cliente, las suyas.
 	const conversations = await prisma().conversation.findMany({
-		where:
-			session.role === "client"
-				? {
-						participants: {
-							some: { userId: session.id, role: "client" },
-						},
-					}
-				: { type: "client-company" },
+		where: hasCapability(session.role, "chat:staff")
+			? { type: "client-company" }
+			: {
+					participants: {
+						some: { userId: session.id, role: "client" },
+					},
+				},
 		include: {
 			participants: true,
 			messages: { orderBy: { createdAt: "desc" }, take: 1 },

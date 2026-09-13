@@ -1,9 +1,10 @@
 // Lógica compartida entre el endpoint REST y el WebSocket de chat.
+import { hasCapability, type Role } from "#shared/acl";
 
 export interface ChatSession {
 	id: number;
 	username: string;
-	role: string;
+	role: Role;
 }
 
 export async function canAccessConversation(
@@ -16,8 +17,7 @@ export async function canAccessConversation(
 	});
 	if (!conv) return false;
 	const isParticipant = conv.participants.some((p) => p.userId === session.id);
-	const isStaff = session.role === "admin" || session.role === "worker";
-	return isParticipant || isStaff;
+	return isParticipant || hasCapability(session.role, "chat:staff");
 }
 
 /** Añade al staff como participante si responde por primera vez. */
@@ -25,8 +25,7 @@ export async function ensureParticipant(
 	session: ChatSession,
 	conversationId: number,
 ): Promise<void> {
-	const isStaff = session.role === "admin" || session.role === "worker";
-	if (!isStaff) return;
+	if (!hasCapability(session.role, "chat:staff")) return;
 	const exists = await prisma().conversationParticipant.findUnique({
 		where: {
 			conversationId_userId: { conversationId, userId: session.id },
@@ -64,8 +63,4 @@ export async function createMessage(
 		senderRole: message.senderRole,
 		createdAt: message.createdAt,
 	};
-}
-
-export function isStaffRole(role: string): boolean {
-	return role === "admin" || role === "worker";
 }

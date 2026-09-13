@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { getSessionUser } from "../../utils/auth";
+import { hasCapability } from "#shared/acl";
+import { requireCapability } from "../../utils/acl";
 import {
 	canAccessConversation,
 	createMessage,
@@ -12,10 +13,7 @@ const sendSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-	const session = await getSessionUser(event);
-	if (!session) {
-		throw createError({ statusCode: 401, statusMessage: "No autenticat" });
-	}
+	const session = await requireCapability(event, "chat:access");
 
 	const parsed = sendSchema.safeParse(await readBody(event).catch(() => ({})));
 	if (!parsed.success) {
@@ -27,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
 	if (!conversationId) {
 		// Crear (o recuperar) la conversación del cliente con la empresa.
-		if (session.role !== "client") {
+		if (!hasCapability(session.role, "chat:create")) {
 			throw createError({
 				statusCode: 400,
 				statusMessage: "El staff ha d'indicar la conversa",
