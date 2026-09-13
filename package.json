@@ -20,7 +20,7 @@
 		"format:check": "biome format .",
 		"lint": "biome lint .",
 		"check": "biome check .",
-		"postinstall": "prisma generate && nuxt prepare || exit 0",
+		"postinstall": "nuxt prepare && prisma generate || exit 0",
 		"db:generate": "prisma generate",
 		"db:push": "prisma db push",
 		"db:migrate": "prisma migrate dev",
