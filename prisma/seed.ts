@@ -6,8 +6,8 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
 import { hashPasskey } from "../server/utils/passkey";
-import { FLEET_SEED } from "../src/data/app/fleet-seed";
-import { DEMO_BUDGETS, DEMO_USERS } from "../src/data/app/seed";
+import { FLEET_SEED } from "./seed-data/fleet-seed";
+import { DEMO_BUDGETS, DEMO_USERS } from "./seed-data/seed";
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) throw new Error("DATABASE_URL is not set");

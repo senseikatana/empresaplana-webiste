@@ -1,8 +1,0 @@
-{
-  "number": "BUS-002",
-  "plate": "5678 DEF",
-  "company": "Empresa Plana",
-  "capacity": 55,
-  "routeId": "bcn-aer",
-  "status": "active"
-}

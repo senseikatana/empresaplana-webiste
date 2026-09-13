@@ -36,16 +36,16 @@ pnpm run db:create-user admin 12345678 admin
 ## Desarrollo local
 
 ```bash
-pnpm run nuxt:dev   # http://localhost:3000
+pnpm run dev   # http://localhost:3000
 ```
 
 ## Scripts
 
 | Comando | Descripción |
 |---------|-------------|
-| `pnpm run nuxt:dev` | Dev server (3000) |
-| `pnpm run nuxt:build` | Build producción Node → `.output/` |
-| `pnpm run nuxt:preview` | Sirve el build |
+| `pnpm run dev` | Dev server (3000) |
+| `pnpm run build` | Build producción Node → `.output/` |
+| `pnpm run preview` | Sirve el build |
 | `pnpm run render:build` | Build para Render |
 | `pnpm run cf:build` / `cf:dev` | Build/previz Cloudflare (bloqueado, ver Gotchas) |
 | `pnpm run db:generate` / `db:push` / `db:studio` | Prisma CLI |
@@ -61,7 +61,6 @@ empresaplana-webiste/
 ├── i18n/locales/      # diccionarios ca/es/en (contenido real)
 ├── prisma/            # schema + seed
 ├── generated/prisma/  # client generado (no editar)
-├── src/               # LEGACY Astro (en migración)
 ├── render.yaml        # blueprint Render
 ├── wrangler.jsonc     # config Cloudflare
 ├── nuxt.config.ts     # config Nuxt

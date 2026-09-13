@@ -137,7 +137,7 @@ The design narrative is built on "Efficient Mobility." This is achieved through 
 | Neutral | `background` | `#f8f9fa` | `--brand-neutral` |
 
 The brand colors are also exposed as CSS custom properties in
-`src/styles/global.css` (`:root`) and consumed by the Tailwind theme.
+`app/assets/css/main.css` (`@theme`) and consumed by the Tailwind theme.
 
 The color palette is anchored by **Deep Navy Blue**, representing the brand's established authority and professionalism. **Coastal Teal** is used as a secondary highlight to bring a modern, Mediterranean freshness to the UI, particularly in supportive icons or secondary progress indicators.
 

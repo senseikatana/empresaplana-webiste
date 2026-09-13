@@ -1,4 +1,4 @@
-// Datos de contacto reales de Empresa Plana (fuente: src/data/contact.json original).
+// Datos de contacto reales de Empresa Plana (extraídos del sitio original).
 export const contact = {
 	whatsapp: "https://wa.me/34620201632",
 	generalPhone: "+34 977 553 680",

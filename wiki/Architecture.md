@@ -2,8 +2,8 @@
 
 ## Estado
 
-Migración en curso de Astro 7 → **Nuxt 4** (rama `feat/nuxt-4-migration`).
-`src/` es legacy de referencia; la app activa vive en `app/` + `server/`.
+La app es **Nuxt 4**. El legado Astro (`src/`) se eliminó por completo;
+la aplicación vive en `app/` + `server/`.
 
 ## Stack
 
@@ -26,7 +26,7 @@ queda reversible; bloqueado por Prisma #28657 (WASM en workerd).
 
 ### Prisma como única fuente de verdad
 
-Keystatic/`src/content/*.json` se eliminan en la migración. El panel admin es el
+Keystatic/`src/content/*.json` se eliminaron en la migración. El panel admin es el
 CMS y administra contenido + flota contra Postgres.
 
 ### i18n por rutas
@@ -44,10 +44,9 @@ tema Nuxt UI mapeado en `app/app.config.ts` (primary navy, secondary teal).
 ```
 app/               # Nuxt srcDir: pages, components, layouts, middleware
 server/            # Nitro: server/api/*, server/utils/* (auth, prisma, passkey)
-i18n/locales/      # diccionarios ca/es/en (contenido real exportado)
-prisma/            # schema + seed
+i18n/locales/      # diccionarios ca/es/en/fr (contenido real exportado)
+prisma/            # schema + seed + seed-data/
 generated/prisma/  # client generado (no editar)
-src/               # LEGACY Astro (en migración)
 ```
 
 ## Flujo de datos
