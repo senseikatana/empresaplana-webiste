@@ -485,7 +485,10 @@
 			"quotesEmpty": "No tienes ningún presupuesto.",
 			"messagesSubtitle": "Habla con la empresa y los conductores.",
 			"whatsapp": "También puedes escribirnos por WhatsApp",
-			"phone": "Teléfono"
+			"phone": "Teléfono",
+			"conversations": "Conversaciones",
+			"selectConversation": "Selecciona una conversación",
+			"send": "Enviar"
 		}
 	},
 	"routes": {

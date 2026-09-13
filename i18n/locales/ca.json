@@ -485,7 +485,10 @@
 			"quotesEmpty": "No tens cap pressupost.",
 			"messagesSubtitle": "Parla amb l’empresa i els conductors.",
 			"whatsapp": "També pots escriure’ns per WhatsApp",
-			"phone": "Telèfon"
+			"phone": "Telèfon",
+			"conversations": "Converses",
+			"selectConversation": "Selecciona una conversa",
+			"send": "Envia"
 		}
 	},
 	"routes": {

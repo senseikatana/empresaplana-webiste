@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { getSessionUser } from "../utils/auth";
+import { getSessionUser } from "../../utils/auth";
+import {
+	canAccessConversation,
+	createMessage,
+	ensureParticipant,
+} from "../../utils/chat";
 
 const sendSchema = z.object({
 	conversationId: z.number().int().optional(),
@@ -47,49 +52,10 @@ export default defineEventHandler(async (event) => {
 		conversationId = conv.id;
 	}
 
-	const conv = await prisma().conversation.findUnique({
-		where: { id: conversationId },
-		include: { participants: true },
-	});
-	if (!conv) {
-		throw createError({
-			statusCode: 404,
-			statusMessage: "Conversa no trobada",
-		});
-	}
-
-	const isParticipant = conv.participants.some((p) => p.userId === session.id);
-	const isStaff = session.role === "admin" || session.role === "worker";
-	if (!isParticipant && !isStaff) {
+	if (!(await canAccessConversation(session, conversationId))) {
 		throw createError({ statusCode: 403, statusMessage: "Sense accés" });
 	}
 
-	// Si el staff no es participante aún, se agrega.
-	if (isStaff && !isParticipant) {
-		await prisma().conversationParticipant.create({
-			data: { conversationId, userId: session.id, role: session.role },
-		});
-	}
-
-	const message = await prisma().message.create({
-		data: {
-			conversationId,
-			senderId: session.id,
-			senderRole: session.role,
-			body,
-		},
-	});
-	await prisma().conversation.update({
-		where: { id: conversationId },
-		data: { updatedAt: new Date() },
-	});
-
-	return {
-		id: message.id,
-		conversationId,
-		body: message.body,
-		senderId: message.senderId,
-		senderRole: message.senderRole,
-		createdAt: message.createdAt,
-	};
+	await ensureParticipant(session, conversationId);
+	return createMessage(session, conversationId, body);
 });

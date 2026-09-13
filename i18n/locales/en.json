@@ -485,7 +485,10 @@
 			"quotesEmpty": "You have no quotes.",
 			"messagesSubtitle": "Talk to the company and drivers.",
 			"whatsapp": "You can also message us on WhatsApp",
-			"phone": "Phone"
+			"phone": "Phone",
+			"conversations": "Conversations",
+			"selectConversation": "Select a conversation",
+			"send": "Send"
 		}
 	},
 	"routes": {
