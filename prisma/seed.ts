@@ -1,6 +1,6 @@
 /**
  * Prisma seed — datos reales de Empresa Plana (demo de flota) + usuarios.
- * Run: bun run db:seed
+ * Run: pnpm run db:seed
  */
 
 import { PrismaPg } from "@prisma/adapter-pg";

@@ -20,7 +20,7 @@ El proyecto usa **Semantic Versioning** (SemVer): `MAJOR.MINOR.PATCH`.
 git tag v1.2.0
 
 # 2. Ejecutar el bump
-bun run version:bump --version=1.2.0
+pnpm run version:bump --version=1.2.0
 
 # 3. Commit y push
 git add package.json CHANGELOG.md
@@ -33,7 +33,7 @@ git push && git push --tags
 1. Haz push de un tag `v*` al repositorio.
 2. El workflow `.github/workflows/release.yml` se ejecuta automáticamente:
    - Checkout de la rama `main`.
-   - Ejecuta `bun scripts/bump-version.mjs` con la versión del tag.
+   - Ejecuta `node scripts/bump-version.mjs` con la versión del tag.
    - Actualiza `package.json` y `CHANGELOG.md`.
    - Hace commit y push de los cambios.
    - Crea un GitHub Release con notas automáticas.
@@ -50,10 +50,10 @@ git push origin v1.2.0
 
 ```bash
 # Con versión explícita
-bun run version:bump --version=1.2.0
+pnpm run version:bump --version=1.2.0
 
 # Desde el último tag (requiere tags en el repo)
-bun run version:bump
+pnpm run version:bump
 ```
 
 ### Qué hace
@@ -73,7 +73,7 @@ Antes:
 - Nueva funcionalidad X
 ```
 
-Después de `bun run version:bump --version=1.2.0`:
+Después de `pnpm run version:bump --version=1.2.0`:
 ```markdown
 ## [1.2.0] - 2026-09-03
 

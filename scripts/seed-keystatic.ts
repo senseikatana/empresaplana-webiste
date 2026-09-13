@@ -1,6 +1,6 @@
 /**
  * Seed script: generates Keystatic content files from fleet-seed data.
- * Run with: bun run seed:keystatic
+ * Run with: pnpm run seed:keystatic
  */
 import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";

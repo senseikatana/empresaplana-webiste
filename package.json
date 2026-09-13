@@ -5,6 +5,7 @@
 	"engines": {
 		"node": ">=22.12.0"
 	},
+	"packageManager": "pnpm@12.4.1",
 	"scripts": {
 		"dev": "astro dev",
 		"build": "astro build",
@@ -17,23 +18,20 @@
 		"cf:build": "NITRO_PRESET=cloudflare_pages nuxt build",
 		"cf:dev": "NITRO_PRESET=cloudflare_pages nuxt build && wrangler pages dev dist --compatibility-flags=nodejs_compat",
 		"render:build": "NITRO_PRESET=node_server nuxt build",
-		"db:create-user": "bun run scripts/create-user.ts",
-		"version:bump": "bun scripts/bump-version.mjs",
+		"db:create-user": "tsx scripts/create-user.ts",
+		"version:bump": "node scripts/bump-version.mjs",
 		"format": "biome format --write .",
 		"format:check": "biome format .",
 		"lint": "biome lint .",
 		"check": "biome check .",
 		"postinstall": "nuxt prepare || exit 0",
-		"db:generate": "bunx --bun prisma generate",
-		"db:push": "bunx --bun prisma db push",
-		"db:migrate": "bunx --bun prisma migrate dev",
-		"db:seed": "bunx --bun prisma db seed",
-		"db:studio": "bunx --bun prisma studio",
-		"db:setup": "bun run db:generate && bun run db:push && bun run db:seed",
-		"seed:keystatic": "bun run scripts/seed-keystatic.ts"
-	},
-	"prisma": {
-		"seed": "bun run prisma/seed.ts"
+		"db:generate": "prisma generate",
+		"db:push": "prisma db push",
+		"db:migrate": "prisma migrate dev",
+		"db:seed": "prisma db seed",
+		"db:studio": "prisma studio",
+		"db:setup": "pnpm run db:generate && pnpm run db:push && pnpm run db:seed",
+		"seed:keystatic": "tsx scripts/seed-keystatic.ts"
 	},
 	"dependencies": {
 		"@astrojs/markdoc": "^2.0.9",
@@ -69,6 +67,7 @@
 		"@types/react-dom": "^19.3.0",
 		"docx": "^9.7.1",
 		"prisma": "^7.10.0",
+		"tsx": "^4.23.13",
 		"typescript": "^6.0.3",
 		"wrangler": "^4.131.1"
 	},

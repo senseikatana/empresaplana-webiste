@@ -11,7 +11,7 @@ reversible cuando Prisma soporte Workers (issue prisma/prisma#28657).
 | Framework | Nuxt 4 + Nitro 2 |
 | Preset primario | `node_server` (Render) |
 | Preset reversible | `cloudflare_pages` (bloqueado por Prisma #28657) |
-| Build command | `bun run render:build` |
+| Build command | `pnpm run render:build` |
 | Start command | `node .output/server/index.mjs` |
 | Health check | `/api/health` |
 | DB | Postgres (Prisma Postgres), migraciones fuera de runtime |
@@ -27,8 +27,8 @@ Blueprint `render.yaml` en la raíz:
 ## Cloudflare Pages (futuro)
 
 ```bash
-bun run cf:build   # NITRO_PRESET=cloudflare_pages → dist/
-bun run cf:dev     # build + wrangler pages dev (compatibility nodejs_compat)
+pnpm run cf:build   # NITRO_PRESET=cloudflare_pages → dist/
+pnpm run cf:dev     # build + wrangler pages dev (compatibility nodejs_compat)
 wrangler pages deploy dist
 ```
 
@@ -39,5 +39,5 @@ lo prohíbe (`Wasm code generation disallowed by embedder`). No hay compat flag.
 ## Desarrollo local
 
 ```bash
-bun run nuxt:dev   # http://localhost:3000 (DB Docker en 127.0.0.1:54329)
+pnpm run nuxt:dev   # http://localhost:3000 (DB Docker en 127.0.0.1:54329)
 ```

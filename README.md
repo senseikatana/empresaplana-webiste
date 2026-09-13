@@ -17,36 +17,36 @@ services. Content is Catalan-first, with `es` and `en` locales.
 | Auth       | `jose` HS256 JWT in `ep_session` httpOnly cookie + scrypt passkeys   |
 | Fonts      | Geist (via `@nuxt/fonts`) + Material Symbols                        |
 | Tooling    | Biome, TypeScript strict                                            |
-| Runtime    | [Bun](https://bun.sh), Node `>= 22.12`                               |
+| Runtime    | Node `>= 22.12`, pnpm                                               |
 
 ## Prerequisites
 
-- [Bun](https://bun.sh) + Node.js `>= 22.12`
+- [pnpm](https://pnpm.io) + Node.js `>= 22.12`
 - Local DB (Docker): `docker run -d --name empresaplana-pg -e POSTGRES_USER=empresaplana -e POSTGRES_PASSWORD=empresaplana -e POSTGRES_DB=empresaplana -p 54329:5432 postgres:17-alpine`
 
 ## Installation
 
 ```bash
-bun install
+pnpm install
 cp .env.example .env   # set DATABASE_URL and AUTH_SECRET
-bun run db:generate
-bun run db:push
-bun run db:create-user admin 12345678 admin   # create first admin user
+pnpm run db:generate
+pnpm run db:push
+pnpm run db:create-user admin 12345678 admin   # create first admin user
 ```
 
 ## Scripts
 
 | Command                  | Description                                        |
 | ------------------------ | -------------------------------------------------- |
-| `bun run nuxt:dev`       | Dev server at `http://localhost:3000`              |
-| `bun run nuxt:build`     | Production build (Node `node_server`) → `.output/` |
-| `bun run nuxt:preview`   | Serve the production build locally                 |
-| `bun run render:build`   | Explicit Node build for Render                     |
-| `bun run cf:build`       | Build Cloudflare Pages preset (blocked, see Gotchas) |
-| `bun run cf:dev`         | Build + `wrangler pages dev` preview               |
-| `bun run db:generate` / `db:push` / `db:studio` | Prisma CLI        |
-| `bun run db:create-user` | Create/update a user (`bun run db:create-user <user> <pass> <role>`) |
-| `bun run check` / `lint` / `format` | Biome checks                       |
+| `pnpm run nuxt:dev`       | Dev server at `http://localhost:3000`              |
+| `pnpm run nuxt:build`     | Production build (Node `node_server`) → `.output/` |
+| `pnpm run nuxt:preview`   | Serve the production build locally                 |
+| `pnpm run render:build`   | Explicit Node build for Render                     |
+| `pnpm run cf:build`       | Build Cloudflare Pages preset (blocked, see Gotchas) |
+| `pnpm run cf:dev`         | Build + `wrangler pages dev` preview               |
+| `pnpm run db:generate` / `db:push` / `db:studio` | Prisma CLI        |
+| `pnpm run db:create-user` | Create/update a user (`pnpm run db:create-user <user> <pass> <role>`) |
+| `pnpm run check` / `lint` / `format` | Biome checks                       |
 
 ## Environment variables
 
