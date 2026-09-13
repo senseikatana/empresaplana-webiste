@@ -1,6 +1,13 @@
 # build output
 dist/
 
+# Nuxt
+.nuxt/
+.output/
+
+# Wrangler local state
+.wrangler/
+
 # generated types
 .astro/
 .vscode/
@@ -24,6 +31,7 @@ pnpm-debug.log*
 .env
 !.env.production
 !.nv.template
+.dev.vars
 # macOS-specific files
 .DS_Store
 

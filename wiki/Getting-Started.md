@@ -2,101 +2,84 @@
 
 ## Requisitos previos
 
-| Herramienta | Versión mínima | Instalación |
-|-------------|---------------|-------------|
-| **Bun** | 1.0+ | `curl -fsSL https://bun.sh/install \| bash` |
-| **Node.js** | 22.12+ | `bun` lo gestiona internamente |
-| **Git** | 2.30+ | `sudo pacman -S git` (Arch/Manjaro) |
+| Herramienta | Versión mínima |
+|-------------|----------------|
+| **Bun** | 1.4+ |
+| **Node.js** | 22.12+ |
+| **Docker** (opcional, DB local) | — |
 
 ## Instalación
 
 ```bash
-# 1. Clonar el repositorio
+# 1. Clonar y ubicarse en la rama de migración
 git clone git@github.com:senseikatana/empresaplana-webiste.git
 cd empresaplana-webiste
+git checkout feat/nuxt-4-migration
 
-# 2. Instalar dependencias
+# 2. Dependencias
 bun install
 
-# 3. Variables de entorno (opcional, solo para auth futuro)
-cp .env.example .env
-# Editar .env con tus valores
+# 3. Variables de entorno
+cp .env.example .env   # DATABASE_URL + AUTH_SECRET
+
+# 4. Base de datos local (Docker Postgres)
+docker run -d --name empresaplana-pg \
+  -e POSTGRES_USER=empresaplana -e POSTGRES_PASSWORD=empresaplana \
+  -e POSTGRES_DB=empresaplana -p 54329:5432 postgres:17-alpine
+bun run db:generate
+bun run db:push
+
+# 5. Primer usuario admin
+bun run db:create-user admin 12345678 admin
 ```
 
 ## Desarrollo local
 
 ```bash
-# Servidor de desarrollo con hot-reload
-bun run dev
-# → http://localhost:4321/empresaplana-website/
-
-# Build de producción (genera dist/)
-bun run build
-
-# Preview del build de producción
-bun run preview
+bun run nuxt:dev   # http://localhost:3000
 ```
 
-> **Nota:** El sitio usa `base: "/empresaplana-website"`, por lo que todas las rutas incluyen ese prefijo.
-
-## Scripts disponibles
+## Scripts
 
 | Comando | Descripción |
 |---------|-------------|
-| `bun run dev` | Servidor de desarrollo en puerto 4321 |
-| `bun run build` | Compila el sitio estático en `dist/` |
-| `bun run preview` | Sirve el build de producción localmente |
-| `bun run lint` | Linting con Biome |
-| `bun run check` | Linting + formato con Biome |
-| `bun run format` | Formatea el código con Biome |
-| `bun run format:check` | Verifica el formato sin modificar |
-| `bun run version:bump` | Actualiza versión en package.json y CHANGELOG.md |
+| `bun run nuxt:dev` | Dev server (3000) |
+| `bun run nuxt:build` | Build producción Node → `.output/` |
+| `bun run nuxt:preview` | Sirve el build |
+| `bun run render:build` | Build para Render |
+| `bun run cf:build` / `cf:dev` | Build/previz Cloudflare (bloqueado, ver Gotchas) |
+| `bun run db:generate` / `db:push` / `db:studio` | Prisma CLI |
+| `bun run db:create-user` | Crear usuario (`<user> <pass> <role>`) |
+| `bun run check` / `lint` / `format` | Biome |
 
 ## Estructura del proyecto
 
 ```
 empresaplana-webiste/
-├── src/
-│   ├── components/     # 8 componentes Astro
-│   ├── config/         # i18n (ca/es/en) + site-info + datos scrapeados
-│   ├── data/           # JSON estáticos (paradas, servicios, presupuesto)
-│   ├── db/             # Schema stub (esperando ORM propio)
-│   ├── interfaces/     # 19 archivos TypeScript de tipos
-│   ├── layouts/        # BaseLayout.astro + Layout.astro
-│   ├── lib/            # Utilidades (auth, passkey, tracking, search stub)
-│   ├── pages/          # 23 páginas Astro
-│   └── styles/         # global.css (Tailwind + tokens de diseño)
-├── public/             # Assets estáticos (favicon)
-├── docs/               # Documentación (DEPLOYMENT.md)
-├── wiki/               # Esta wiki
-├── scripts/            # Scripts de utilidad (bump-version, generate-doc)
-├── astro.config.mjs    # Configuración de Astro
-├── package.json        # Dependencias y scripts
-├── tsconfig.json       # Configuración TypeScript
-├── biome.json          # Configuración de linting/formato
-└── DESIGN.md           # Tokens de diseño (fuente de verdad)
+├── app/               # Nuxt srcDir: pages, components, layouts, middleware
+├── server/            # Nitro API: server/api/*, server/utils/*
+├── i18n/locales/      # diccionarios ca/es/en (contenido real)
+├── prisma/            # schema + seed
+├── generated/prisma/  # client generado (no editar)
+├── src/               # LEGACY Astro (en migración)
+├── render.yaml        # blueprint Render
+├── wrangler.jsonc     # config Cloudflare
+├── nuxt.config.ts     # config Nuxt
+└── DESIGN.md          # tokens de diseño (fuente de verdad)
 ```
 
 ## Solución de problemas
 
 ### El servidor no arranca
 ```bash
-# Verificar que bun está instalado
 bun --version
-
-# Limpiar caché y reinstalar
-rm -rf node_modules bun.lock
+rm -rf node_modules .nuxt bun.lock
 bun install
+bun run nuxt:prepare
 ```
 
-### Errores de TypeScript
+### La DB no conecta
 ```bash
-# Verificar tipos
-bunx astro check
+curl http://localhost:3000/api/health   # debe devolver {"ok":true,"db":"up"}
 ```
-
-### El CSS no se aplica
-Verificar que `src/styles/global.css` se importa en `BaseLayout.astro`:
-```astro
-import "../styles/global.css";
-```
+Verificar que Docker Postgres esté corriendo (`docker ps | grep empresaplana-pg`).

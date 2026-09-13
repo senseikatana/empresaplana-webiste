@@ -1,0 +1,19 @@
+# Render Blueprint (Infrastructure as Code)
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: empresaplana
+    env: node
+    branch: dev
+    buildCommand: "npx nypm install && npm run render:build"
+    startCommand: "node .output/server/index.mjs"
+    healthCheckPath: /api/health
+    envVars:
+      - key: NITRO_PRESET
+        value: node_server
+      - key: DATABASE_URL
+        sync: false
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: 22.12.0

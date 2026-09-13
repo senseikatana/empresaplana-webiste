@@ -1,77 +1,83 @@
 # Empresa Plana Website
 
-Website redesign of [empresaplana.cat](https://empresaplana.cat) for Empresa Plana (Catalonia Transports Company). Bus schedules, routes, airport transfers, and discretionary services across the Costa Daurada, Camp de Tarragona, and Barcelona — built with Astro and served as a server-rendered site.
+Website redesign of [empresaplana.cat](https://empresaplana.cat) for Empresa Plana
+(Costa Daurada / Camp de Tarragona transport company). Public site + admin panel
+(CMS) — bus schedules, routes, fares, airport transfers and discretionary
+services. Content is Catalan-first, with `es` and `en` locales.
 
 ## Tech stack
 
-| Layer      | Technology                                                                 |
-| ---------- | -------------------------------------------------------------------------- |
-| Framework  | Astro 7 (`^7.2.10`)                                                         |
-| Adapter    | `@astrojs/node` (`^11.1.5`), `output: "server"` (standalone)               |
-| Styling    | Tailwind CSS v4 (`^4.3.3`) via `@tailwindcss/vite` (build-time, no CDN)     |
-| Language   | TypeScript (`^6.0.3`)                                                       |
-| Validation | Zod (`^4.5.4`)                                                              |
-| Auth       | `jose` (`^6.2.10`) — HS256 JWTs in an httpOnly cookie                      |
-| Tooling    | Biome (`^2.5.11`) for linting and formatting                                |
-| Runtime    | [Bun](https://bun.sh), Node `>= 22.12.0`                                    |
+| Layer      | Technology                                                          |
+| ---------- | ------------------------------------------------------------------- |
+| Framework  | Nuxt 4 + Nitro 2                                                     |
+| UI         | Nuxt UI v4 (`@nuxt/ui`), Tailwind CSS v4 build-time                  |
+| i18n       | `@nuxtjs/i18n` — `ca` default (root), `es`/`en` prefixed            |
+| Data       | Prisma 7 (`prisma-client` generator → `generated/prisma/`) + `@prisma/adapter-pg` + `pg` |
+| DB         | Postgres (Prisma Postgres)                                           |
+| Auth       | `jose` HS256 JWT in `ep_session` httpOnly cookie + scrypt passkeys   |
+| Fonts      | Geist (via `@nuxt/fonts`) + Material Symbols                        |
+| Tooling    | Biome, TypeScript strict                                            |
+| Runtime    | [Bun](https://bun.sh), Node `>= 22.12`                               |
 
 ## Prerequisites
 
-- [Bun](https://bun.sh) installed
-- Node.js `>= 22.12.0`
+- [Bun](https://bun.sh) + Node.js `>= 22.12`
+- Local DB (Docker): `docker run -d --name empresaplana-pg -e POSTGRES_USER=empresaplana -e POSTGRES_PASSWORD=empresaplana -e POSTGRES_DB=empresaplana -p 54329:5432 postgres:17-alpine`
 
 ## Installation
 
 ```bash
 bun install
+cp .env.example .env   # set DATABASE_URL and AUTH_SECRET
+bun run db:generate
+bun run db:push
+bun run db:create-user admin 12345678 admin   # create first admin user
 ```
 
 ## Scripts
 
-| Command             | Description                                            |
-| ------------------- | ------------------------------------------------------ |
-| `bun run dev`       | Start the dev server at `http://localhost:4321`        |
-| `bun run build`     | Build the production output to `dist/`                 |
-| `bun run preview`   | Serve the production build locally                     |
-| `bun run lint`      | Lint the project with Biome                            |
-| `bun run check`     | Run Biome's linter + formatter checks                  |
-| `bun run format`    | Format the project with Biome (writes changes)         |
-| `bun run format:check` | Check formatting with Biome (no writes)             |
-| `bun run version:bump` | Bump `package.json` / `CHANGELOG.md` (see Versioning) |
+| Command                  | Description                                        |
+| ------------------------ | -------------------------------------------------- |
+| `bun run nuxt:dev`       | Dev server at `http://localhost:3000`              |
+| `bun run nuxt:build`     | Production build (Node `node_server`) → `.output/` |
+| `bun run nuxt:preview`   | Serve the production build locally                 |
+| `bun run render:build`   | Explicit Node build for Render                     |
+| `bun run cf:build`       | Build Cloudflare Pages preset (blocked, see Gotchas) |
+| `bun run cf:dev`         | Build + `wrangler pages dev` preview               |
+| `bun run db:generate` / `db:push` / `db:studio` | Prisma CLI        |
+| `bun run db:create-user` | Create/update a user (`bun run db:create-user <user> <pass> <role>`) |
+| `bun run check` / `lint` / `format` | Biome checks                       |
+
+## Environment variables
+
+- `DATABASE_URL` — Postgres connection string (Prisma Postgres or local Docker).
+- `AUTH_SECRET` — long random string for HS256 session JWTs.
+
+Runtime secrets on Render come from the blueprint (`render.yaml`); never commit
+`.env` or `.dev.vars`.
 
 ## Project structure
 
 ```
-src/
-├── layouts/         # BaseLayout.astro, Layout.astro — the HTML shell (<head>, <body>)
-├── pages/           # One .astro page per screen, plus /api/ route handlers
-├── components/      # Reusable .astro components (RouteAccordion, QuoteForm, ...)
-├── config/
-│   ├── i18n/        # Site copy in es.json / en.json / ca.json + index.ts
-│   └── site-info.ts # Brand metadata, canonical URLs, SEO defaults
-├── data/            # Static fallback data (services, stops, towns, ...)
-├── db/              # schema.ts — temporary stub pending a custom ORM
-├── interfaces/      # TypeScript types per domain
-├── lib/             # auth, passkey, search, users, db, tracking-store + validation/
-├── styles/          # global.css — Tailwind v4 @theme design tokens
-└── assets/          # Static assets (SVGs)
+app/               # Nuxt srcDir — pages, components, layouts, middleware
+  assets/css/      # main.css — Tailwind v4 @theme design tokens (source of truth)
+  data/            # real contact data (phones, social, WhatsApp)
+server/            # Nitro API — server/api/*, server/utils/* (auth, prisma, passkey)
+i18n/locales/      # real ca/es/en dictionaries (exported content, do not invent)
+prisma/            # schema.prisma, seed
+generated/prisma/  # generated Prisma client (git-ignored, do not edit)
+src/               # LEGACY Astro (being migrated; reference only)
+render.yaml        # Render blueprint (IaC)
+wrangler.jsonc     # Cloudflare config (reversible target)
 ```
 
-## Environment variables
+## Deployment
 
-Create a root `.env` file (it is git-ignored). The only variable required at runtime is:
-
-- `AUTH_SECRET` — a long random string used to sign and verify HS256 session JWTs (`src/lib/auth.ts`).
-- `BUS_TRACKING_DATA_FILE` — optional; overrides where the bus-tracking store writes its JSON (default `.data/bus-tracking.json`).
-
-The database layer is currently stubbed (`src/lib/db.ts`, `src/db/schema.ts`) pending a custom ORM, so no database credentials are wired up yet.
-
-## Versioning & releases
-
-- `scripts/bump-version.mjs` (run via `bun run version:bump`) resolves the new version from a `--version=x.y.z` argument or the latest `v*` git tag, updates the `"version"` field in `package.json`, and promotes the `## [Unreleased]` heading in `CHANGELOG.md` to the new version with today's date.
-- `.github/workflows/release.yml` runs when a `v*` tag is pushed: it checks out the default branch, sets up Bun, runs the bump script with `--version=${GITHUB_REF_NAME#v}`, commits any `package.json` / `CHANGELOG.md` changes, and creates a GitHub release with auto-generated notes.
-
-This keeps `package.json` and `CHANGELOG.md` in sync on every tagged release.
+- **Render (primary):** blueprint `render.yaml` — builds `render:build`, serves
+  `node .output/server/index.mjs`, health check `/api/health`.
+- **Cloudflare Pages (blocked):** Prisma ORM 7 crashes on Workers (issue
+  prisma/prisma#28657 — WASM code generation disallowed by workerd). Flip back
+  with `NITRO_PRESET=cloudflare_pages` once Prisma ships a Workers-compatible build.
 
 ## License
 

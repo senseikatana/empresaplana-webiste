@@ -1,0 +1,6 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "empresaplana",
+	"compatibility_date": "2026-09-13",
+	"compatibility_flags": ["nodejs_compat"]
+}
