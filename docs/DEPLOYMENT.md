@@ -18,7 +18,7 @@ Cloudflare Pages queda como objetivo reversible cuando Prisma soporte Workers
 | Start command | `node .output/server/index.mjs` |
 | Health check | `/api/health` |
 | DB | InsForge Postgres (eu-central), **Prisma Migrate es la autoridad** |
-| Deploy | InsForge Compute (pendiente) |
+| Deploy | **InsForge Compute** (Fly.io, servicio `empresaplana`) |
 
 ## InsForge (actual)
 
@@ -33,6 +33,13 @@ Cloudflare Pages queda como objetivo reversible cuando Prisma soporte Workers
 - Seed completo: 3 users demo (cliente/trabajador/admin, passkey `12345678`),
   8 rutas, 20 paradas, 10 horarios, 10 buses, 8 conductores, 4 presupuestos.
 - Verificación: suite smoke 18/18 verde contra InsForge (build producción).
+
+### Compute (servicio desplegado)
+
+- Endpoint: <https://empresaplana-8929a7b2-3f14-461b-b228-e6f8c8b6573c.fly.dev>
+- Deploy: `npx -y @insforge/cli compute deploy . --name empresaplana --port 3000
+  --cpu shared-1x --memory 512 --env-file <secrets>`
+- Ver más en `docs/INSFORGE.md`.
 
 ## Render (pausado / histórico)
 
