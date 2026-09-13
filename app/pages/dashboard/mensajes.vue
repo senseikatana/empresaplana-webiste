@@ -1,5 +1,8 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth", layout: "dashboard" });
+definePageMeta({
+	layout: "dashboard",
+	capability: "chat:access",
+});
 
 import { contact } from "~/data/contact";
 

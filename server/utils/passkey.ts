@@ -7,6 +7,8 @@ export function hashPasskey(passkey: string): string {
 }
 
 export function verifyPasskey(passkey: string, stored: string): boolean {
+	// Nunca aceptar un hash vacío (cuentas fantasma sin credenciales).
+	if (!stored) return false;
 	if (!stored.includes(":")) {
 		return safeEqualText(passkey, stored);
 	}

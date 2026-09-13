@@ -1,5 +1,8 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth", layout: "dashboard" });
+definePageMeta({
+	layout: "dashboard",
+	capability: "fleet:view",
+});
 
 const { t } = useI18n();
 </script>

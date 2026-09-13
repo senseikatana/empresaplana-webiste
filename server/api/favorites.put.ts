@@ -18,6 +18,16 @@ export default defineEventHandler(async (event) => {
 	}
 
 	const { routeId } = parsed.data;
+
+	// FavoriteRoute no tiene FK a Route: validamos explícitamente.
+	const route = await prisma().route.findUnique({
+		where: { id: routeId },
+		select: { id: true },
+	});
+	if (!route) {
+		throw createError({ statusCode: 404, statusMessage: "Ruta no trobada" });
+	}
+
 	const existing = await prisma().favoriteRoute.findUnique({
 		where: { userId_routeId: { userId: session.id, routeId } },
 	});

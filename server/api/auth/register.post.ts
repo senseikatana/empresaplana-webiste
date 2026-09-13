@@ -14,6 +14,8 @@ const registerSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
+	rateLimit(event, { limit: 5, windowMs: 60 * 60_000 });
+
 	const body = await readBody(event).catch(() => ({}));
 	const parsed = registerSchema.safeParse(body);
 	if (!parsed.success) {

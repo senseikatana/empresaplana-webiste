@@ -81,8 +81,9 @@ export default defineWebSocketHandler({
 		}
 
 		if (data.type === "message" && typeof data.conversationId === "number") {
-			const body = (data.body ?? "").trim();
-			if (!body) return;
+			if (typeof data.body !== "string") return;
+			const body = data.body.trim();
+			if (!body || body.length > 2000) return;
 			const allowed = await canAccessConversation(session, data.conversationId);
 			if (!allowed) return;
 			await ensureParticipant(session, data.conversationId);

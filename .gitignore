@@ -46,3 +46,18 @@ src/Releases/
 # local runtime data (bus tracking store) and agent tooling
 .data/
 .zcode/
+
+# InsForge & AI agent skills
+.insforge
+.agent
+.agents
+.augment
+.claude
+.cline
+.github/copilot*
+.kilocode
+.qoder
+.qwen
+.roo
+.trae
+.windsurf

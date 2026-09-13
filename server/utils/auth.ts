@@ -68,5 +68,10 @@ export function setSessionCookie(event: H3Event, token: string): void {
 }
 
 export function clearSessionCookie(event: H3Event): void {
-	deleteCookie(event, SESSION_COOKIE, { path: "/" });
+	deleteCookie(event, SESSION_COOKIE, {
+		path: "/",
+		httpOnly: true,
+		sameSite: "lax",
+		secure: process.env.NODE_ENV === "production",
+	});
 }

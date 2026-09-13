@@ -18,6 +18,8 @@ const budgetSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
+	rateLimit(event, { limit: 20, windowMs: 60_000 });
+
 	const parsed = budgetSchema.safeParse(
 		await readBody(event).catch(() => ({})),
 	);
@@ -56,12 +58,18 @@ export default defineEventHandler(async (event) => {
 });
 
 // Para presupuestos anónimos: crea (o reutiliza) un usuario fantasma "client"
-// ligado al email, para no romper la FK userId. Sin contraseña utilizable.
+// ligado al email, para no romper la FK userId. Los fantasmas tienen
+// `passkey: ""` (marca) y nunca pueden iniciar sesión: `verifyPasskey` los
+// rechaza y el login exige passkey no vacía.
+//
+// Solo se reutiliza un fantasma PREVIO (passkey ""). Si el email pertenece a
+// una cuenta real (passkey con sal), se crea un fantasma nuevo: así los
+// presupuestos anónimos nunca se pegan a cuentas reales.
 async function ensureAnonymousUser(email: string): Promise<number> {
-	const existing = await prisma().user.findFirst({
-		where: { email, role: "client" },
+	const ghost = await prisma().user.findFirst({
+		where: { email, role: "client", passkey: "" },
 	});
-	if (existing) return existing.id;
+	if (ghost) return ghost.id;
 
 	const created = await prisma().user.create({
 		data: {

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-definePageMeta({ middleware: "auth", layout: "dashboard" });
+definePageMeta({
+	layout: "dashboard",
+	capability: "dashboard:access",
+});
 
 const { t } = useI18n();
 
@@ -10,6 +13,7 @@ const { data } = await useFetch("/api/account", {
 const name = ref(data.value?.user?.name ?? "");
 const email = ref(data.value?.user?.email ?? "");
 const phone = ref(data.value?.user?.phone ?? "");
+const currentPasskey = ref("");
 const newPassword = ref("");
 const saved = ref(false);
 const error = ref<string | null>(null);
@@ -26,9 +30,15 @@ async function save() {
 				name: name.value,
 				email: email.value,
 				phone: phone.value,
+				// Cambios sensibles (email/nueva contraseña) exigen la actual.
+				...(newPassword.value ? { currentPasskey: currentPasskey.value } : {}),
+				...(email.value !== data.value?.user?.email
+					? { currentPasskey: currentPasskey.value }
+					: {}),
 				...(newPassword.value ? { newPassword: newPassword.value } : {}),
 			},
 		});
+		currentPasskey.value = "";
 		newPassword.value = "";
 		saved.value = true;
 	} catch {
@@ -54,6 +64,9 @@ async function save() {
 				</UFormField>
 				<UFormField :label="t('app.panel.phone')">
 					<UInput v-model="phone" />
+				</UFormField>
+				<UFormField :label="t('app.panel.password')">
+					<UInput v-model="currentPasskey" type="password" autocomplete="current-password" />
 				</UFormField>
 				<UFormField :label="t('app.panel.newPassword')">
 					<UInput v-model="newPassword" type="password" autocomplete="new-password" />
