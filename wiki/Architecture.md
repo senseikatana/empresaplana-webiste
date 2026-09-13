@@ -15,7 +15,7 @@ Migración en curso de Astro 7 → **Nuxt 4** (rama `feat/nuxt-4-migration`).
 | Datos | Prisma 7 (`prisma-client` → `generated/prisma/`) + `@prisma/adapter-pg` + `pg` sobre Postgres |
 | Auth | jose HS256 JWT (`ep_session`) + scrypt passkeys, roles `client/worker/admin` |
 | Tipografía | Geist (@nuxt/fonts) + Material Symbols |
-| Tooling | Biome, bun |
+| Tooling | Biome, pnpm |
 
 ## Decisiones de diseño
 

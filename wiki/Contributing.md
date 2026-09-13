@@ -14,14 +14,14 @@ git checkout -b feat/mi-feature
 
 ```bash
 # Servidor de desarrollo
-bun run dev
+pnpm run dev
 
 # Verificar tipos
-bunx astro check
+pnpm exec astro check
 
 # Linting y formato
-bun run check
-bun run format
+pnpm run check
+pnpm run format
 ```
 
 ### 3. Commitear
@@ -116,9 +116,9 @@ Si se usa el flujo de PRs:
 
 ## Checklist antes de merge
 
-- [ ] `bun run build` compila sin errores
-- [ ] `bunx astro check` no muestra errores de tipos
-- [ ] `bun run check` pasa linting y formato
+- [ ] `pnpm run build` compila sin errores
+- [ ] `pnpm exec astro check` no muestra errores de tipos
+- [ ] `pnpm run check` pasa linting y formato
 - [ ] Los enlaces internos usan el prefijo `/empresaplana-website/`
 - [ ] Los textos están en los 3 diccionarios i18n
 - [ ] Los tokens de diseño se usan correctamente (no colores hardcodeados)

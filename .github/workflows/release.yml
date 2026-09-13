@@ -16,13 +16,13 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: 22
 
       - name: Bump version
-        run: bun scripts/bump-version.mjs --version="${GITHUB_REF_NAME#v}"
+        run: node scripts/bump-version.mjs --version="${GITHUB_REF_NAME#v}"
 
       - name: Commit version bump
         run: |

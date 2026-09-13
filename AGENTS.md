@@ -12,7 +12,7 @@ Redesign + panel administrativo (CMS). Target: `https://empresaplana.cat`.
 ## Stack (Nuxt 4)
 
 - Nuxt 4 + Nitro 2 + Nuxt UI v4 (`@nuxt/ui`, Tailwind v4 build-time) + `@nuxtjs/i18n`
-- Package manager: **bun**. Node >= 22.12.
+- Package manager: **pnpm**. Node >= 22.12.
 - ORM: **Prisma 7** (`prisma-client` generator, output `generated/prisma/`) +
   `@prisma/adapter-pg` + `pg`. Fuente de verdad: **Postgres** (Prisma Postgres).
 - Auth: **jose** HS256 JWT en cookie `ep_session` (httpOnly, 7d) + scrypt
@@ -22,14 +22,14 @@ Redesign + panel administrativo (CMS). Target: `https://empresaplana.cat`.
 
 ## Commands
 
-- `bun install`
-- `bun run nuxt:dev` — dev server (puerto 3000)
-- `bun run nuxt:build` — build Node (`node_server`) → `.output/`
-- `bun run nuxt:preview` — sirve el build
-- `bun run render:build` — build para Render (`node_server`, explícito)
-- `bun run cf:build` / `bun run cf:dev` — build/previz Cloudflare Pages (ver Gotchas)
-- `bun run db:generate` / `db:push` / `db:migrate` / `db:studio` / `db:create-user`
-- `bun run check` / `lint` / `format` — Biome
+- `pnpm install`
+- `pnpm run nuxt:dev` — dev server (puerto 3000)
+- `pnpm run nuxt:build` — build Node (`node_server`) → `.output/`
+- `pnpm run nuxt:preview` — sirve el build
+- `pnpm run render:build` — build para Render (`node_server`, explícito)
+- `pnpm run cf:build` / `pnpm run cf:dev` — build/previz Cloudflare Pages (ver Gotchas)
+- `pnpm run db:generate` / `db:push` / `db:migrate` / `db:studio` / `db:create-user`
+- `pnpm run check` / `lint` / `format` — Biome
 
 ## Deploy
 

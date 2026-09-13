@@ -14,8 +14,8 @@ Ver también `docs/DEPLOYMENT.md`.
 ## Cloudflare Pages (bloqueado, reversible)
 
 ```bash
-bun run cf:build   # NITRO_PRESET=cloudflare_pages → dist/
-bun run cf:dev     # build + wrangler pages dev (nodejs_compat)
+pnpm run cf:build   # NITRO_PRESET=cloudflare_pages → dist/
+pnpm run cf:dev     # build + wrangler pages dev (nodejs_compat)
 wrangler pages deploy dist
 ```
 
