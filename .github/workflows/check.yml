@@ -1,0 +1,58 @@
+name: Check
+
+on:
+  push:
+    branches: ["dev", "main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      # Dummy: prisma.config.ts la exige al cargar, aunque lint no toca la DB
+      DATABASE_URL: postgresql://empresaplana:empresaplana@localhost:5432/empresaplana
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Format and lint
+        run: pnpm run check
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Dummy: prisma generate no conecta, pero prisma.config.ts la exige al cargar
+      DATABASE_URL: postgresql://empresaplana:empresaplana@localhost:5432/empresaplana
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (node_server)
+        run: pnpm run render:build

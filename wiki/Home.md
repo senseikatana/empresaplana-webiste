@@ -24,7 +24,7 @@ Bienvenido a la wiki del proyecto **Empresa Plana Website**, la web de transport
 - **Estilos:** Tailwind CSS v4 + tokens de diseño personalizados
 - **Tipografía:** Geist (400/600/700)
 - **Iconos:** Material Symbols
-- **Paquete:** bun
+- **Paquete:** pnpm
 - **Linting/Formato:** Biome
 - **Internacionalización:** CA / ES / EN (575 claves)
 - **Despliegue:** GitHub Pages → Cloudflare Pages

@@ -1,19 +1,20 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.5.10/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.5.11/schema.json",
 	"files": {
 		"includes": [
-			"src/**/*.ts",
-			"src/**/*.tsx",
-			"scripts/**/*.mjs",
-			"scripts/**/*.js",
-			"db/**/*.ts",
-			"astro.config.mjs",
-			"drizzle.config.ts",
-			"index.ts",
+			"app/**/*.ts",
+			"app/**/*.vue",
+			"server/**/*.ts",
+			"shared/**/*.ts",
+			"scripts/create-user.ts",
+			"prisma/**/*.ts",
+			"nuxt.config.ts",
+			"app.config.ts",
 			"package.json",
 			"tsconfig.json",
 			"biome.json"
-		]
+		],
+		"ignoreUnknown": true
 	},
 	"formatter": {
 		"enabled": true,
@@ -22,7 +23,10 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"preset": "recommended"
+			"preset": "recommended",
+			"correctness": {
+				"useHookAtTopLevel": "off"
+			}
 		}
 	},
 	"javascript": {
@@ -32,6 +36,20 @@
 			"trailingCommas": "all"
 		}
 	},
+	"overrides": [
+		{
+			"includes": ["**/*.vue"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"useHookAtTopLevel": "off",
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		}
+	],
 	"json": {
 		"formatter": {
 			"trailingCommas": "none"

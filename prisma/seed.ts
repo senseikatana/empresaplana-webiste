@@ -1,25 +1,35 @@
 /**
- * Prisma seed — populates the database with the Empresa Plana demo data.
- * Run with: bunx --bun prisma db seed
+ * Prisma seed — datos reales de Empresa Plana (demo de flota) + usuarios.
+ * Run: pnpm run db:seed
  */
-import { PrismaClient } from "@prisma/client";
-import { FLEET_SEED } from "../src/data/app/fleet-seed";
-import { DEMO_USERS, DEMO_BUDGETS } from "../src/data/app/seed";
 
-const prisma = new PrismaClient();
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../generated/prisma/client";
+import { hashPasskey } from "../server/utils/passkey";
+import { FLEET_SEED } from "./seed-data/fleet-seed";
+import { DEMO_BUDGETS, DEMO_USERS } from "./seed-data/seed";
+
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("DATABASE_URL is not set");
+
+const prisma = new PrismaClient({
+	adapter: new PrismaPg({ connectionString }),
+});
 
 async function main() {
 	console.log("Seeding Empresa Plana database...");
 
-	// Users
+	// Usuarios (passkeys con hash scrypt real). Sin id explícito: el
+	// autoincrement lo asigna, así el seed no choca con usuarios creados
+	// previamente por `db:create-user`.
+	const idByDemoId = new Map<number, number>();
 	for (const user of DEMO_USERS) {
-		await prisma.user.upsert({
+		const record = await prisma.user.upsert({
 			where: { username: user.username },
 			update: {},
 			create: {
-				id: user.id,
 				username: user.username,
-				passkey: user.passkey, // plaintext demo — see src/lib/passkey.ts for hashing
+				passkey: hashPasskey(user.passkey),
 				name: user.name,
 				fullName: user.fullName,
 				email: user.email,
@@ -27,10 +37,11 @@ async function main() {
 				role: user.role,
 			},
 		});
+		idByDemoId.set(user.id, record.id);
 	}
 	console.log(`  ✓ ${DEMO_USERS.length} users`);
 
-	// Routes
+	// Rutas.
 	for (const route of FLEET_SEED.routes) {
 		await prisma.route.upsert({
 			where: { id: route.id },
@@ -49,24 +60,54 @@ async function main() {
 	}
 	console.log(`  ✓ ${FLEET_SEED.routes.length} routes`);
 
-	// Drivers
-	for (const driver of FLEET_SEED.drivers) {
-		await prisma.driver.upsert({
-			where: { id: driver.id },
+	// Paradas (con la relación many-to-many a rutas).
+	for (const stop of FLEET_SEED.stops) {
+		await prisma.stop.upsert({
+			where: { id: stop.id },
 			update: {},
 			create: {
-				id: driver.id,
-				name: driver.name,
-				phone: driver.phone,
-				license: driver.license,
-				busNumber: driver.busNumber ?? null,
-				status: driver.status,
+				id: stop.id,
+				name: stop.name,
+				address: stop.address,
+				lat: stop.lat,
+				lng: stop.lng,
 			},
 		});
 	}
-	console.log(`  ✓ ${FLEET_SEED.drivers.length} drivers`);
+	console.log(`  ✓ ${FLEET_SEED.stops.length} stops`);
 
-	// Buses
+	// Conectar paradas ↔ rutas (m2m).
+	for (const stop of FLEET_SEED.stops) {
+		await prisma.stop.update({
+			where: { id: stop.id },
+			data: {
+				routes: {
+					set: stop.routes.map((routeId) => ({ id: routeId })),
+				},
+			},
+		});
+	}
+	console.log(`  ✓ stop–route connections`);
+
+	// Horarios.
+	for (const schedule of FLEET_SEED.schedules) {
+		await prisma.schedule.upsert({
+			where: { id: schedule.id },
+			update: {},
+			create: {
+				id: schedule.id,
+				routeId: schedule.routeId,
+				departure: schedule.departure,
+				arrival: schedule.arrival,
+				frequency: schedule.frequency,
+				days: schedule.days,
+				status: schedule.status,
+			},
+		});
+	}
+	console.log(`  ✓ ${FLEET_SEED.schedules.length} schedules`);
+
+	// Autobuses.
 	for (const bus of FLEET_SEED.buses) {
 		await prisma.bus.upsert({
 			where: { number: bus.number },
@@ -85,56 +126,27 @@ async function main() {
 	}
 	console.log(`  ✓ ${FLEET_SEED.buses.length} buses`);
 
-	// Stops (many-to-many with routes handled after)
-	for (const stop of FLEET_SEED.stops) {
-		await prisma.stop.upsert({
-			where: { id: stop.id },
+	// Conductores.
+	for (const driver of FLEET_SEED.drivers) {
+		await prisma.driver.upsert({
+			where: { id: driver.id },
 			update: {},
 			create: {
-				id: stop.id,
-				name: stop.name,
-				address: stop.address,
-				lat: stop.lat,
-				lng: stop.lng,
+				id: driver.id,
+				name: driver.name,
+				phone: driver.phone,
+				license: driver.license,
+				busNumber: driver.busNumber ?? null,
+				routeId: driver.routeId ?? null,
+				shiftDays: driver.shiftDays ?? null,
+				shiftHours: driver.shiftHours ?? null,
+				status: driver.status,
 			},
 		});
 	}
-	console.log(`  ✓ ${FLEET_SEED.stops.length} stops`);
+	console.log(`  ✓ ${FLEET_SEED.drivers.length} drivers`);
 
-	// Connect stops to routes
-	for (const stop of FLEET_SEED.stops) {
-		const stopRecord = await prisma.stop.findUnique({ where: { id: stop.id } });
-		if (!stopRecord) continue;
-		await prisma.stop.update({
-			where: { id: stop.id },
-			data: {
-				routes: {
-					connect: stop.routes.map((routeId) => ({ id: routeId })),
-				},
-			},
-		});
-	}
-	console.log(`  ✓ stop–route connections`);
-
-	// Schedules
-	for (const schedule of FLEET_SEED.schedules) {
-		await prisma.schedule.upsert({
-			where: { id: schedule.id },
-			update: {},
-			create: {
-				id: schedule.id,
-				routeId: schedule.routeId,
-				departure: schedule.departure,
-				arrival: schedule.arrival,
-				frequency: schedule.frequency,
-				days: schedule.days,
-				status: schedule.status,
-			},
-		});
-	}
-	console.log(`  ✓ ${FLEET_SEED.schedules.length} schedules`);
-
-	// Notifications
+	// Notificaciones.
 	for (const notif of FLEET_SEED.notifications) {
 		await prisma.notification.upsert({
 			where: { id: notif.id },
@@ -152,7 +164,7 @@ async function main() {
 	}
 	console.log(`  ✓ ${FLEET_SEED.notifications.length} notifications`);
 
-	// Activity
+	// Actividad.
 	for (const act of FLEET_SEED.activity) {
 		await prisma.activity.upsert({
 			where: { id: act.id },
@@ -167,18 +179,19 @@ async function main() {
 	}
 	console.log(`  ✓ ${FLEET_SEED.activity.length} activity entries`);
 
-	// Budgets
+	// Presupuestos (userId resuelto por username, no por id quemado).
 	for (const budget of DEMO_BUDGETS) {
+		const userId = idByDemoId.get(budget.userId) ?? budget.userId;
 		await prisma.budget.upsert({
 			where: { id: budget.id },
 			update: {},
 			create: {
 				id: budget.id,
-				userId: budget.userId,
+				userId,
 				clientName: budget.clientName,
 				email: budget.email,
 				phone: budget.phone,
-				company: budget.company ?? null,
+				company: budget.company || null,
 				reasonId: budget.reasonId,
 				description: budget.description ?? null,
 				departureCity: budget.departureCity,

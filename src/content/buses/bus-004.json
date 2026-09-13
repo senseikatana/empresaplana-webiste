@@ -1,8 +1,0 @@
-{
-  "number": "BUS-004",
-  "plate": "3456 JKL",
-  "company": "Empresa Plana",
-  "capacity": 40,
-  "routeId": "costa",
-  "status": "active"
-}

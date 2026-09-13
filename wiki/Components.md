@@ -1,5 +1,8 @@
 # Componentes
 
+> **Documento histórico.** Describe los componentes Astro del sitio legacy
+> (`src/`), ya eliminado. Los componentes actuales viven en `app/components/`.
+
 ## Catálogo
 
 El proyecto tiene **8 componentes Astro** en `src/components/`:

@@ -1,12 +1,6 @@
 {
-	"extends": "./node_modules/astro/tsconfigs/strict.json",
+	"extends": "./.nuxt/tsconfig.json",
 	"compilerOptions": {
-		"resolveJsonModule": true,
-		"jsx": "preserve",
-		"paths": {
-			"@/*": ["./src/*"]
-		}
-	},
-	"include": [".astro/types.d.ts", "**/*"],
-	"exclude": ["dist"]
+		"strict": true
+	}
 }

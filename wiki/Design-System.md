@@ -2,7 +2,7 @@
 
 ## Fuente de verdad
 
-Los tokens de diseño viven en `src/styles/global.css` (bloque `@theme` de Tailwind v4) y están documentados en `DESIGN.md` (raíz del repo). **Nunca** uses valores `bg-[#...]` ad-hoc; todo pasa por los tokens.
+Los tokens de diseño viven en `app/assets/css/main.css` (bloque `@theme` de Tailwind v4) y están documentados en `DESIGN.md` (raíz del repo). **Nunca** uses valores `bg-[#...]` ad-hoc; todo pasa por los tokens.
 
 ## Colores de marca
 

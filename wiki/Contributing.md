@@ -14,14 +14,14 @@ git checkout -b feat/mi-feature
 
 ```bash
 # Servidor de desarrollo
-bun run dev
+pnpm run dev
 
 # Verificar tipos
-bunx astro check
+pnpm exec astro check
 
 # Linting y formato
-bun run check
-bun run format
+pnpm run check
+pnpm run format
 ```
 
 ### 3. Commitear
@@ -62,26 +62,27 @@ git push origin v1.2.0
 ### TypeScript
 
 - Usar tipos explícitos en props de componentes.
-- Los interfaces van en `src/interfaces/`.
-- Usar `@/` para imports absolutos.
+- Los tipos compartidos van junto al módulo que los usa, o en `shared/` si los
+  consumen app y servidor.
+- Auto-imports de Nuxt para composables/utils; `~/` apunta a `app/`.
 
-### Astro
+### Nuxt / Vue
 
-- Los componentes usan `<script define:vars>` para interactividad (no React).
-- Los datos estáticos van en `src/data/` como JSON.
-- Los tokens de diseño van en `src/styles/global.css` (nunca `bg-[#...]` ad-hoc).
+- Componentes Vue con `<script setup lang="ts">`.
+- Los datos estáticos van en `app/data/` como JSON/TS.
+- Los tokens de diseño van en `app/assets/css/main.css` (nunca `bg-[#...]` ad-hoc).
 
 ### CSS
 
 - Usar clases de Tailwind del sistema de diseño.
-- Los tokens de color, espaciado y tipografía están en `global.css`.
+- Los tokens de color, espaciado y tipografía están en `main.css` (`@theme`).
 - No hardcodear colores; usar las variables CSS del `@theme`.
 
 ### i18n
 
-- Todo el texto visible va en los diccionarios `src/config/i18n/*.json`.
-- Añadir claves en los 3 idiomas (CA, ES, EN).
-- Usar `getLocale()` y `getDictionary()` en las páginas.
+- Todo el texto visible va en los diccionarios `i18n/locales/*.json`.
+- Añadir claves en los 4 idiomas (CA, ES, EN, FR).
+- Usar `useI18n()` y `useLocalePath()` en las páginas.
 
 ## Estructura de commits
 
@@ -116,9 +117,9 @@ Si se usa el flujo de PRs:
 
 ## Checklist antes de merge
 
-- [ ] `bun run build` compila sin errores
-- [ ] `bunx astro check` no muestra errores de tipos
-- [ ] `bun run check` pasa linting y formato
+- [ ] `pnpm run build` compila sin errores
+- [ ] `pnpm exec astro check` no muestra errores de tipos
+- [ ] `pnpm run check` pasa linting y formato
 - [ ] Los enlaces internos usan el prefijo `/empresaplana-website/`
 - [ ] Los textos están en los 3 diccionarios i18n
 - [ ] Los tokens de diseño se usan correctamente (no colores hardcodeados)
